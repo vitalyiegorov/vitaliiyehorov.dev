@@ -59,7 +59,7 @@ export function WorkSection() {
                         title="rnw-community"
                         links={<WorkLink href="https://github.com/rnw-community/rnw-community" label="GitHub" />}
                     >
-                        26 npm packages for NestJS and React Native.
+                        26 npm packages for NestJS and React Native. The largest gets 325k downloads a month.
                     </WorkCard>
                     <WorkCard
                         className="lg:col-span-6"

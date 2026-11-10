@@ -21,9 +21,7 @@ export function StatsSection() {
                     <Stat value={35058} label="GitHub contributions" />
                     <Stat value={2301} label="Pull requests" />
                     <Stat value={3727} label="Agent sessions" />
-                    <Stat value={26} label="npm packages">
-                        The largest gets 325k downloads a month.
-                    </Stat>
+                    <Stat value={26} label="npm packages" />
                 </dl>
             </div>
         </section>

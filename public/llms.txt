@@ -18,14 +18,14 @@ One session plans the work, agents from different model families build it in par
 
 - GitHub, last 12 months: 35,058 contributions, 2,301 pull requests
 - 3,727 agent sessions orchestrated
-- 26 open-source npm packages (rnw-community), the largest at 325k downloads a month
+- 26 open-source npm packages (rnw-community)
 
 ## Selected work
 
 - [Budgie](https://www.budgie.at): privacy-first, offline-first money app with an AI chat over your own data ([source](https://github.com/budgie-at/budgie))
 - [Suuudokuuu](https://suuudokuuu.com): sudoku for web, iOS and Android from one codebase ([source](https://github.com/vitalyiegorov/suuudokuuu))
 - [JointLens](https://jointlens.ai): an AI second opinion on MRI, CT and X-ray scans of eleven joints
-- [rnw-community](https://github.com/rnw-community/rnw-community): 26 npm packages for NestJS and React Native
+- [rnw-community](https://github.com/rnw-community/rnw-community): 26 npm packages for NestJS and React Native. The largest gets 325k downloads a month
 - [Tart Runner Fleet](https://github.com/vitalyiegorov/tart-runner-fleet): GitHub Actions runners on Apple-silicon Macs, every job in a throwaway VM
 - [Agent tooling](https://github.com/pingdotgg/t3code/pulls?q=is%3Apr+author%3Avitalyiegorov): 30 pull requests to t3code, plus fixes to simlock, agent-device and simslim
 
