@@ -14,7 +14,7 @@ export function StatsSection() {
                 <div className="reveal max-w-3xl">
                     <TelemetryLabel index="02">Telemetry · 12 months to Nov 2026</TelemetryLabel>
                     <h2 id="numbers-title" className="display readable mt-6 text-[clamp(2.6rem,6.2vw,6rem)] font-semibold text-balance">
-                        A year of shipping, counted.
+                        One year, counted.
                     </h2>
                 </div>
                 <dl className="mt-14 grid grid-cols-2 gap-x-6 gap-y-8 sm:mt-16 lg:mt-20 lg:grid-cols-4 lg:gap-y-0">

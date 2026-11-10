@@ -42,7 +42,7 @@ export function HeroSection() {
                         </span>{' '}
                         · <span className="whitespace-nowrap">15+ years</span> ·{' '}
                         <span className="whitespace-nowrap">ex-founder, ex-CTO</span> ·{' '}
-                        <span className="whitespace-nowrap">still ships code</span>
+                        <span className="whitespace-nowrap">still writes code</span>
                     </p>
                     <div className="rise [--rise:3]">
                         <ContactLinks size="md" />

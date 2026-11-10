@@ -10,7 +10,7 @@ export function WorkSection() {
                 <div className="reveal max-w-3xl">
                     <TelemetryLabel index="05">Selected work</TelemetryLabel>
                     <h2 id="work-title" className="display readable mt-5 text-[clamp(2.6rem,5.4vw,5.25rem)] font-semibold text-balance">
-                        Things I build, ship and maintain.
+                        Things I build and maintain.
                     </h2>
                 </div>
                 <div className="mt-10 grid gap-4 lg:grid-cols-12 lg:gap-5">
