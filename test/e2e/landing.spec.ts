@@ -75,6 +75,16 @@ test('keeps the scene decorative and the page structured', async ({ page }) => {
     });
 });
 
+test('shows the six trimmed sections', async ({ page }) => {
+    await page.goto('/');
+    await expect(page.locator('main > section')).toHaveCount(6);
+    await expect(page.locator('#numbers dl > div')).toHaveCount(4);
+    await expect(page.locator('#method ol > li')).toHaveCount(3);
+    await expect(page.locator('#principles')).toHaveCount(0);
+    await expect(page.getByRole('link', { name: 'jointlens.ai', exact: true })).toHaveAttribute('href', 'https://jointlens.ai');
+    await expect(page.getByText('Nodes 124 · Rings 04 · Link stable')).toHaveCount(0);
+});
+
 test('lets visitors pause the background motion', async ({ page }) => {
     await page.goto('/');
     const toggle = page.getByRole('button', { name: 'Pause motion' });
@@ -89,7 +99,7 @@ test.describe('with reduced motion', () => {
 
     test('shows all content without scroll-driven motion', async ({ page }) => {
         await page.goto('/');
-        for (const id of ['numbers', 'method', 'career', 'work', 'principles', 'contact']) {
+        for (const id of ['numbers', 'method', 'career', 'work', 'contact']) {
             const section = page.locator(`#${id}`);
             await section.scrollIntoViewIfNeeded();
             await expect(section.locator('h2')).toBeAttached();

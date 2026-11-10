@@ -18,22 +18,13 @@ export function StatsSection() {
                     <h2 id="numbers-title" className="display readable mt-6 text-[clamp(2.6rem,6.2vw,6rem)] font-semibold text-balance">
                         A year of shipping, counted.
                     </h2>
-                    <p className="readable mt-6 max-w-xl text-lg leading-relaxed text-muted text-pretty">
-                        The last 12 months on GitHub, plus the agent fleet and the open-source packages behind them.
-                    </p>
                 </div>
-                <p className="telemetry mt-8 text-muted sm:mt-10">GitHub · last 12 months</p>
-                <dl className="mt-5 grid grid-cols-2 gap-x-6 gap-y-8 lg:grid-cols-3">
-                    <Stat value={35058} label="Contributions" className="col-span-2 lg:col-span-1" />
-                    <Stat value={16715} label="Commits" />
-                    <Stat value={2301} label="Pull requests" />
-                </dl>
-                <p className="telemetry mt-8 text-muted sm:mt-10">Fleet and open source</p>
-                <dl className="mt-5 grid grid-cols-2 gap-x-6 gap-y-8 lg:grid-cols-3">
-                    <Stat value={3727} label="Agent sessions orchestrated" className="col-span-2 lg:col-span-1" />
-                    <Stat value={5} label="Machines in the fleet" />
+                <dl className="mt-14 grid grid-cols-2 gap-x-6 gap-y-10 sm:mt-16 lg:grid-cols-4">
+                    <Stat value={35058} label="GitHub contributions · 12 months" />
+                    <Stat value={2301} label="Pull requests · 12 months" />
+                    <Stat value={3727} label="Agent sessions orchestrated" />
                     <Stat value={26} label="Open-source npm packages">
-                        rnw-community · ~325k downloads a month
+                        The largest gets 325k downloads a month.
                     </Stat>
                 </dl>
             </div>

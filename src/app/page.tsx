@@ -3,7 +3,6 @@ import { ContactSection } from '@/contact/component/contact-section.component';
 import { HeroSection } from '@/hero/component/hero-section.component';
 import { MethodSection } from '@/method/component/method-section.component';
 import { OrbitStage } from '@/orbit/component/orbit-stage.component';
-import { PrinciplesSection } from '@/principles/component/principles-section.component';
 import { PersonSchema } from '@/seo/component/person-schema.component';
 import { ScrollProgress } from '@/shared/component/scroll-progress.component';
 import { SiteFooter } from '@/shared/component/site-footer.component';
@@ -31,7 +30,6 @@ export default function HomePage() {
                 <MethodSection />
                 <CareerSection />
                 <WorkSection />
-                <PrinciplesSection />
                 <ContactSection />
             </main>
             <SiteFooter />

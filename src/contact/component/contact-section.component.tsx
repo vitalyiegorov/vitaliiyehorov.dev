@@ -11,13 +11,13 @@ export function ContactSection() {
         >
             <div className="mx-auto w-full max-w-[96rem] px-5 sm:px-8 lg:px-14">
                 <div className="reveal">
-                    <TelemetryLabel index="07">Contact · all nodes to core</TelemetryLabel>
+                    <TelemetryLabel index="06">Contact · all nodes to core</TelemetryLabel>
                     <h2 id="contact-title" className="display readable mt-8 text-[clamp(4.2rem,15vw,14rem)] font-bold">
                         Send a<br />
                         <span className="text-accent">signal.</span>
                     </h2>
                     <p className="readable mt-8 max-w-lg text-lg leading-relaxed text-muted text-pretty">
-                        Write about leading teams that build with AI agents, or about any of the projects above. Pick a channel.
+                        Building with AI agents, or leading a team that does? Write to me.
                     </p>
                     <div className="mt-10">
                         <ContactLinks size="lg" />

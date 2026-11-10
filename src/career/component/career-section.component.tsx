@@ -18,20 +18,16 @@ export function CareerSection() {
                     <span className="rail-fill absolute top-0 -left-px block h-full w-px bg-accent" aria-hidden="true" />
                     <ol>
                         <CareerEntry years="2010 – 2017" title="Founder & CEO" company="SamsonOS · Kyiv">
-                            Built a software company that shipped 40+ projects for startups in Europe and the US, and grew the team past 20
-                            engineers.
+                            40+ projects for startups in Europe and the US. A team of 20+ engineers.
                         </CareerEntry>
                         <CareerEntry years="2017 – 2019" title="CTO" company="Omnivalor · Kyiv / Stockholm">
-                            Ran two agile teams on an e-commerce SaaS, on fault-tolerant AWS infrastructure with Stripe, Klarna, DHL, UPS
-                            and FedEx integrations.
+                            Two teams, one e-commerce SaaS.
                         </CareerEntry>
-                        <CareerEntry years="2019 – 2021" title="VP of Engineering" company="Clearmove · Kyiv / London / UAE">
-                            Built the R&D organisation of a relocation-management SaaS from scratch: hired and led 20+ engineers, set up the
-                            processes and the career paths.
+                        <CareerEntry years="2019 – 2021" title="VP of Engineering" company="Clearmove · Kyiv / London">
+                            Built R&amp;D from zero to 20+ engineers.
                         </CareerEntry>
                         <CareerEntry years="2021 – 2023" title="CTO" company="OnTheWay · Nürnberg">
-                            Took a logistics marketplace from MVP to production with a team of five: React Native apps on iOS and Android,
-                            NestJS microservices in a monorepo.
+                            A logistics marketplace from MVP to production, with a team of five.
                         </CareerEntry>
                         <CareerEntry
                             years="2023 – now"
@@ -48,8 +44,7 @@ export function CareerSection() {
                                 </>
                             }
                         >
-                            Lead product engineering on a B2B SaaS asset operations platform. Reworked the SDLC and CI/CD end to end, moved
-                            the core backend from Express to NestJS and made AI-native engineering part of the team&apos;s daily work.
+                            Product engineering for a B2B asset operations platform. AI-native engineering is the team&apos;s daily work.
                         </CareerEntry>
                     </ol>
                 </div>

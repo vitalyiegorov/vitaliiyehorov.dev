@@ -12,14 +12,14 @@ interface Props {
 export function Stat({ value, label, className, children }: Props) {
     return (
         <div className={`reveal flex flex-col gap-3 border-t border-line pt-5 sm:pt-6 ${className ?? ''}`}>
-            <dt className="telemetry order-2 text-muted">{label}</dt>
+            <dt className="telemetry readable order-2 text-muted">{label}</dt>
             <dd className="order-1 m-0">
-                <span className="display readable block text-[clamp(3.25rem,7vw,7rem)] font-semibold tabular-nums text-fg">
+                <span className="display readable block text-[clamp(2.5rem,5.2vw,6rem)] font-semibold tabular-nums text-fg">
                     <StatCounter value={value} />
                     <span className="sr-only">{new Intl.NumberFormat('en-US').format(value)}</span>
                 </span>
             </dd>
-            {children ? <dd className="order-3 m-0 max-w-xs text-sm leading-relaxed text-faint">{children}</dd> : null}
+            {children ? <dd className="readable order-3 m-0 max-w-xs text-sm leading-relaxed text-faint">{children}</dd> : null}
         </div>
     );
 }

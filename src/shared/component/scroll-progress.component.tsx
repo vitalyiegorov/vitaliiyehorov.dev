@@ -8,7 +8,7 @@ export function ScrollProgress() {
             <span className="relative block w-px flex-1 bg-line">
                 <span className="scroll-progress absolute inset-0 block bg-accent" />
             </span>
-            <span className="telemetry text-[0.6rem]">07</span>
+            <span className="telemetry text-[0.6rem]">06</span>
         </div>
     );
 }

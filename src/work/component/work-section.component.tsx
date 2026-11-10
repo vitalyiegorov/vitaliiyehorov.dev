@@ -28,8 +28,7 @@ export function WorkSection() {
                             </>
                         }
                     >
-                        A privacy-first, offline-first money app: expenses, bank sync, portfolio tracking and an AI chat over your own data.
-                        Built with React Native and Expo.
+                        Privacy-first, offline-first money app with an AI chat over your own data.
                     </WorkCard>
                     <WorkCard
                         className="lg:col-span-6"
@@ -43,36 +42,35 @@ export function WorkSection() {
                             </>
                         }
                     >
-                        Sudoku on the web, iOS and Android from one Expo and React Native codebase.
+                        Sudoku for web, iOS and Android from one codebase.
                     </WorkCard>
                     <WorkCard
                         className="lg:col-span-6"
                         index="W.03"
-                        kind="Open source · TypeScript"
-                        title="rnw-community"
-                        links={<WorkLink href="https://github.com/rnw-community/rnw-community" label="GitHub" />}
+                        kind="Product · Next.js · LLMs"
+                        title="JointLens"
+                        links={<WorkLink href="https://jointlens.ai" label="jointlens.ai" />}
                     >
-                        26 npm packages for NestJS, React Native and ESLint. The most used one is downloaded about 325k times a month.
+                        An AI second opinion on MRI, CT and X-ray scans of eleven joints. Several models read the scan and agree on one
+                        report.
                     </WorkCard>
                     <WorkCard
                         className="lg:col-span-6"
                         index="W.04"
-                        kind="Open source · Go"
-                        title="Tart Runner Fleet"
-                        links={<WorkLink href="https://github.com/vitalyiegorov/tart-runner-fleet" label="GitHub" />}
+                        kind="Open source · TypeScript"
+                        title="rnw-community"
+                        links={<WorkLink href="https://github.com/rnw-community/rnw-community" label="GitHub" />}
                     >
-                        A fail-closed control plane for GitHub Actions runners on Apple-silicon Macs. Every job gets a throwaway VM, a
-                        deterministic scheduler decides where it runs, and admission stays bounded.
+                        26 npm packages for NestJS and React Native.
                     </WorkCard>
                     <WorkCard
                         className="lg:col-span-6"
                         index="W.05"
-                        kind="Product · Next.js · LLMs"
-                        title="Analyze Your Knee"
-                        links={<WorkLink href="https://analyzeyourknee.com" label="analyzeyourknee.com" />}
+                        kind="Open source · Go"
+                        title="Tart Runner Fleet"
+                        links={<WorkLink href="https://github.com/vitalyiegorov/tart-runner-fleet" label="GitHub" />}
                     >
-                        Knee MRI and X-ray analysis. DICOM files are parsed in the browser, and a consortium of language models from
-                        different providers agrees on a consensus read.
+                        GitHub Actions runners on Apple-silicon Macs. Every job gets a throwaway VM.
                     </WorkCard>
                     <WorkCard
                         className="lg:col-span-6"
@@ -91,8 +89,7 @@ export function WorkSection() {
                             </>
                         }
                     >
-                        30 pull requests opened to t3code, plus pull requests to simlock, agent-device and simslim: the tools that let many
-                        agents share machines, simulators and devices.
+                        30 pull requests opened to t3code, plus fixes to simlock, agent-device and simslim.
                     </WorkCard>
                 </div>
             </div>

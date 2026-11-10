@@ -13,7 +13,7 @@ export function PersonSchema() {
         worksFor: { '@type': 'Organization', name: site.employer, url: site.employerUrl },
         address: { '@type': 'PostalAddress', addressLocality: 'Vienna', addressCountry: 'AT' },
         alumniOf: { '@type': 'CollegeOrUniversity', name: 'National Technical University of Ukraine "Kyiv Polytechnic Institute"' },
-        knowsLanguage: ['en', 'uk', 'de'],
+        knowsLanguage: ['en', 'uk'],
         knowsAbout: [
             'Engineering management',
             'AI-native engineering',
