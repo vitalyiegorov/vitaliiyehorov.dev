@@ -2,6 +2,7 @@ import { castLineRange } from '../constant/cast-line-range.constant';
 
 import { at } from './at.util';
 import { setCastPoint } from './set-cast-point.util';
+import { smoothstep } from './smoothstep.util';
 import { writeCastEllipse } from './write-cast-ellipse.util';
 import { writeCastSegment } from './write-cast-segment.util';
 
@@ -15,6 +16,8 @@ const orbitTilt = [-0.2, 0.13, -0.06] as const;
 const orbitSquash = 0.42;
 const projectOrbit = [2, 1, 0, 2, 1, 2] as const;
 const projectPhase = [4.3, 3.78, 3.25, 2.92, 2.4, 1.95] as const;
+const stripInset = 25;
+const stripReach = 28;
 
 const orbitX = (cx: number, radius: number, angle: number, tilt: number): number =>
     cx + Math.cos(angle) * radius * Math.cos(tilt) - Math.sin(angle) * radius * orbitSquash * Math.sin(tilt);
@@ -46,6 +49,12 @@ const writeFleet = (pose: CastPose, view: CastView, layer: CastLayer, weight: nu
                 Math.min(0.85 + 0.1 * depth + 0.4 * glow, 1),
                 0.1 + 0.9 * glow
             );
+            pose.focus[point] = smoothstep((at(pose.lit, point) - 0.55) / 0.45);
+            const normalX = Math.cos(angle) * orbitSquash * Math.cos(tilt) - Math.sin(angle) * Math.sin(tilt);
+            const normalY = Math.cos(angle) * orbitSquash * Math.sin(tilt) + Math.sin(angle) * Math.cos(tilt);
+            const normal = Math.hypot(normalX, normalY) || 1;
+            view.workNormals[index * 2] = normalX / normal;
+            view.workNormals[index * 2 + 1] = normalY / normal;
         } else {
             const orbit = index % 3;
             const angle = at(layer.seed, point * 2) * tau + time * 0.04;
@@ -102,41 +111,37 @@ const writeFleet = (pose: CastPose, view: CastView, layer: CastLayer, weight: nu
 };
 
 const writeStrip = (pose: CastPose, view: CastView, layer: CastLayer, weight: number): void => {
-    const x = view.workEdge - 24;
-    const cy = view.height * 0.5;
-    const spanY = view.height * 0.3;
-    const spanX = 9;
-    const { time } = view;
-    setCastPoint(pose, 0, x, cy, 50, 0, 1);
-    setCastPoint(pose, 1, x, cy, 4, 0, 1);
+    const x = view.workEdge - stripInset;
+    const count = Math.min(view.workCount, pose.majors);
+    const firstY = count > 0 ? at(view.workTitles, 0) : view.height * 0.5;
+    const lastY = count > 0 ? at(view.workTitles, count - 1) : firstY;
+    setCastPoint(pose, 0, x, firstY, 50, 0, 1);
+    setCastPoint(pose, 1, x, firstY, 4, 0, 1);
 
     for (let index = 0; index < pose.majors; index += 1) {
         const point = index + 2;
-        if (index < view.workCount) {
-            const slot = -0.8 + (index * 1.6) / Math.max(view.workCount - 1, 1);
+        if (index < count) {
             const glow = at(view.workGlow, index);
-            setCastPoint(
-                pose,
-                point,
-                x + (index % 2 === 0 ? -1 : 1) * spanX * Math.sqrt(1 - slot * slot),
-                cy + slot * spanY,
-                11 + 16 * glow,
-                0.85 + 0.15 * glow,
-                glow
-            );
+            setCastPoint(pose, point, x, at(view.workTitles, index), 10 + 12 * glow, 0.7 + 0.3 * glow, 0.2 + 0.8 * glow);
+            pose.focus[point] = glow;
         } else {
-            const angle = at(layer.seed, point * 2) * tau + time * 0.04;
-            setCastPoint(pose, point, x + Math.cos(angle) * spanX * 1.7, cy + Math.sin(angle) * spanY * 1.12, 5, 0, 0.3);
+            setCastPoint(pose, point, x, lastY, 4, 0, 0.3);
         }
     }
 
     for (let index = 0; index < pose.dust; index += 1) {
-        const point = index + 2 + pose.majors;
-        const angle = at(layer.seed, point * 2) * tau + time * 0.06;
-        setCastPoint(pose, point, x + Math.cos(angle) * spanX, cy + Math.sin(angle) * spanY * 1.04, 2.2, 0.2, 0.35);
+        setCastPoint(pose, index + 2 + pose.majors, x, firstY + (lastY - firstY) * at(layer.seed, index), 2, 0, 0.3);
     }
 
-    writeCastEllipse(layer, castLineRange.work, castLineRange.workSegments, x, cy, spanX, spanY * 1.04, 0, 0.12 * weight, 0.3);
+    const segments = castLineRange.workSegments;
+    const top = firstY - stripReach;
+    const span = lastY + stripReach - top;
+    for (let index = 0; index < segments; index += 1) {
+        const fromY = top + (index / segments) * span;
+        const toY = top + ((index + 1) / segments) * span;
+        const edge = Math.min(index + 0.5, segments - index - 0.5) / 3;
+        writeCastSegment(layer, castLineRange.work + index, x, fromY, x, toY, 0.26 * Math.min(edge, 1) * weight, 0.25);
+    }
 };
 
 export const writeWorkPose = (pose: CastPose, view: CastView, layer: CastLayer, weight: number): void => {

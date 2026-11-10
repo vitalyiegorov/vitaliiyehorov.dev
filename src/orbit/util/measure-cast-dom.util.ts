@@ -2,6 +2,28 @@ import type { CastDom } from '../type/cast-dom.type';
 
 const textSelector = 'h2, h3, p, a, ul[aria-label] > li';
 
+const midlineOf = (element: HTMLElement, context: CanvasRenderingContext2D | null): number => {
+    const height = element.getBoundingClientRect().height;
+    const box = height / 2;
+    if (!context) {
+        return box;
+    }
+    const style = getComputedStyle(element);
+    context.font = `${style.fontWeight} ${style.fontSize} ${style.fontFamily}`;
+    const metrics = context.measureText('x');
+    const lineHeight = Number.parseFloat(style.lineHeight);
+    const content = metrics.fontBoundingBoxAscent + metrics.fontBoundingBoxDescent;
+    if (!Number.isFinite(lineHeight) || !(content > 0) || !(metrics.actualBoundingBoxAscent > 0)) {
+        return box;
+    }
+
+    const lines = Math.max(Math.round(height / lineHeight), 1);
+
+    return (
+        (lineHeight - content) / 2 + metrics.fontBoundingBoxAscent - metrics.actualBoundingBoxAscent / 2 + ((lines - 1) * lineHeight) / 2
+    );
+};
+
 const all = (selector: string): HTMLElement[] => Array.from(document.querySelectorAll<HTMLElement>(selector));
 
 export const measureCastDom = (): CastDom => {
@@ -10,6 +32,7 @@ export const measureCastDom = (): CastDom => {
     const workTitles = workRows.map(row => row.querySelector<HTMLElement>('h3') ?? row);
     const careerNodes = all('[data-cast-node]');
     const methodSteps = all('[data-cast-step]');
+    const context = document.createElement('canvas').getContext('2d');
 
     return {
         methodStage: sections.findIndex(section => section.id === 'method'),
@@ -28,6 +51,7 @@ export const measureCastDom = (): CastDom => {
         workList: document.querySelector<HTMLElement>('[data-cast-list]'),
         workRows,
         workTitles,
+        workMidlines: workTitles.map(title => midlineOf(title, context)),
         workNames: workRows.map(
             (row, index) => `${row.querySelector('[data-cast-index]')?.textContent ?? ''} ${workTitles[index]?.textContent ?? ''}`
         ),

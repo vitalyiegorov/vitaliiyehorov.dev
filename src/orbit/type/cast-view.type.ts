@@ -29,6 +29,7 @@ export interface CastView {
     hover: number;
     readonly workGlow: Float32Array;
     readonly workTitles: Float32Array;
+    readonly workNormals: Float32Array;
     readonly text: Float32Array;
     textCount: number;
 }

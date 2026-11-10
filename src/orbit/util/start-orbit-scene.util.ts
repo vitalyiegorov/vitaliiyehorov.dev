@@ -181,6 +181,7 @@ export const startOrbitScene = (canvas: HTMLCanvasElement, callbacks: Callbacks)
         hover: -1,
         workGlow: new Float32Array(6),
         workTitles: new Float32Array(6),
+        workNormals: new Float32Array(12),
         text: new Float32Array(64 * 4),
         textCount: 0
     };
@@ -304,7 +305,7 @@ export const startOrbitScene = (canvas: HTMLCanvasElement, callbacks: Callbacks)
             readCastRects(dom, view, from, to, still);
             const methodOn = view.method && (from === dom.methodStage || to === dom.methodStage);
             marks.method = markCastActive(dom.methodSteps, methodOn ? Math.round(view.methodProgress) : -1, marks.method);
-            const workOn = view.workWidth > 0 && (from === dom.workStage || to === dom.workStage);
+            const workOn = view.workCount > 0 && (from === dom.workStage || to === dom.workStage);
             marks.work = markCastActive(dom.workRows, workOn ? view.workActive : -1, marks.work);
         }
         blendFrames(stage, target);

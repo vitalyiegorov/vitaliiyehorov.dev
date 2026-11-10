@@ -15,6 +15,7 @@ export interface CastDom {
     readonly workList: HTMLElement | null;
     readonly workRows: readonly HTMLElement[];
     readonly workTitles: readonly HTMLElement[];
+    readonly workMidlines: readonly number[];
     readonly workNames: readonly string[];
     readonly label: HTMLElement | null;
 }

@@ -9,56 +9,30 @@ import type { CastLayer } from '../type/cast-layer.type';
 import type { CastView } from '../type/cast-view.type';
 
 const gap = 12;
-const nodeRadius = 7;
+const offset = 24;
 const pad = 4;
-const coreClear = 46;
-const sides = [
-    [1, 0],
-    [1, -1],
-    [1, 1],
-    [0, -1],
-    [0, 1],
-    [-1, -1],
-    [-1, 1],
-    [-1, 0]
-] as const;
+const railClear = 64;
 
 const inside = (x: number, y: number, left: number, top: number, right: number, bottom: number): boolean =>
     x > left && x < right && y > top && y < bottom;
 
-const crossings = (
-    layer: CastLayer,
-    start: number,
-    end: number,
-    left: number,
-    top: number,
-    right: number,
-    bottom: number,
-    clear = false
-): number => {
+const crossings = (layer: CastLayer, segment: number, left: number, top: number, right: number, bottom: number): number => {
     const position = layer.linePosition.array;
     const shade = layer.lineShade.array;
+    const vertex = segment * 2;
+    if (at(shade, vertex * 2) < 0.005) {
+        return 0;
+    }
+    const fromX = at(position, vertex * 3);
+    const fromY = at(position, vertex * 3 + 1);
+    const toX = at(position, vertex * 3 + 3);
+    const toY = at(position, vertex * 3 + 4);
+    const samples = Math.max(Math.ceil(Math.hypot(toX - fromX, toY - fromY) / 6), 1);
     let hits = 0;
-    for (let segment = start; segment < end; segment += 1) {
-        const vertex = segment * 2;
-        if (at(shade, vertex * 2) < 0.005) {
-            continue;
-        }
-        const fromX = at(position, vertex * 3);
-        const fromY = at(position, vertex * 3 + 1);
-        const toX = at(position, vertex * 3 + 3);
-        const toY = at(position, vertex * 3 + 4);
-        const samples = Math.max(Math.ceil(Math.hypot(toX - fromX, toY - fromY) / 6), 1);
-        for (let step = 0; step <= samples; step += 1) {
-            const t = step / samples;
-            if (inside(fromX + (toX - fromX) * t, fromY + (toY - fromY) * t, left, top, right, bottom)) {
-                hits += 1;
-            }
-        }
-        if (clear && hits > 0) {
-            shade[vertex * 2] = 0;
-            shade[vertex * 2 + 2] = 0;
-            hits = 0;
+    for (let step = 0; step <= samples; step += 1) {
+        const t = step / samples;
+        if (inside(fromX + (toX - fromX) * t, fromY + (toY - fromY) * t, left, top, right, bottom)) {
+            hits += 1;
         }
     }
 
@@ -75,37 +49,21 @@ const clearPoints = (layer: CastLayer, keep: number, left: number, top: number, 
     }
 };
 
-const placeScore = (
-    view: CastView,
-    layer: CastLayer,
-    active: number,
-    distance: number,
-    left: number,
-    top: number,
-    width: number,
-    height: number
-): number => {
-    const right = left + width;
-    const bottom = top + height;
-    const outside = left < view.workEdge + gap || right > view.width - gap || top < gap || bottom > view.height - gap ? 1000 : 0;
-    const rings = crossings(
-        layer,
-        castLineRange.work,
-        castLineRange.work + castLineRange.workSegments * 3,
-        left - pad,
-        top - pad,
-        right + pad,
-        bottom + pad
-    );
-    const leader = castLineRange.leaders + active;
-    const crossed = crossings(layer, leader, leader + 1, left - pad, top - pad, right + pad, bottom + pad);
-    const nearX = Math.max(left - view.workX, view.workX - right, 0);
-    const nearY = Math.max(top - view.workY, view.workY - bottom, 0);
-    const core = Math.hypot(nearX, nearY) < coreClear ? 40 : 0;
-    const nodeX = left + width / 2;
-    const inward = Math.hypot(nodeX - view.workX, top + height / 2 - view.workY) < distance ? 3 : 0;
+const clamp = (value: number, low: number, high: number): number => Math.min(Math.max(value, low), Math.max(low, high));
 
-    return outside + rings + crossed * 50 + core + inward;
+const placeAlong = (
+    view: CastView,
+    state: CastLabelState,
+    nodeX: number,
+    nodeY: number,
+    normalX: number,
+    normalY: number
+): [number, number] => {
+    const reach = offset + (Math.abs(normalX) * state.width) / 2 + (Math.abs(normalY) * state.height) / 2;
+    const left = nodeX + normalX * reach - state.width / 2;
+    const top = nodeY + normalY * reach - state.height / 2;
+
+    return [clamp(left, view.workEdge + gap, view.width - railClear - state.width), clamp(top, gap, view.height - gap - state.height)];
 };
 
 export const updateCastLabel = (dom: CastDom, view: CastView, layer: CastLayer, weight: number, state: CastLabelState): void => {
@@ -134,41 +92,24 @@ export const updateCastLabel = (dom: CastDom, view: CastView, layer: CastLayer, 
     const point = active + 2;
     const nodeX = at(positions, point * 3);
     const nodeY = at(positions, point * 3 + 1);
-    const offset = nodeRadius + gap;
-    const distance = Math.hypot(nodeX - view.workX, nodeY - view.workY);
-    let best = -1;
-    let bestScore = Number.POSITIVE_INFINITY;
-    let bestX = nodeX;
-    let bestY = nodeY;
-    for (let side = 0; side < sides.length; side += 1) {
-        const [dx, dy] = sides[side] ?? [1, 0];
-        const diagonal = dx !== 0 && dy !== 0 ? Math.SQRT1_2 : 1;
-        const left = dx > 0 ? nodeX + offset * diagonal : dx < 0 ? nodeX - offset * diagonal - state.width : nodeX - state.width / 2;
-        const top = dy > 0 ? nodeY + offset * diagonal : dy < 0 ? nodeY - offset * diagonal - state.height : nodeY - state.height / 2;
-        const score = placeScore(view, layer, active, distance, left, top, state.width, state.height) - (side === state.side ? 1.5 : 0);
-        if (score < bestScore) {
-            bestScore = score;
-            best = side;
-            bestX = left;
-            bestY = top;
+    const normalX = at(view.workNormals, active * 2);
+    const normalY = at(view.workNormals, active * 2 + 1);
+    const leader = castLineRange.leaders + active;
+    let side = 0;
+    let [bestX, bestY] = placeAlong(view, state, nodeX, nodeY, normalX, normalY);
+    const crossed = crossings(layer, leader, bestX - pad, bestY - pad, bestX + state.width + pad, bestY + state.height + pad);
+    if (crossed > 0) {
+        const [x, y] = placeAlong(view, state, nodeX, nodeY, -normalX, -normalY);
+        if (crossings(layer, leader, x - pad, y - pad, x + state.width + pad, y + state.height + pad) < crossed) {
+            side = 1;
+            bestX = x;
+            bestY = y;
         }
     }
-    state.side = best;
+    state.side = side;
     const x = Math.round(bestX);
     const y = Math.round(bestY);
-    const right = x + state.width + pad * 1.5;
-    const bottom = y + state.height + pad * 1.5;
-    crossings(
-        layer,
-        castLineRange.work,
-        castLineRange.work + castLineRange.workSegments * 3,
-        x - pad * 1.5,
-        y - pad * 1.5,
-        right,
-        bottom,
-        true
-    );
-    clearPoints(layer, point, x - pad * 1.5, y - pad * 1.5, right, bottom);
+    clearPoints(layer, point, x - pad, y - pad, x + state.width + pad, y + state.height + pad);
     if (x !== state.x || y !== state.y) {
         state.x = x;
         state.y = y;
