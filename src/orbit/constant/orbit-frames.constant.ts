@@ -22,12 +22,12 @@ export const orbitFrames: readonly [OrbitFrame, ...OrbitFrame[]] = [
         narrowDim: 1
     },
     {
-        x: 5,
-        y: -0.2,
+        x: 2.58,
+        y: 2.15,
         distance: 11.5,
-        elevation: 0.62,
+        elevation: 0.24,
         yaw: -0.35,
-        spread: 1.05,
+        spread: 0.72,
         line: 0,
         core: 0,
         lit: 0.5,
@@ -38,7 +38,7 @@ export const orbitFrames: readonly [OrbitFrame, ...OrbitFrame[]] = [
         coreScale: 3,
         dim: 0.7,
         narrowX: 0.5,
-        narrowY: 2.9,
+        narrowY: 0.32,
         narrowDim: 0.5
     },
     {
