@@ -21,7 +21,7 @@ export function MethodSection() {
                             in parallel. I set the rules, review the result and own the merge.
                         </p>
                         <p className="telemetry mt-10 text-muted">Model families in rotation</p>
-                        <ul className="mt-4 flex flex-wrap gap-1.5" aria-label="Model families">
+                        <ul className="mt-4 flex flex-wrap gap-1.5 lg:flex-nowrap" aria-label="Model families">
                             <ModelFamily name="Claude" />
                             <ModelFamily name="GPT / Codex" />
                             <ModelFamily name="Gemini" />
@@ -32,7 +32,7 @@ export function MethodSection() {
                         </ul>
                     </div>
                 </div>
-                <ol className="lg:col-span-6 lg:col-start-7 lg:-m-6 lg:rounded-2xl lg:bg-bg-deep/35 lg:p-6">
+                <ol className="lg:col-span-6 lg:col-start-7 lg:-m-6 lg:rounded-2xl lg:bg-linear-to-r lg:from-bg-deep/90 lg:via-bg-deep/70 lg:via-78% lg:to-transparent lg:p-6">
                     <MethodStep index="01 / Plan" title="Plan once">
                         One session owns the task. It reads the code, writes the plan and cuts it into briefs narrow enough to hand off.
                     </MethodStep>

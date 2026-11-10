@@ -23,17 +23,17 @@ export function StatsSection() {
                     </p>
                 </div>
                 <p className="telemetry mt-8 text-muted sm:mt-10">GitHub · last 12 months</p>
-                <dl className="mt-5 grid grid-cols-2 gap-x-6 gap-y-10 lg:grid-cols-3">
-                    <Stat value={35058} label="Contributions" />
+                <dl className="mt-5 grid grid-cols-2 gap-x-6 gap-y-8 lg:grid-cols-3">
+                    <Stat value={35058} label="Contributions" className="col-span-2 lg:col-span-1" />
                     <Stat value={16715} label="Commits" />
                     <Stat value={2301} label="Pull requests" />
                 </dl>
                 <p className="telemetry mt-8 text-muted sm:mt-10">Fleet and open source</p>
-                <dl className="mt-5 grid grid-cols-2 gap-x-6 gap-y-10 lg:grid-cols-3">
-                    <Stat value={3727} label="Agent sessions orchestrated" />
+                <dl className="mt-5 grid grid-cols-2 gap-x-6 gap-y-8 lg:grid-cols-3">
+                    <Stat value={3727} label="Agent sessions orchestrated" className="col-span-2 lg:col-span-1" />
                     <Stat value={5} label="Machines in the fleet" />
                     <Stat value={26} label="Open-source npm packages">
-                        Published as rnw-community. The largest, @rnw-community/shared, gets about 325k downloads a month.
+                        rnw-community · ~325k downloads a month
                     </Stat>
                 </dl>
             </div>

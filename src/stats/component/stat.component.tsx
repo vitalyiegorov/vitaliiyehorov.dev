@@ -5,12 +5,13 @@ import type { ReactNode } from 'react';
 interface Props {
     readonly value: number;
     readonly label: string;
+    readonly className?: string;
     readonly children?: ReactNode;
 }
 
-export function Stat({ value, label, children }: Props) {
+export function Stat({ value, label, className, children }: Props) {
     return (
-        <div className="reveal flex flex-col gap-3 border-t border-line pt-5 sm:pt-6">
+        <div className={`reveal flex flex-col gap-3 border-t border-line pt-5 sm:pt-6 ${className ?? ''}`}>
             <dt className="telemetry order-2 text-muted">{label}</dt>
             <dd className="order-1 m-0">
                 <span className="display readable block text-[clamp(3.25rem,7vw,7rem)] font-semibold tabular-nums text-fg">

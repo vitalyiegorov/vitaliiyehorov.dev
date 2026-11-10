@@ -251,14 +251,14 @@ button:focus-visible {
 
 @keyframes step-focus {
     0% {
-        opacity: 0.6;
+        opacity: 0.75;
     }
     35%,
     65% {
         opacity: 1;
     }
     100% {
-        opacity: 0.6;
+        opacity: 0.75;
     }
 }
 

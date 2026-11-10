@@ -34,16 +34,16 @@ export const orbitFrames: readonly [OrbitFrame, ...OrbitFrame[]] = [
         pulse: 0.9,
         rings: 1,
         links: 1,
-        coreGlow: 0.5,
+        coreGlow: 0.7,
         coreScale: 3,
-        dim: 0.6,
+        dim: 0.7,
         narrowX: 0.5,
         narrowY: 2.9,
         narrowDim: 0.5
     },
     {
         x: 4.5,
-        y: -0.5,
+        y: 1.2,
         distance: 7.5,
         elevation: 0.08,
         yaw: 0.5,
@@ -56,13 +56,13 @@ export const orbitFrames: readonly [OrbitFrame, ...OrbitFrame[]] = [
         links: 1.25,
         coreGlow: 0.55,
         coreScale: 2.6,
-        dim: 0.55,
+        dim: 0.7,
         narrowX: 0.45,
-        narrowY: 3.1,
+        narrowY: 1.4,
         narrowDim: 0.5
     },
     {
-        x: 0,
+        x: -0.9,
         y: 0,
         distance: 10,
         elevation: 0.04,
@@ -77,7 +77,7 @@ export const orbitFrames: readonly [OrbitFrame, ...OrbitFrame[]] = [
         coreGlow: 0.35,
         coreScale: 2.4,
         dim: 0.9,
-        narrowX: -0.45,
+        narrowX: 2.6,
         narrowY: 0,
         narrowDim: 0.75
     },
@@ -137,7 +137,7 @@ export const orbitFrames: readonly [OrbitFrame, ...OrbitFrame[]] = [
         coreGlow: 2.2,
         coreScale: 4.2,
         dim: 1,
-        narrowX: 1.8,
+        narrowX: 1.2,
         narrowY: 1.65,
         narrowDim: 1
     }
