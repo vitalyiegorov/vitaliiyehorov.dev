@@ -49,7 +49,7 @@ export function HeroSection() {
                     </div>
                 </div>
             </div>
-            <div className="mx-auto hidden w-full max-w-[96rem] items-center justify-end px-5 pb-6 sm:px-8 lg:flex lg:px-14">
+            <div className="hero-exit mx-auto hidden w-full max-w-[96rem] items-center justify-end px-5 pb-6 sm:px-8 lg:flex lg:px-14">
                 <p className="telemetry flex items-center gap-3">
                     Scroll to fly the system
                     <span className="block h-px w-10 bg-line-strong" aria-hidden="true" />

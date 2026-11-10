@@ -293,7 +293,7 @@ button:focus-visible {
         .hero-exit {
             animation: hero-exit linear both;
             animation-timeline: scroll(root);
-            animation-range: 0 85vh;
+            animation-range: 0 60vh;
         }
 
         .hero-exit-slow {

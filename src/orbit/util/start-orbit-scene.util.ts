@@ -43,6 +43,13 @@ interface Callbacks {
 }
 
 const lineStage = 3;
+const fov = 40;
+const halfFov = Math.tan((fov * Math.PI) / 360);
+const narrowAspect = 390 / 844;
+const wideAspect = 1.6;
+const shortAspect = 1280 / 720;
+const lineHalfLength = 8;
+const anchorGap = 48;
 
 const orbitGeometry = (orbit: Float32Array, node: Float32Array): BufferGeometry => {
     const geometry = new BufferGeometry();
@@ -64,7 +71,7 @@ export const startOrbitScene = (canvas: HTMLCanvasElement, callbacks: Callbacks)
     renderer.setClearColor(0x000000, 0);
 
     const scene = new Scene();
-    const camera = new PerspectiveCamera(40, 1, 0.1, 200);
+    const camera = new PerspectiveCamera(fov, 1, 0.1, 200);
     const system = new Group();
     scene.add(system);
 
@@ -113,7 +120,9 @@ export const startOrbitScene = (canvas: HTMLCanvasElement, callbacks: Callbacks)
     const target: OrbitFrame = { ...current };
     const pointer = { x: 0, y: 0, smoothX: 0, smoothY: 0 };
     const right = new Vector3();
+    const up = new Vector3();
     let stages: StageBox[] = [];
+    let anchor: HTMLElement | null = null;
     let aspect = 1;
     let frame = 0;
     let running = false;
@@ -132,21 +141,34 @@ export const startOrbitScene = (canvas: HTMLCanvasElement, callbacks: Callbacks)
         camera.aspect = aspect;
         camera.updateProjectionMatrix();
         stages = measureStages();
+        anchor = document.querySelector<HTMLElement>('[data-orbit-anchor]');
     };
 
     const apply = (dt: number): void => {
-        const raw = reducedMotion ? 0.5 : readStage(stages, window.scrollY, window.innerHeight);
-        blendFrames(raw, target);
-        const travel = Math.min(Math.max(raw - (lineStage + 0.5), -0.5), 0.5);
-        target.y += travel * 11 * target.line;
+        const stage = reducedMotion ? 0 : readStage(stages, window.scrollY, window.innerHeight);
+        blendFrames(stage, target);
+        const transit = 1 - Math.sin(Math.PI * (stage - Math.floor(stage))) ** 0.35 * 0.85;
+        target.dim *= transit;
+        target.coreGlow *= transit;
+        const line = stages[lineStage];
+        const travel = line ? Math.min(Math.max((window.scrollY + window.innerHeight * 0.5 - line.top) / line.height, 0), 1) - 0.5 : 0;
         target.lit = Math.min(target.lit + travel * 0.9 * target.line, 1);
-        const narrow = aspect < 0.9;
-        if (narrow) {
+        if (aspect < 0.9) {
             target.x = target.narrowX;
-            target.y += target.narrowY;
+            target.y = target.narrowY + travel * target.narrowDrift * target.line;
+            target.distance = (target.narrowDistance * narrowAspect) / aspect;
             target.dim *= target.narrowDim;
             target.coreGlow *= target.narrowDim;
-            target.distance *= 1 + (1 - aspect) * 1.05;
+        } else {
+            const short = Math.min(Math.max((aspect - wideAspect) / (shortAspect - wideAspect), 0), 1);
+            target.x += (target.shortX - target.x) * short;
+            target.y += (target.shortY - target.y) * short;
+            target.distance += (target.shortDistance - target.distance) * short;
+            if (anchor) {
+                const top = 1 - (2 * (anchor.getBoundingClientRect().bottom + anchorGap)) / window.innerHeight;
+                const lineY = top - (lineHalfLength * Math.cos(target.elevation)) / (target.distance * halfFov);
+                target.y += (lineY - target.y) * target.line;
+            }
         }
         const ease = first ? 1 : 1 - Math.exp(-dt * 2.2);
         for (const key of orbitFrameKeys) {
@@ -163,8 +185,15 @@ export const startOrbitScene = (canvas: HTMLCanvasElement, callbacks: Callbacks)
             Math.cos(yaw) * Math.cos(elevation) * current.distance
         );
         camera.lookAt(0, 0, 0);
-        right.set(1, 0, 0).applyQuaternion(camera.quaternion).multiplyScalar(current.x);
-        system.position.set(right.x, right.y + current.y, right.z);
+        const halfHeight = current.distance * halfFov;
+        right
+            .set(1, 0, 0)
+            .applyQuaternion(camera.quaternion)
+            .multiplyScalar(current.x * halfHeight * aspect);
+        up.set(0, 1, 0)
+            .applyQuaternion(camera.quaternion)
+            .multiplyScalar(current.y * halfHeight);
+        system.position.copy(right).add(up);
         system.rotation.y = time * 0.025 * (1 - current.line);
 
         uniforms.uTime.value = time;

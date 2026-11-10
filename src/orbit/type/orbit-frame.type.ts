@@ -2,6 +2,14 @@ export interface OrbitFrame {
     x: number;
     y: number;
     distance: number;
+    shortX: number;
+    shortY: number;
+    shortDistance: number;
+    narrowX: number;
+    narrowY: number;
+    narrowDistance: number;
+    narrowDim: number;
+    narrowDrift: number;
     elevation: number;
     yaw: number;
     spread: number;
@@ -14,7 +22,4 @@ export interface OrbitFrame {
     coreGlow: number;
     coreScale: number;
     dim: number;
-    narrowX: number;
-    narrowY: number;
-    narrowDim: number;
 }

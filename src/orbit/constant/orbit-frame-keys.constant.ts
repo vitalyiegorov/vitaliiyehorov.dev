@@ -4,6 +4,14 @@ export const orbitFrameKeys: readonly (keyof OrbitFrame)[] = [
     'x',
     'y',
     'distance',
+    'shortX',
+    'shortY',
+    'shortDistance',
+    'narrowX',
+    'narrowY',
+    'narrowDistance',
+    'narrowDim',
+    'narrowDrift',
     'elevation',
     'yaw',
     'spread',
@@ -15,8 +23,5 @@ export const orbitFrameKeys: readonly (keyof OrbitFrame)[] = [
     'links',
     'coreGlow',
     'coreScale',
-    'dim',
-    'narrowX',
-    'narrowY',
-    'narrowDim'
+    'dim'
 ];
