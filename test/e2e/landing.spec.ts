@@ -75,6 +75,15 @@ test('keeps the scene decorative and the page structured', async ({ page }) => {
     });
 });
 
+test('lets visitors pause the background motion', async ({ page }) => {
+    await page.goto('/');
+    const toggle = page.getByRole('button', { name: 'Pause motion' });
+    await expect(toggle).toHaveAttribute('aria-pressed', 'false');
+    await toggle.click();
+    await expect(page.getByRole('button', { name: 'Resume motion' })).toHaveAttribute('aria-pressed', 'true');
+    await expect(page.locator('html')).toHaveAttribute('data-motion', 'paused');
+});
+
 test.describe('with reduced motion', () => {
     test.use({ reducedMotion: 'reduce' });
 

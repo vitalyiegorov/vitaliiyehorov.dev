@@ -16,6 +16,7 @@ export function HeroSection() {
                         <span>Orchestrator online</span>
                     </p>
                     <h1
+                        translate="no"
                         id="hero-title"
                         className="display readable text-[clamp(4.6rem,19vw,14.5rem)] font-bold text-fg lg:text-[clamp(6rem,12.4vw,14.5rem)]"
                     >

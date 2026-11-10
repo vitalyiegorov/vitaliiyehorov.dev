@@ -122,6 +122,7 @@ export const startOrbitScene = (canvas: HTMLCanvasElement, callbacks: Callbacks)
     let last = performance.now();
     let time = reducedMotion ? 18 : 0;
     let first = true;
+    let paused = document.documentElement.dataset.motion === 'paused';
 
     const resize = (): void => {
         const width = canvas.clientWidth || window.innerWidth;
@@ -141,7 +142,7 @@ export const startOrbitScene = (canvas: HTMLCanvasElement, callbacks: Callbacks)
         target.lit = Math.min(target.lit + travel * 0.9 * target.line, 1);
         const narrow = aspect < 0.9;
         if (narrow) {
-            target.x *= 0.12;
+            target.x = target.narrowX;
             target.y += target.narrowY;
             target.dim *= target.narrowDim;
             target.coreGlow *= target.narrowDim;
@@ -191,7 +192,7 @@ export const startOrbitScene = (canvas: HTMLCanvasElement, callbacks: Callbacks)
     };
 
     const sync = (): void => {
-        const shouldRun = !reducedMotion && visible && onScreen;
+        const shouldRun = !reducedMotion && !paused && visible && onScreen;
         if (shouldRun && !running) {
             running = true;
             last = performance.now();
@@ -231,6 +232,11 @@ export const startOrbitScene = (canvas: HTMLCanvasElement, callbacks: Callbacks)
     });
     resizeObserver.observe(canvas);
     resizeObserver.observe(document.body);
+    const motionObserver = new MutationObserver(() => {
+        paused = document.documentElement.dataset.motion === 'paused';
+        sync();
+    });
+    motionObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['data-motion'] });
     const intersectionObserver = new IntersectionObserver(entries => {
         onScreen = entries.some(entry => entry.isIntersecting);
         sync();
@@ -251,6 +257,7 @@ export const startOrbitScene = (canvas: HTMLCanvasElement, callbacks: Callbacks)
         running = false;
         window.cancelAnimationFrame(frame);
         resizeObserver.disconnect();
+        motionObserver.disconnect();
         intersectionObserver.disconnect();
         document.removeEventListener('visibilitychange', onVisibility);
         canvas.removeEventListener('webglcontextlost', onLost);

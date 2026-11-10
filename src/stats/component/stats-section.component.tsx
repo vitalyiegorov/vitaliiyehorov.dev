@@ -1,10 +1,17 @@
 import { Stat } from './stat.component';
 
+import { SectionNumeral } from '@/shared/component/section-numeral.component';
 import { TelemetryLabel } from '@/shared/component/telemetry-label.component';
 
 export function StatsSection() {
     return (
-        <section id="numbers" data-orbit-stage aria-labelledby="numbers-title" className="relative py-28 sm:py-36 lg:py-44">
+        <section
+            id="numbers"
+            data-orbit-stage
+            aria-labelledby="numbers-title"
+            className="relative isolate overflow-x-clip py-28 sm:py-36 lg:py-44"
+        >
+            <SectionNumeral value="02" className="top-24 right-10" />
             <div className="mx-auto max-w-[96rem] px-5 sm:px-8 lg:px-14">
                 <div className="reveal max-w-3xl">
                     <TelemetryLabel index="02">Telemetry · as of Nov 2026</TelemetryLabel>

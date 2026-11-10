@@ -17,7 +17,7 @@ export function ContactSection() {
                         <span className="text-accent">signal.</span>
                     </h2>
                     <p className="readable mt-8 max-w-lg text-lg leading-relaxed text-muted text-pretty">
-                        Leading teams that build with AI agents, or any of the projects above. Pick a channel.
+                        Write about leading teams that build with AI agents, or about any of the projects above. Pick a channel.
                     </p>
                     <div className="mt-10">
                         <ContactLinks size="lg" />

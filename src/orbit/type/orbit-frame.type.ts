@@ -14,6 +14,7 @@ export interface OrbitFrame {
     coreGlow: number;
     coreScale: number;
     dim: number;
+    narrowX: number;
     narrowY: number;
     narrowDim: number;
 }

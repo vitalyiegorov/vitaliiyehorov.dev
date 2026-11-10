@@ -16,6 +16,7 @@ export const orbitFrameKeys: readonly (keyof OrbitFrame)[] = [
     'coreGlow',
     'coreScale',
     'dim',
+    'narrowX',
     'narrowY',
     'narrowDim'
 ];

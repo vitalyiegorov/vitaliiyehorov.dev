@@ -34,6 +34,18 @@ html {
     background: var(--bg-deep);
     scroll-behavior: smooth;
     -webkit-text-size-adjust: 100%;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+}
+
+@media (pointer: fine) {
+    html {
+        overscroll-behavior: none;
+    }
+}
+
+html[data-motion='paused'] .signal-dot {
+    animation: none;
 }
 
 body {
@@ -327,4 +339,15 @@ button:focus-visible {
     .signal-dot {
         animation: none;
     }
+}
+
+.numeral {
+    font-family: var(--font-display);
+    font-size: clamp(16rem, 30vw, 30rem);
+    font-weight: 800;
+    line-height: 0.8;
+    letter-spacing: -0.06em;
+    color: transparent;
+    -webkit-text-stroke: 1px oklch(0.96 0.006 240 / 0.09);
+    z-index: -1;
 }

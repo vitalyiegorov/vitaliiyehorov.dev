@@ -1,10 +1,17 @@
 import { Principle } from './principle.component';
 
+import { SectionNumeral } from '@/shared/component/section-numeral.component';
 import { TelemetryLabel } from '@/shared/component/telemetry-label.component';
 
 export function PrinciplesSection() {
     return (
-        <section id="principles" data-orbit-stage aria-labelledby="principles-title" className="relative py-28 sm:py-36">
+        <section
+            id="principles"
+            data-orbit-stage
+            aria-labelledby="principles-title"
+            className="relative isolate overflow-x-clip py-28 sm:py-36"
+        >
+            <SectionNumeral value="06" className="-top-10 right-10" />
             <div className="mx-auto max-w-[96rem] px-5 sm:px-8 lg:px-14">
                 <div className="reveal">
                     <TelemetryLabel index="06">Principles</TelemetryLabel>
