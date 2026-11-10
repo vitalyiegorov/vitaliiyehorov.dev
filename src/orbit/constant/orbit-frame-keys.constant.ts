@@ -11,6 +11,8 @@ export const orbitFrameKeys: readonly (keyof OrbitFrame)[] = [
     'narrowY',
     'narrowDistance',
     'narrowDim',
+    'narrowElevation',
+    'narrowSpread',
     'narrowDrift',
     'elevation',
     'yaw',

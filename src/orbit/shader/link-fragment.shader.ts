@@ -1,4 +1,7 @@
+import { orbitShieldShader } from './orbit-shield.shader';
+
 export const linkFragmentShader = `
+${orbitShieldShader}
 uniform float uTime;
 uniform float uDim;
 uniform float uPulse;
@@ -16,6 +19,6 @@ void main() {
     float fade = smoothstep(0.02, 0.3, vT);
     float a = (0.035 + 0.06 * vLit + pulse * (0.3 + 0.45 * vLit)) * fade * uLinks * uDim;
     vec3 color = mix(uBase, uAccent, clamp(vLit * 0.7 + pulse * 0.6, 0.0, 1.0));
-    gl_FragColor = vec4(color, a);
+    gl_FragColor = vec4(color, a * shieldMask());
 }
 `;

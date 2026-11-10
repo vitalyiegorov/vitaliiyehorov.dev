@@ -4,7 +4,7 @@ export const readStage = (stages: readonly StageBox[], scrollY: number, viewport
     let stage = 0;
     let previousTop = Number.NEGATIVE_INFINITY;
     for (const [index, box] of stages.entries()) {
-        const start = Math.max(box.top - viewportHeight * 0.8, previousTop);
+        const start = Math.max(box.top - viewportHeight * 0.62, previousTop);
         const end = box.top - viewportHeight * 0.05;
         if (scrollY >= start) {
             stage = index + Math.min((scrollY - start) / Math.max(end - start, 1), 1);

@@ -9,6 +9,8 @@ export interface OrbitFrame {
     narrowY: number;
     narrowDistance: number;
     narrowDim: number;
+    narrowElevation: number;
+    narrowSpread: number;
     narrowDrift: number;
     elevation: number;
     yaw: number;

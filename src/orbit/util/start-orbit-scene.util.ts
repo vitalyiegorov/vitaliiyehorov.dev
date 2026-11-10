@@ -11,6 +11,7 @@ import {
     Scene,
     ShaderMaterial,
     Vector3,
+    Vector4,
     WebGLRenderer
 } from 'three';
 
@@ -32,6 +33,8 @@ import { starVertexShader } from '../shader/star-vertex.shader';
 import { blendFrames } from './blend-frames.util';
 import { createOrbitGeometryData } from './create-orbit-geometry-data.util';
 import { measureStages } from './measure-stages.util';
+import { readCoverFade } from './read-cover-fade.util';
+import { readNarrowDrift } from './read-narrow-drift.util';
 import { readStage } from './read-stage.util';
 
 import type { OrbitFrame } from '../type/orbit-frame.type';
@@ -50,6 +53,9 @@ const wideAspect = 1.6;
 const shortAspect = 1280 / 720;
 const lineHalfLength = 8;
 const anchorGap = 48;
+const shieldLimit = 6;
+const shieldPad = 12;
+const shieldFeather = 44;
 
 const orbitGeometry = (orbit: Float32Array, node: Float32Array): BufferGeometry => {
     const geometry = new BufferGeometry();
@@ -91,6 +97,8 @@ export const startOrbitScene = (canvas: HTMLCanvasElement, callbacks: Callbacks)
         uCoreGlow: { value: 1 },
         uCoreScale: { value: 3 },
         uStarDim: { value: 1 },
+        uShield: { value: Array.from({ length: shieldLimit }, () => new Vector4(0, 0, -1, -1)) },
+        uShieldFeather: { value: shieldFeather * pixelRatio },
         uBase: { value: new Vector3(0.78, 0.85, 0.91) },
         uAccent: { value: new Vector3(0.78, 0.98, 0.31) }
     };
@@ -123,6 +131,7 @@ export const startOrbitScene = (canvas: HTMLCanvasElement, callbacks: Callbacks)
     const up = new Vector3();
     let stages: StageBox[] = [];
     let anchor: HTMLElement | null = null;
+    let shields: HTMLElement[] = [];
     let aspect = 1;
     let frame = 0;
     let running = false;
@@ -140,8 +149,35 @@ export const startOrbitScene = (canvas: HTMLCanvasElement, callbacks: Callbacks)
         renderer.setSize(width, height, false);
         camera.aspect = aspect;
         camera.updateProjectionMatrix();
-        stages = measureStages();
+        stages = measureStages(aspect >= 0.9);
         anchor = document.querySelector<HTMLElement>('[data-orbit-anchor]');
+        shields = Array.from(document.querySelectorAll<HTMLElement>('[data-orbit-shield]')).filter(
+            element => element.dataset.orbitShield !== (aspect >= 0.9 ? 'narrow' : 'wide')
+        );
+    };
+
+    const updateShields = (): void => {
+        const height = canvas.clientHeight || window.innerHeight;
+        let count = 0;
+        for (const element of shields) {
+            const rect = element.getBoundingClientRect();
+            const slot = uniforms.uShield.value[count];
+            if (!slot) {
+                break;
+            }
+            if (rect.width > 0 && rect.bottom > -shieldFeather && rect.top < height + shieldFeather) {
+                slot.set(
+                    (rect.left - shieldPad) * pixelRatio,
+                    (height - rect.bottom - shieldPad) * pixelRatio,
+                    (rect.right + shieldPad) * pixelRatio,
+                    (height - rect.top + shieldPad) * pixelRatio
+                );
+                count += 1;
+            }
+        }
+        for (const slot of uniforms.uShield.value.slice(count)) {
+            slot.set(0, 0, -1, -1);
+        }
     };
 
     const apply = (dt: number): void => {
@@ -155,9 +191,12 @@ export const startOrbitScene = (canvas: HTMLCanvasElement, callbacks: Callbacks)
         target.lit = Math.min(target.lit + travel * 0.9 * target.line, 1);
         if (aspect < 0.9) {
             target.x = target.narrowX;
-            target.y = target.narrowY + travel * target.narrowDrift * target.line;
+            target.y = target.narrowY + readNarrowDrift(stages, stage, window.scrollY, window.innerHeight);
             target.distance = (target.narrowDistance * narrowAspect) / aspect;
+            target.elevation = target.narrowElevation;
+            target.spread = target.narrowSpread;
             target.dim *= target.narrowDim;
+            target.links *= target.narrowDim;
             target.coreGlow *= target.narrowDim;
         } else {
             const short = Math.min(Math.max((aspect - wideAspect) / (shortAspect - wideAspect), 0), 1);
@@ -170,6 +209,9 @@ export const startOrbitScene = (canvas: HTMLCanvasElement, callbacks: Callbacks)
                 target.y += (lineY - target.y) * target.line;
             }
         }
+        const cover = readCoverFade(stages, stage, ((1 - target.y) * window.innerHeight) / 2, window.innerHeight);
+        target.dim *= cover;
+        target.coreGlow *= cover;
         const ease = first ? 1 : 1 - Math.exp(-dt * 2.2);
         for (const key of orbitFrameKeys) {
             current[key] += (target[key] - current[key]) * ease;
@@ -208,6 +250,7 @@ export const startOrbitScene = (canvas: HTMLCanvasElement, callbacks: Callbacks)
         uniforms.uCoreGlow.value = current.coreGlow;
         uniforms.uCoreScale.value = current.coreScale;
         uniforms.uStarDim.value = 0.55 + current.dim * 0.45;
+        updateShields();
         first = false;
     };
 

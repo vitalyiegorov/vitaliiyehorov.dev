@@ -9,7 +9,7 @@ export function HeroSection() {
             className="relative flex min-h-svh flex-col justify-end overflow-clip"
         >
             <div className="mx-auto grid w-full max-w-[96rem] gap-10 px-5 pt-32 pb-10 sm:px-8 sm:pb-14 lg:grid-cols-12 lg:items-end lg:gap-8 lg:px-14 lg:pb-16">
-                <div className="hero-exit-slow lg:col-span-7">
+                <div data-orbit-shield="narrow" className="hero-exit-slow lg:col-span-6 min-[87.5rem]:col-span-7">
                     <p className="rise [--rise:0] telemetry mb-6 flex items-center gap-3">
                         <span className="signal-dot" aria-hidden="true" />
                         <span className="text-accent">01</span>
@@ -25,7 +25,7 @@ export function HeroSection() {
                         Yehorov
                     </h1>
                 </div>
-                <div className="hero-exit flex flex-col gap-7 lg:col-span-5 lg:pb-3">
+                <div data-orbit-shield className="hero-exit flex flex-col gap-7 lg:col-span-6 lg:pb-3 min-[87.5rem]:col-span-5">
                     <p className="rise [--rise:1] readable text-[clamp(1.75rem,3.1vw,2.9rem)] leading-[1.02] font-semibold tracking-[-0.03em] text-balance">
                         I lead engineers and a <span className="text-accent">fleet of AI agents</span>. Both ship to production.
                     </p>

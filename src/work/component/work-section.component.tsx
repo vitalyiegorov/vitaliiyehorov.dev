@@ -13,7 +13,7 @@ export function WorkSection() {
                         Things I build and maintain.
                     </h2>
                 </div>
-                <div className="mt-10 grid gap-4 lg:grid-cols-12 lg:gap-5">
+                <div data-orbit-cover className="mt-10 grid gap-4 lg:grid-cols-12 lg:gap-5">
                     <WorkCard
                         className="lg:col-span-6"
                         index="W.01"

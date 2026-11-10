@@ -17,7 +17,8 @@ export function StatsSection() {
                         One year, counted.
                     </h2>
                 </div>
-                <dl className="mt-14 grid grid-cols-2 gap-x-6 gap-y-8 sm:mt-16 lg:mt-20 lg:flex lg:justify-between lg:gap-x-10">
+                <div className="hairline mt-20 hidden lg:block" aria-hidden="true" />
+                <dl className="mt-14 grid grid-cols-2 gap-x-6 gap-y-8 sm:mt-16 lg:mt-0 lg:flex lg:justify-between lg:gap-x-10 lg:pr-6">
                     <Stat value={35058} label="Contributions" />
                     <Stat value={2301} label="Pull requests" />
                     <Stat value={3727} label="Agent sessions" />
