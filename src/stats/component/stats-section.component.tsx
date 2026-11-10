@@ -8,7 +8,7 @@ export function StatsSection() {
             id="numbers"
             data-orbit-stage
             aria-labelledby="numbers-title"
-            className="relative isolate overflow-x-clip pt-20 pb-4 sm:pt-24 sm:pb-8 lg:pt-28 lg:pb-32"
+            className="relative isolate overflow-x-clip pt-20 pb-4 sm:pt-24 sm:pb-8 lg:pt-28 lg:pb-24"
         >
             <div className="mx-auto max-w-[96rem] px-5 sm:px-8 lg:px-14">
                 <div className="reveal max-w-3xl">
