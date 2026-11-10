@@ -7,7 +7,7 @@ export function ContactSection() {
             id="contact"
             data-orbit-stage
             aria-labelledby="contact-title"
-            className="relative flex min-h-[calc(100svh-13rem)] flex-col justify-center pt-12 pb-6 sm:min-h-[88svh] sm:py-24"
+            className="relative flex min-h-[calc(100svh-7.75rem)] flex-col pt-24 pb-6 sm:min-h-[88svh] sm:justify-center sm:py-24"
         >
             <div className="mx-auto w-full max-w-[96rem] px-5 sm:px-8 lg:px-14">
                 <div className="reveal">

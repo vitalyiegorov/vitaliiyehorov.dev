@@ -18,7 +18,7 @@ export function HeroSection() {
                     <h1
                         translate="no"
                         id="hero-title"
-                        className="display readable text-[clamp(4.6rem,19vw,14.5rem)] font-bold text-fg lg:text-[clamp(6rem,12.4vw,14.5rem)]"
+                        className="display readable text-[clamp(4.6rem,29vw,14.5rem)] font-bold text-fg lg:text-[clamp(6rem,12.4vw,14.5rem)]"
                     >
                         Vitalii
                         <br />
@@ -40,9 +40,9 @@ export function HeroSection() {
                             </a>
                             , Vienna
                         </span>{' '}
-                        · <span className="whitespace-nowrap">15+ years</span> ·{' '}
-                        <span className="whitespace-nowrap">ex-founder, ex-CTO</span> ·{' '}
-                        <span className="whitespace-nowrap">still writes code</span>
+                        <span className="whitespace-nowrap">· 15+ years</span>{' '}
+                        <span className="whitespace-nowrap">· ex-founder, ex-CTO</span>{' '}
+                        <span className="whitespace-nowrap">· still writes code</span>
                     </p>
                     <div className="rise [--rise:3] lg:mt-1">
                         <ContactLinks size="md" />
