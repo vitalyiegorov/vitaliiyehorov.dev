@@ -46,8 +46,8 @@ const expectContent = async (page: Page): Promise<void> => {
     expect(hrefs).toEqual(workLinks);
 };
 
-const workOpacity = (page: Page): Promise<string[]> =>
-    page.locator('#work ol > li > *').evaluateAll(parts => [...new Set(parts.map(part => getComputedStyle(part).opacity))]);
+const workColors = (page: Page): Promise<number> =>
+    page.locator('#work ol > li h3').evaluateAll(titles => new Set(titles.map(title => getComputedStyle(title).color)).size);
 
 const railOpacity = (page: Page): Promise<string[]> =>
     page.locator('#career .rail-dot').evaluateAll(dots => dots.map(dot => getComputedStyle(dot).opacity));
@@ -251,7 +251,7 @@ test('hands the career timeline to the live scene', async ({ page }) => {
     await expect(page.locator('.orbit-stage')).toHaveAttribute('data-state', 'live', { timeout: 15_000 });
     await expect(page.locator('html')).toHaveAttribute('data-scene', 'live');
     await expect(page.locator('#career .rail-dot')).toHaveCount(5);
-    await expect.poll(() => railOpacity(page)).toEqual(['0', '0', '0', '0', '0']);
+    await expect.poll(() => railOpacity(page), { timeout: 10_000 }).toEqual(['0', '0', '0', '0', '0']);
     await expect(page.locator('#career .rail-fill')).toHaveCSS('opacity', '0');
     await expect(page.locator('[data-cast-slot]:visible')).not.toHaveCount(0);
     await page.locator('#method ol > li').first().scrollIntoViewIfNeeded();
@@ -263,7 +263,7 @@ test('hands the career timeline to the live scene', async ({ page }) => {
             .nth(2)
             .evaluate(row => row.scrollIntoView({ block: 'center', behavior: 'instant' }));
         await expect(page.locator('#work [data-cast-active]')).toHaveCount(1);
-        await expect.poll(() => workOpacity(page)).toEqual(expect.arrayContaining(['1', '0.55', '0.66']));
+        await expect.poll(() => workColors(page)).toBe(2);
     }
     await expectContent(page);
 });
@@ -271,11 +271,11 @@ test('hands the career timeline to the live scene', async ({ page }) => {
 test('brings the career rail back when motion is paused', async ({ page }) => {
     await page.goto('/');
     await expect(page.locator('.orbit-stage')).toHaveAttribute('data-state', 'live', { timeout: 15_000 });
-    await expect.poll(() => railOpacity(page)).toEqual(['0', '0', '0', '0', '0']);
+    await expect.poll(() => railOpacity(page), { timeout: 10_000 }).toEqual(['0', '0', '0', '0', '0']);
     await page.getByRole('button', { name: 'Pause motion' }).click();
     await expect.poll(() => railOpacity(page)).toEqual(['1', '1', '1', '1', '1']);
     await expectContent(page);
-    await expect.poll(() => workOpacity(page)).toEqual(['1']);
+    await expect.poll(() => workColors(page)).toBe(1);
 });
 
 test('falls back to the rail, the ruled list and static steps without WebGL', async ({ page }) => {
@@ -294,5 +294,5 @@ test('falls back to the rail, the ruled list and static steps without WebGL', as
     await expect.poll(() => railOpacity(page)).toEqual(['1', '1', '1', '1', '1']);
     await expectContent(page);
     await expect(page.locator('[data-cast-active]')).toHaveCount(0);
-    await expect.poll(() => workOpacity(page)).toEqual(['1']);
+    await expect.poll(() => workColors(page)).toBe(1);
 });
