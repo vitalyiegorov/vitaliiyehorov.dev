@@ -9,6 +9,6 @@ export const site = {
     employerUrl: 'https://toolsense.io',
     linkedin: 'https://www.linkedin.com/in/vitalii-iegorov',
     github: 'https://github.com/vitalyiegorov',
-    email: 'hello@vitaliiyehorov.dev',
-    emailHref: 'mailto:hello@vitaliiyehorov.dev'
+    email: 'vitalyiegorov@gmail.com',
+    emailHref: 'mailto:vitalyiegorov@gmail.com'
 } as const;
