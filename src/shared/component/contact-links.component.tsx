@@ -11,7 +11,7 @@ export function ContactLinks({ size }: Props) {
         size === 'lg'
             ? 'group inline-flex min-h-14 items-center justify-between gap-6 rounded-full px-7 text-lg font-medium transition-colors duration-300 sm:min-h-16 sm:text-xl'
             : 'group inline-flex min-h-12 items-center gap-3 rounded-full px-5 text-[0.95rem] font-medium transition-colors duration-300';
-    const quiet = `${base} border border-line-strong bg-bg-deep/40 text-fg hover:border-accent hover:text-accent`;
+    const quiet = `${base} border border-fg/30 bg-fg/5 text-fg hover:border-accent hover:bg-accent/15 hover:text-accent`;
 
     return (
         <ul className={size === 'lg' ? 'flex flex-col gap-3 sm:flex-row sm:flex-wrap' : 'flex flex-wrap gap-2.5'}>

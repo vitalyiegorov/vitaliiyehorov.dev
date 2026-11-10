@@ -21,7 +21,7 @@ export function MethodSection() {
                             in parallel. I set the rules, review the result and own the merge.
                         </p>
                         <p className="telemetry mt-10 text-muted">Model families in rotation</p>
-                        <ul className="mt-4 flex flex-wrap gap-2" aria-label="Model families">
+                        <ul className="mt-4 flex flex-wrap gap-1.5" aria-label="Model families">
                             <ModelFamily name="Claude" />
                             <ModelFamily name="GPT / Codex" />
                             <ModelFamily name="Gemini" />

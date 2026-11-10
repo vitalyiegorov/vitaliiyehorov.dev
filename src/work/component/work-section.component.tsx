@@ -17,7 +17,7 @@ export function WorkSection() {
                 </div>
                 <div className="mt-14 grid gap-4 sm:mt-20 lg:grid-cols-12 lg:gap-5">
                     <WorkCard
-                        className="lg:col-span-7"
+                        className="lg:col-span-6"
                         index="W.01"
                         kind="Open source · React Native"
                         title="Budgie"
@@ -32,7 +32,7 @@ export function WorkSection() {
                         Built with React Native and Expo.
                     </WorkCard>
                     <WorkCard
-                        className="lg:col-span-5"
+                        className="lg:col-span-6"
                         index="W.02"
                         kind="Open source · Expo"
                         title="Suuudokuuu"
@@ -46,7 +46,7 @@ export function WorkSection() {
                         Sudoku on the web, iOS and Android from one Expo and React Native codebase.
                     </WorkCard>
                     <WorkCard
-                        className="lg:col-span-5"
+                        className="lg:col-span-6"
                         index="W.03"
                         kind="Open source · TypeScript"
                         title="rnw-community"
@@ -55,7 +55,7 @@ export function WorkSection() {
                         26 npm packages for NestJS, React Native and ESLint. The most used one is downloaded about 325k times a month.
                     </WorkCard>
                     <WorkCard
-                        className="lg:col-span-7"
+                        className="lg:col-span-6"
                         index="W.04"
                         kind="Open source · Go"
                         title="Tart Runner Fleet"
@@ -65,7 +65,7 @@ export function WorkSection() {
                         deterministic scheduler decides where it runs, and admission stays bounded.
                     </WorkCard>
                     <WorkCard
-                        className="lg:col-span-7"
+                        className="lg:col-span-6"
                         index="W.05"
                         kind="Product · Next.js · LLMs"
                         title="Analyze Your Knee"
@@ -75,7 +75,7 @@ export function WorkSection() {
                         different providers agrees on a consensus read.
                     </WorkCard>
                     <WorkCard
-                        className="lg:col-span-5"
+                        className="lg:col-span-6"
                         index="W.06"
                         kind="Upstream contributions"
                         title="Agent tooling"

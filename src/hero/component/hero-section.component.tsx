@@ -33,7 +33,7 @@ export function HeroSection() {
                         <span className="whitespace-nowrap">
                             Engineering Manager at{' '}
                             <a
-                                className="text-fg underline decoration-line-strong underline-offset-4 hover:decoration-accent"
+                                className="inline-block py-4 -my-4 text-fg underline decoration-line-strong underline-offset-4 hover:decoration-accent"
                                 href="https://toolsense.io"
                             >
                                 ToolSense

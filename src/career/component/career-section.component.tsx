@@ -39,7 +39,7 @@ export function CareerSection() {
                             company={
                                 <>
                                     <a
-                                        className="text-fg underline decoration-line-strong underline-offset-4 hover:text-accent"
+                                        className="inline-block py-4 -my-4 text-fg underline decoration-line-strong underline-offset-4 hover:text-accent"
                                         href="https://toolsense.io"
                                     >
                                         ToolSense

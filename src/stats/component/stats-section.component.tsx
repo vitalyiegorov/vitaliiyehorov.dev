@@ -9,7 +9,7 @@ export function StatsSection() {
             id="numbers"
             data-orbit-stage
             aria-labelledby="numbers-title"
-            className="relative isolate overflow-x-clip py-20 sm:py-28 lg:py-28"
+            className="relative isolate overflow-x-clip py-20 sm:py-24 lg:py-24"
         >
             <SectionNumeral value="02" className="top-24 right-10" />
             <div className="mx-auto max-w-[96rem] px-5 sm:px-8 lg:px-14">
@@ -22,13 +22,13 @@ export function StatsSection() {
                         The last 12 months on GitHub, plus the agent fleet and the open-source packages behind them.
                     </p>
                 </div>
-                <p className="telemetry mt-10 text-muted sm:mt-12">GitHub · last 12 months</p>
+                <p className="telemetry mt-8 text-muted sm:mt-10">GitHub · last 12 months</p>
                 <dl className="mt-5 grid grid-cols-2 gap-x-6 gap-y-10 lg:grid-cols-3">
                     <Stat value={35058} label="Contributions" />
                     <Stat value={16715} label="Commits" />
                     <Stat value={2301} label="Pull requests" />
                 </dl>
-                <p className="telemetry mt-10 text-muted sm:mt-12">Fleet and open source</p>
+                <p className="telemetry mt-8 text-muted sm:mt-10">Fleet and open source</p>
                 <dl className="mt-5 grid grid-cols-2 gap-x-6 gap-y-10 lg:grid-cols-3">
                     <Stat value={3727} label="Agent sessions orchestrated" />
                     <Stat value={5} label="Machines in the fleet" />
