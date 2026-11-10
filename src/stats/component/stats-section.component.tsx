@@ -8,7 +8,7 @@ export function StatsSection() {
             id="numbers"
             data-orbit-stage
             aria-labelledby="numbers-title"
-            className="relative isolate overflow-x-clip pt-20 pb-12 sm:pt-24 sm:pb-16 lg:pt-28 lg:pb-16"
+            className="relative isolate overflow-x-clip pt-20 pb-4 sm:pt-24 sm:pb-8 lg:pt-28 lg:pb-0"
         >
             <div className="mx-auto max-w-[96rem] px-5 sm:px-8 lg:px-14">
                 <div className="reveal max-w-3xl">
@@ -17,8 +17,9 @@ export function StatsSection() {
                         One year, counted.
                     </h2>
                 </div>
-                <dl className="mt-14 grid grid-cols-2 gap-x-6 gap-y-8 sm:mt-16 lg:mt-20 lg:grid-cols-4 lg:gap-y-0">
-                    <Stat value={35058} label="GitHub contributions" />
+                <div className="hairline mt-20 hidden lg:block" aria-hidden="true" />
+                <dl className="mt-14 grid grid-cols-2 gap-x-6 gap-y-8 sm:mt-16 lg:mt-0 lg:flex lg:justify-between lg:gap-x-10 lg:pr-6">
+                    <Stat value={35058} label="Contributions" />
                     <Stat value={2301} label="Pull requests" />
                     <Stat value={3727} label="Agent sessions" />
                     <Stat value={26} label="npm packages" />

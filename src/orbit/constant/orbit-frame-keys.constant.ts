@@ -1,6 +1,6 @@
 import type { OrbitFrame } from '../type/orbit-frame.type';
 
-export const orbitFrameKeys: readonly (keyof OrbitFrame)[] = [
+export const orbitFrameKeys: readonly Exclude<keyof OrbitFrame, 'narrowElevation' | 'narrowSpread'>[] = [
     'x',
     'y',
     'distance',
@@ -15,8 +15,5 @@ export const orbitFrameKeys: readonly (keyof OrbitFrame)[] = [
     'links',
     'coreGlow',
     'coreScale',
-    'dim',
-    'narrowX',
-    'narrowY',
-    'narrowDim'
+    'dim'
 ];

@@ -1,21 +1,21 @@
-import { orbitFrameKeys } from '../constant/orbit-frame-keys.constant';
+import { orbitBlendKeys } from '../constant/orbit-blend-keys.constant';
 import { orbitFrames } from '../constant/orbit-frames.constant';
+
+import { readStageMix } from './read-stage-mix.util';
 
 import type { OrbitFrame } from '../type/orbit-frame.type';
 
-const smooth = (value: number): number => value * value * (3 - 2 * value);
-
 export const blendFrames = (stage: number, target: OrbitFrame): OrbitFrame => {
-    const last = orbitFrames.length - 1;
-    const position = Math.min(Math.max(stage - 0.5, 0), last);
-    const index = Math.min(Math.floor(position), last);
-    const from = orbitFrames[index] ?? orbitFrames[0];
-    const to = orbitFrames[Math.min(index + 1, last)] ?? from;
-    const local = Math.min(Math.max((position - index - 0.12) / 0.76, 0), 1);
-    const mix = smooth(local);
-    for (const key of orbitFrameKeys) {
+    const { from: fromIndex, to: toIndex, mix } = readStageMix(stage, orbitFrames.length);
+    const from = orbitFrames[fromIndex] ?? orbitFrames[0];
+    const to = orbitFrames[toIndex] ?? from;
+    for (const key of orbitBlendKeys) {
         target[key] = from[key] + (to[key] - from[key]) * mix;
     }
+    const fromElevation = from.narrowElevation ?? from.elevation;
+    const fromSpread = from.narrowSpread ?? from.spread;
+    target.narrowElevation = fromElevation + ((to.narrowElevation ?? to.elevation) - fromElevation) * mix;
+    target.narrowSpread = fromSpread + ((to.narrowSpread ?? to.spread) - fromSpread) * mix;
 
     return target;
 };

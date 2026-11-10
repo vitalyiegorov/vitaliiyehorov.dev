@@ -10,12 +10,15 @@ import {
     Points,
     Scene,
     ShaderMaterial,
+    Vector2,
     Vector3,
+    Vector4,
     WebGLRenderer
 } from 'three';
 
 import { orbitFrameKeys } from '../constant/orbit-frame-keys.constant';
 import { orbitFrames } from '../constant/orbit-frames.constant';
+import { orbitShieldLimit } from '../constant/orbit-shield-limit.constant';
 import { coreFragmentShader } from '../shader/core-fragment.shader';
 import { coreVertexShader } from '../shader/core-vertex.shader';
 import { linkFragmentShader } from '../shader/link-fragment.shader';
@@ -32,6 +35,8 @@ import { starVertexShader } from '../shader/star-vertex.shader';
 import { blendFrames } from './blend-frames.util';
 import { createOrbitGeometryData } from './create-orbit-geometry-data.util';
 import { measureStages } from './measure-stages.util';
+import { readCoverFade } from './read-cover-fade.util';
+import { readNarrowDrift } from './read-narrow-drift.util';
 import { readStage } from './read-stage.util';
 
 import type { OrbitFrame } from '../type/orbit-frame.type';
@@ -43,6 +48,17 @@ interface Callbacks {
 }
 
 const lineStage = 3;
+const fov = 40;
+const halfFov = Math.tan((fov * Math.PI) / 360);
+const narrowAspect = 390 / 844;
+const wideAspect = 1.6;
+const shortAspect = 1280 / 720;
+const lineHalfLength = 8;
+const anchorGap = 48;
+const shieldPad = 12;
+const shieldFeather = 44;
+const guardClear = 48;
+const guardFeather = 80;
 
 const orbitGeometry = (orbit: Float32Array, node: Float32Array): BufferGeometry => {
     const geometry = new BufferGeometry();
@@ -64,7 +80,7 @@ export const startOrbitScene = (canvas: HTMLCanvasElement, callbacks: Callbacks)
     renderer.setClearColor(0x000000, 0);
 
     const scene = new Scene();
-    const camera = new PerspectiveCamera(40, 1, 0.1, 200);
+    const camera = new PerspectiveCamera(fov, 1, 0.1, 200);
     const system = new Group();
     scene.add(system);
 
@@ -84,6 +100,10 @@ export const startOrbitScene = (canvas: HTMLCanvasElement, callbacks: Callbacks)
         uCoreGlow: { value: 1 },
         uCoreScale: { value: 3 },
         uStarDim: { value: 1 },
+        uShield: { value: Array.from({ length: orbitShieldLimit }, () => new Vector4(0, 0, -1, -1)) },
+        uShieldFeather: { value: shieldFeather * pixelRatio },
+        uGuard: { value: new Vector4(0, 0, -1, -1) },
+        uGuardRange: { value: new Vector2(guardClear * pixelRatio, (guardClear + guardFeather) * pixelRatio) },
         uBase: { value: new Vector3(0.78, 0.85, 0.91) },
         uAccent: { value: new Vector3(0.78, 0.98, 0.31) }
     };
@@ -113,8 +133,13 @@ export const startOrbitScene = (canvas: HTMLCanvasElement, callbacks: Callbacks)
     const target: OrbitFrame = { ...current };
     const pointer = { x: 0, y: 0, smoothX: 0, smoothY: 0 };
     const right = new Vector3();
+    const up = new Vector3();
     let stages: StageBox[] = [];
+    let anchor: HTMLElement | null = null;
+    let shields: HTMLElement[] = [];
+    let guard: HTMLElement | null = null;
     let aspect = 1;
+    let maxScroll = 0;
     let frame = 0;
     let running = false;
     let lost = false;
@@ -131,23 +156,91 @@ export const startOrbitScene = (canvas: HTMLCanvasElement, callbacks: Callbacks)
         renderer.setSize(width, height, false);
         camera.aspect = aspect;
         camera.updateProjectionMatrix();
-        stages = measureStages();
+        stages = measureStages(aspect >= 0.9);
+        maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+        anchor = document.querySelector<HTMLElement>('[data-orbit-anchor]');
+        guard = document.querySelector<HTMLElement>('[data-orbit-guard]');
+        shields = Array.from(document.querySelectorAll<HTMLElement>('[data-orbit-shield]')).filter(
+            element => element.dataset.orbitShield !== (aspect >= 0.9 ? 'narrow' : 'wide')
+        );
+    };
+
+    const clearShieldSlots = (from: number): void => {
+        for (let index = from; index < uniforms.uShield.value.length; index += 1) {
+            uniforms.uShield.value[index]?.set(0, 0, -1, -1);
+        }
+    };
+
+    const clearShields = (): void => {
+        clearShieldSlots(0);
+        uniforms.uGuard.value.set(0, 0, -1, -1);
+    };
+
+    const updateShields = (): void => {
+        const height = canvas.clientHeight || window.innerHeight;
+        let count = 0;
+        for (const element of shields) {
+            const rect = element.getBoundingClientRect();
+            const slot = uniforms.uShield.value[count];
+            if (!slot) {
+                break;
+            }
+            if (rect.width > 0 && rect.bottom > -shieldFeather && rect.top < height + shieldFeather) {
+                slot.set(
+                    (rect.left - shieldPad) * pixelRatio,
+                    (height - rect.bottom - shieldPad) * pixelRatio,
+                    (rect.right + shieldPad) * pixelRatio,
+                    (height - rect.top + shieldPad) * pixelRatio
+                );
+                count += 1;
+            }
+        }
+        clearShieldSlots(count);
+        const box = guard?.getBoundingClientRect();
+        if (box && box.width > 0) {
+            uniforms.uGuard.value.set(
+                box.left * pixelRatio,
+                (height - box.bottom) * pixelRatio,
+                box.right * pixelRatio,
+                (height - box.top) * pixelRatio
+            );
+        } else {
+            uniforms.uGuard.value.set(0, 0, -1, -1);
+        }
     };
 
     const apply = (dt: number): void => {
-        const raw = reducedMotion ? 0.5 : readStage(stages, window.scrollY, window.innerHeight);
-        blendFrames(raw, target);
-        const travel = Math.min(Math.max(raw - (lineStage + 0.5), -0.5), 0.5);
-        target.y += travel * 11 * target.line;
+        const stage = reducedMotion ? 0 : readStage(stages, window.scrollY, window.innerHeight, maxScroll);
+        blendFrames(stage, target);
+        const transit = 1 - Math.sin(Math.PI * (stage - Math.floor(stage))) ** 0.35 * 0.85;
+        target.dim *= transit;
+        target.coreGlow *= transit;
+        const line = stages[lineStage];
+        const travel = line ? Math.min(Math.max((window.scrollY + window.innerHeight * 0.5 - line.top) / line.height, 0), 1) - 0.5 : 0;
         target.lit = Math.min(target.lit + travel * 0.9 * target.line, 1);
-        const narrow = aspect < 0.9;
-        if (narrow) {
+        if (aspect < 0.9) {
             target.x = target.narrowX;
-            target.y += target.narrowY;
+            target.y = target.narrowY + readNarrowDrift(stages, stage, window.scrollY, window.innerHeight);
+            target.distance = (target.narrowDistance * narrowAspect) / aspect;
+            target.elevation = target.narrowElevation ?? target.elevation;
+            target.spread = target.narrowSpread ?? target.spread;
             target.dim *= target.narrowDim;
+            target.links *= target.narrowDim;
             target.coreGlow *= target.narrowDim;
-            target.distance *= 1 + (1 - aspect) * 1.05;
+        } else {
+            const short = Math.min(Math.max((aspect - wideAspect) / (shortAspect - wideAspect), 0), 1);
+            target.x += (target.shortX - target.x) * short;
+            target.y += (target.shortY - target.y) * short;
+            target.distance += (target.shortDistance - target.distance) * short;
+            if (anchor && target.line > 0) {
+                const top = 1 - (2 * (anchor.getBoundingClientRect().bottom + anchorGap)) / window.innerHeight;
+                const lineY = top - (lineHalfLength * Math.cos(target.elevation)) / (target.distance * halfFov);
+                target.y += (lineY - target.y) * target.line;
+            }
         }
+        const cover = readCoverFade(stages, stage, ((1 - target.y) * window.innerHeight) / 2, window.innerHeight);
+        target.dim *= cover;
+        target.coreGlow *= cover;
         const ease = first ? 1 : 1 - Math.exp(-dt * 2.2);
         for (const key of orbitFrameKeys) {
             current[key] += (target[key] - current[key]) * ease;
@@ -163,8 +256,15 @@ export const startOrbitScene = (canvas: HTMLCanvasElement, callbacks: Callbacks)
             Math.cos(yaw) * Math.cos(elevation) * current.distance
         );
         camera.lookAt(0, 0, 0);
-        right.set(1, 0, 0).applyQuaternion(camera.quaternion).multiplyScalar(current.x);
-        system.position.set(right.x, right.y + current.y, right.z);
+        const halfHeight = current.distance * halfFov;
+        right
+            .set(1, 0, 0)
+            .applyQuaternion(camera.quaternion)
+            .multiplyScalar(current.x * halfHeight * aspect);
+        up.set(0, 1, 0)
+            .applyQuaternion(camera.quaternion)
+            .multiplyScalar(current.y * halfHeight);
+        system.position.copy(right).add(up);
         system.rotation.y = time * 0.025 * (1 - current.line);
 
         uniforms.uTime.value = time;
@@ -187,6 +287,7 @@ export const startOrbitScene = (canvas: HTMLCanvasElement, callbacks: Callbacks)
         last = now;
         time += dt;
         apply(dt);
+        updateShields();
         renderer.render(scene, camera);
         frame = window.requestAnimationFrame(render);
     };
@@ -206,6 +307,11 @@ export const startOrbitScene = (canvas: HTMLCanvasElement, callbacks: Callbacks)
 
     const renderStill = (): void => {
         apply(0);
+        if (reducedMotion || paused) {
+            clearShields();
+        } else {
+            updateShields();
+        }
         renderer.render(scene, camera);
     };
 
@@ -236,6 +342,9 @@ export const startOrbitScene = (canvas: HTMLCanvasElement, callbacks: Callbacks)
     const motionObserver = new MutationObserver(() => {
         paused = document.documentElement.dataset.motion === 'paused';
         sync();
+        if (paused && !lost) {
+            renderStill();
+        }
     });
     motionObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['data-motion'] });
     document.addEventListener('visibilitychange', onVisibility);

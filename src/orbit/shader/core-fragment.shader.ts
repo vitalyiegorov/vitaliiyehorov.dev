@@ -1,4 +1,7 @@
+import { orbitShieldShader } from './orbit-shield.shader';
+
 export const coreFragmentShader = `
+${orbitShieldShader}
 uniform float uTime;
 uniform float uDim;
 uniform float uCoreGlow;
@@ -17,6 +20,6 @@ void main() {
     float a = (hot * 1.6 + glow + halo + ring) * uCoreGlow * breathe * uDim;
     a += (fract(sin(dot(gl_FragCoord.xy, vec2(12.9898, 78.233))) * 43758.5453) - 0.5) * 0.024;
     a = max(a, 0.0) * (1.0 - smoothstep(0.7, 0.95, d));
-    gl_FragColor = vec4(color, a);
+    gl_FragColor = vec4(color, a * shieldMask());
 }
 `;
