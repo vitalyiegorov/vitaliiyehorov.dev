@@ -29,8 +29,8 @@ export function MethodSection() {
                             </ul>
                         </div>
                     </div>
-                    <div className="hidden lg:sticky lg:top-[calc(50svh-10rem)] lg:mt-10 lg:block" aria-hidden="true">
-                        <div data-cast-slot="method" className="cast-slot h-80" />
+                    <div className="hidden lg:sticky lg:top-[calc(50svh-8.5rem)] lg:mt-6 lg:block" aria-hidden="true">
+                        <div data-cast-slot="method" className="cast-slot h-68" />
                     </div>
                 </div>
                 <ol className="lg:col-span-6 lg:col-start-7 lg:-m-6 lg:rounded-2xl lg:bg-linear-to-r lg:from-bg-deep/90 lg:via-bg-deep/70 lg:via-78% lg:to-transparent lg:p-6">

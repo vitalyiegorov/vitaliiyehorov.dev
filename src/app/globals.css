@@ -282,6 +282,16 @@ button:focus-visible {
     }
 }
 
+@keyframes step-mark-first {
+    0%,
+    50% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
+}
+
 .cast-slot {
     display: none;
 }
@@ -342,6 +352,15 @@ button:focus-visible {
         html[data-scene='live']:not([data-motion='paused']) .rail {
             border-color: transparent;
         }
+
+        html[data-scene='live']:not([data-motion='paused']) .step-mark {
+            animation: none;
+            transition: opacity 0.4s var(--ease-out);
+        }
+
+        html[data-scene='live']:not([data-motion='paused']) .step[data-cast-active] .step-mark {
+            opacity: 1;
+        }
     }
 }
 
@@ -401,6 +420,10 @@ button:focus-visible {
             animation: step-mark linear both;
             animation-timeline: --step;
             animation-range: cover 38% cover 62%;
+        }
+
+        .step:first-child .step-mark {
+            animation-name: step-mark-first;
         }
     }
 }

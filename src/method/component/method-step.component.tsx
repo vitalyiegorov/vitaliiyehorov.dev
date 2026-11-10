@@ -10,7 +10,7 @@ export function MethodStep({ index, title, children }: Props) {
     return (
         <li
             data-cast-step
-            className="step flex min-h-[22vh] flex-col justify-center border-t border-line py-8 last:pb-0 lg:min-h-[48vh] lg:py-10 lg:last:pb-0"
+            className="step flex min-h-[22vh] flex-col justify-center border-t border-line py-8 last:pb-0 lg:min-h-[34vh] lg:justify-start lg:py-10 lg:last:pb-0"
         >
             <p className="step-index relative font-mono text-sm tracking-[0.14em] text-accent">
                 <span

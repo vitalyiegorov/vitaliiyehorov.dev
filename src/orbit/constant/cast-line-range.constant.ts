@@ -7,5 +7,7 @@ export const castLineRange = {
     work: 152,
     workSegments: 48,
     leaders: 296,
-    total: 302
+    ghost: 302,
+    ghostSegments: 40,
+    total: 422
 } as const;

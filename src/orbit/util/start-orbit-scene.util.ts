@@ -36,6 +36,7 @@ import { blendFrames } from './blend-frames.util';
 import { createCastLayer } from './create-cast-layer.util';
 import { createCastPose } from './create-cast-pose.util';
 import { createOrbitGeometryData } from './create-orbit-geometry-data.util';
+import { markCastActive } from './mark-cast-active.util';
 import { measureCastDom } from './measure-cast-dom.util';
 import { measureStages } from './measure-stages.util';
 import { readCastRects } from './read-cast-rects.util';
@@ -165,6 +166,8 @@ export const startOrbitScene = (canvas: HTMLCanvasElement, callbacks: Callbacks)
         methodHeight: 0,
         methodProgress: 0,
         methodFade: 1,
+        methodSlots: new Float32Array(12),
+        methodSlotCount: 0,
         careerNodes: new Float32Array(10),
         careerCount: 0,
         careerEnd: 0,
@@ -182,6 +185,7 @@ export const startOrbitScene = (canvas: HTMLCanvasElement, callbacks: Callbacks)
         textCount: 0
     };
     let dom: CastDom = measureCastDom();
+    const marks = { method: -1, work: -1 };
 
     const current: OrbitFrame = { ...orbitFrames[0] };
     const target: OrbitFrame = { ...current };
@@ -210,6 +214,10 @@ export const startOrbitScene = (canvas: HTMLCanvasElement, callbacks: Callbacks)
         aspect = width / height;
         renderer.setSize(width, height, false);
         uniforms.uView.value.set(width, height);
+        markCastActive(dom.methodSteps, -1, marks.method);
+        markCastActive(dom.workRows, -1, marks.work);
+        marks.method = -1;
+        marks.work = -1;
         dom = measureCastDom();
         camera.aspect = aspect;
         camera.updateProjectionMatrix();
@@ -289,6 +297,8 @@ export const startOrbitScene = (canvas: HTMLCanvasElement, callbacks: Callbacks)
         view.career = castOn && !still;
         if (castOn) {
             readCastRects(dom, view, from, to, still);
+            const methodOn = view.method && (from === dom.methodStage || to === dom.methodStage);
+            marks.method = markCastActive(dom.methodSteps, methodOn ? Math.round(view.methodProgress) : -1, marks.method);
         }
         blendFrames(stage, target);
         const transit = 1 - Math.sin(Math.PI * (stage - Math.floor(stage))) ** 0.35 * 0.85;
@@ -500,6 +510,8 @@ export const startOrbitScene = (canvas: HTMLCanvasElement, callbacks: Callbacks)
                 }
             }
         });
+        markCastActive(dom.methodSteps, -1, marks.method);
+        markCastActive(dom.workRows, -1, marks.work);
         renderer.dispose();
     };
 };

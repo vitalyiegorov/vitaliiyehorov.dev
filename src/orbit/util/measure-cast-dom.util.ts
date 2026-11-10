@@ -9,6 +9,7 @@ export const measureCastDom = (): CastDom => {
     const workRows = all('[data-cast-row]');
     const workTitles = workRows.map(row => row.querySelector<HTMLElement>('h3') ?? row);
     const careerNodes = all('[data-cast-node]');
+    const methodSteps = all('[data-cast-step]');
 
     return {
         methodStage: sections.findIndex(section => section.id === 'method'),
@@ -17,7 +18,8 @@ export const measureCastDom = (): CastDom => {
         text: sections.map(section => Array.from(section.querySelectorAll<HTMLElement>(textSelector))),
         methodBox: document.querySelector<HTMLElement>('[data-cast-slot="method"]'),
         methodSlots: all('[data-cast-slot="method-step"]'),
-        methodSteps: all('[data-cast-step]'),
+        methodSteps,
+        methodTitles: methodSteps.map(step => step.querySelector<HTMLElement>('h3') ?? step),
         careerNodes,
         careerDates: careerNodes.map(node => node.parentElement?.querySelector<HTMLElement>('p') ?? node),
         careerSection: document.querySelector<HTMLElement>('#career'),

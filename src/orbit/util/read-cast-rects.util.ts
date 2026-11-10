@@ -24,10 +24,11 @@ const readText = (elements: readonly HTMLElement[] | undefined, view: CastView):
 };
 
 const readMethod = (dom: CastDom, view: CastView, still: boolean): void => {
-    const reading = view.height * 0.5;
     const box = dom.methodBox?.getBoundingClientRect();
     const boxed = Boolean(box && box.width > 0);
-    const steps = boxed ? dom.methodSteps : dom.methodSlots;
+    const lift = box && boxed ? Math.max((box.top + box.bottom) / 2 - view.height * 0.5, 0) * 0.85 : 0;
+    const reading = view.height * 0.5 - lift;
+    const steps = boxed ? dom.methodTitles : dom.methodSlots;
     let progress = 0;
     let previous = 0;
     for (let index = 0; index < steps.length; index += 1) {
@@ -42,12 +43,25 @@ const readMethod = (dom: CastDom, view: CastView, still: boolean): void => {
     view.methodFade = 1;
     if (box && boxed) {
         view.method = true;
+        view.methodSlotCount = 0;
         view.methodX = (box.left + box.right) / 2;
         view.methodY = (box.top + box.bottom) / 2;
         view.methodWidth = box.width;
         view.methodHeight = box.height;
 
         return;
+    }
+    view.methodSlotCount = 0;
+    const limit = view.methodSlots.length / 4;
+    for (let index = 0; index < dom.methodSlots.length && index < limit; index += 1) {
+        const rect = dom.methodSlots[index]?.getBoundingClientRect();
+        if (rect && rect.width > 0) {
+            view.methodSlots[index * 4] = (rect.left + rect.right) / 2;
+            view.methodSlots[index * 4 + 1] = (rect.top + rect.bottom) / 2;
+            view.methodSlots[index * 4 + 2] = rect.width;
+            view.methodSlots[index * 4 + 3] = rect.height;
+            view.methodSlotCount = index + 1;
+        }
     }
     const slot = dom.methodSlots[Math.min(Math.round(view.methodProgress), dom.methodSlots.length - 1)]?.getBoundingClientRect();
     if (!slot || slot.width === 0) {

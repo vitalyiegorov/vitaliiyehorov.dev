@@ -14,6 +14,8 @@ export interface CastView {
     methodHeight: number;
     methodProgress: number;
     methodFade: number;
+    readonly methodSlots: Float32Array;
+    methodSlotCount: number;
     readonly careerNodes: Float32Array;
     careerCount: number;
     careerEnd: number;
