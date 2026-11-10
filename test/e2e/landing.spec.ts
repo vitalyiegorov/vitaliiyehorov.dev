@@ -230,6 +230,9 @@ test.describe('with reduced motion', () => {
                 ).length
         );
         expect(hidden).toBe(0);
+        if ((page.viewportSize()?.width ?? 0) >= 1024) {
+            await expect(page.locator('.career-intro')).toHaveCSS('top', '115px');
+        }
         await expect(page.getByText('35,058', { exact: true }).first()).toBeAttached();
     });
 });
@@ -254,6 +257,7 @@ test('hands the career timeline to the live scene', async ({ page }) => {
     await page.locator('#method ol > li').first().scrollIntoViewIfNeeded();
     await expect(page.locator('#method [data-cast-active]')).toHaveCount(1);
     if ((page.viewportSize()?.width ?? 0) >= 1024) {
+        await expect(page.locator('.career-intro')).toHaveCSS('top', '315px');
         await page
             .locator('#work ol > li')
             .nth(2)
