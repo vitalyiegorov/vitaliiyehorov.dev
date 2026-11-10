@@ -1,0 +1,30 @@
+{
+    "$schema": "./node_modules/oxfmt/configuration_schema.json",
+    "singleQuote": true,
+    "jsxSingleQuote": false,
+    "printWidth": 140,
+    "tabWidth": 4,
+    "semi": true,
+    "trailingComma": "none",
+    "arrowParens": "avoid",
+    "sortImports": {
+        "groups": ["builtin", "external", "parent", "sibling", "index", "type", "unknown"],
+        "ignoreCase": true,
+        "internalPattern": ["@/"],
+        "newlinesBetween": true,
+        "order": "asc",
+        "partitionByComment": true,
+        "partitionByNewline": false,
+        "sortSideEffects": false
+    },
+    "sortPackageJson": true,
+    "ignorePatterns": [
+        ".agents/**",
+        ".claude/**",
+        "pnpm-lock.yaml",
+        "skills-lock.json",
+        "next-env.d.ts",
+        "playwright-report/**",
+        "test-results/**"
+    ]
+}
