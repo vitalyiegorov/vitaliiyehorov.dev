@@ -140,7 +140,7 @@ button:focus-visible {
 
 .telemetry {
     font-family: var(--font-mono);
-    font-size: 0.6875rem;
+    font-size: 0.75rem;
     line-height: 1.4;
     letter-spacing: 0.14em;
     text-transform: uppercase;
@@ -251,14 +251,14 @@ button:focus-visible {
 
 @keyframes step-focus {
     0% {
-        opacity: 0.38;
+        opacity: 0.6;
     }
     35%,
     65% {
         opacity: 1;
     }
     100% {
-        opacity: 0.38;
+        opacity: 0.6;
     }
 }
 
@@ -317,8 +317,12 @@ button:focus-visible {
         }
 
         .step {
+            view-timeline: --step block;
+        }
+
+        .step-body {
             animation: step-focus linear both;
-            animation-timeline: view();
+            animation-timeline: --step;
             animation-range: cover 10% cover 90%;
         }
 

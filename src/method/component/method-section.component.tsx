@@ -20,7 +20,7 @@ export function MethodSection() {
                             Every task runs through one orchestrator session that plans the work, splits it and sends it to agents working
                             in parallel. I set the rules, review the result and own the merge.
                         </p>
-                        <p className="telemetry mt-10">Model families in rotation</p>
+                        <p className="telemetry mt-10 text-muted">Model families in rotation</p>
                         <ul className="mt-4 flex flex-wrap gap-2" aria-label="Model families">
                             <ModelFamily name="Claude" />
                             <ModelFamily name="GPT / Codex" />
@@ -32,7 +32,7 @@ export function MethodSection() {
                         </ul>
                     </div>
                 </div>
-                <ol className="lg:col-span-6 lg:col-start-7">
+                <ol className="lg:col-span-6 lg:col-start-7 lg:-m-6 lg:rounded-2xl lg:bg-bg-deep/35 lg:p-6">
                     <MethodStep index="01 / Plan" title="Plan once">
                         One session owns the task. It reads the code, writes the plan and cuts it into briefs narrow enough to hand off.
                     </MethodStep>

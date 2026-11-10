@@ -31,7 +31,7 @@ export function PrinciplesSection() {
                     </Principle>
                 </ol>
                 <div className="reveal mt-6 border-t border-line pt-10">
-                    <p className="telemetry">Stack</p>
+                    <p className="telemetry text-muted">Stack</p>
                     <p className="readable mt-5 text-[clamp(1.35rem,2.4vw,2.1rem)] leading-snug font-medium text-balance">
                         TypeScript · Node.js / NestJS · React · React Native · Next.js · Go
                         <span className="text-muted"> · CI/CD · monorepos · microservices</span>

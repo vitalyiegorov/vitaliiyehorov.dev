@@ -15,7 +15,7 @@ export function WorkCard({ index, kind, title, className = '', links, children }
             <div>
                 <div className="flex items-center justify-between gap-4">
                     <p className="telemetry text-accent">{index}</p>
-                    <p className="telemetry text-right">{kind}</p>
+                    <p className="telemetry text-right text-muted">{kind}</p>
                 </div>
                 <h3 translate="no" className="display mt-8 text-[clamp(2.1rem,3.6vw,3.5rem)] font-semibold">
                     {title}

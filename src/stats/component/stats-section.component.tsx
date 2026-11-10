@@ -22,13 +22,13 @@ export function StatsSection() {
                         The last 12 months on GitHub, plus the agent fleet and the open-source packages behind them.
                     </p>
                 </div>
-                <p className="telemetry mt-16 sm:mt-20">GitHub · last 12 months</p>
+                <p className="telemetry mt-16 text-muted sm:mt-20">GitHub · last 12 months</p>
                 <dl className="mt-5 grid gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
                     <Stat value={35058} label="Contributions" />
                     <Stat value={16715} label="Commits" />
                     <Stat value={2301} label="Pull requests" />
                 </dl>
-                <p className="telemetry mt-16 sm:mt-20">Fleet and open source</p>
+                <p className="telemetry mt-16 text-muted sm:mt-20">Fleet and open source</p>
                 <dl className="mt-5 grid gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
                     <Stat value={3727} label="Agent sessions orchestrated" />
                     <Stat value={5} label="Machines in the fleet" />

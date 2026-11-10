@@ -22,7 +22,7 @@ export const orbitFrames: readonly [OrbitFrame, ...OrbitFrame[]] = [
         narrowDim: 1
     },
     {
-        x: 3.4,
+        x: 5,
         y: -0.2,
         distance: 11.5,
         elevation: 0.62,
@@ -34,17 +34,17 @@ export const orbitFrames: readonly [OrbitFrame, ...OrbitFrame[]] = [
         pulse: 0.9,
         rings: 1,
         links: 1,
-        coreGlow: 0.85,
+        coreGlow: 0.5,
         coreScale: 3,
-        dim: 0.8,
-        narrowX: 0.4,
+        dim: 0.6,
+        narrowX: 0.5,
         narrowY: 2.9,
         narrowDim: 0.5
     },
     {
-        x: 3.5,
+        x: 4.5,
         y: -0.5,
-        distance: 5.2,
+        distance: 7.5,
         elevation: 0.08,
         yaw: 0.5,
         spread: 1.2,
@@ -56,10 +56,10 @@ export const orbitFrames: readonly [OrbitFrame, ...OrbitFrame[]] = [
         links: 1.25,
         coreGlow: 0.55,
         coreScale: 2.6,
-        dim: 0.85,
-        narrowX: 0.3,
+        dim: 0.55,
+        narrowX: 0.45,
         narrowY: 3.1,
-        narrowDim: 0.42
+        narrowDim: 0.5
     },
     {
         x: -3.9,
@@ -102,7 +102,7 @@ export const orbitFrames: readonly [OrbitFrame, ...OrbitFrame[]] = [
         narrowDim: 0.45
     },
     {
-        x: -8,
+        x: -10,
         y: 0.2,
         distance: 20,
         elevation: 0.22,
@@ -110,19 +110,19 @@ export const orbitFrames: readonly [OrbitFrame, ...OrbitFrame[]] = [
         spread: 1.1,
         line: 0,
         core: 0,
-        lit: 1,
+        lit: 0.6,
         pulse: 0.8,
         rings: 0.9,
         links: 0.8,
         coreGlow: 0.9,
         coreScale: 3.2,
-        dim: 0.6,
+        dim: 0.5,
         narrowX: -0.95,
         narrowY: 2.8,
         narrowDim: 0.5
     },
     {
-        x: 0,
+        x: 1.5,
         y: 0.9,
         distance: 9,
         elevation: 0.3,
@@ -137,7 +137,7 @@ export const orbitFrames: readonly [OrbitFrame, ...OrbitFrame[]] = [
         coreGlow: 2.2,
         coreScale: 4.2,
         dim: 1,
-        narrowX: 1.2,
+        narrowX: 1.8,
         narrowY: 1.65,
         narrowDim: 1
     }
