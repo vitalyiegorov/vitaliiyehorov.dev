@@ -50,16 +50,16 @@ export const orbitFrames: readonly [OrbitFrame, ...OrbitFrame[]] = [
         spread: 1.2,
         line: 0,
         core: 0,
-        lit: 0.82,
+        lit: 0.95,
         pulse: 1.6,
         rings: 1.3,
         links: 1.25,
-        coreGlow: 0.55,
+        coreGlow: 0.7,
         coreScale: 2.6,
-        dim: 0.7,
+        dim: 0.88,
         narrowX: 0.45,
         narrowY: 1.4,
-        narrowDim: 0.5
+        narrowDim: 0.45
     },
     {
         x: -0.9,
@@ -70,20 +70,20 @@ export const orbitFrames: readonly [OrbitFrame, ...OrbitFrame[]] = [
         spread: 1,
         line: 1,
         core: 0,
-        lit: 0.5,
+        lit: 0.9,
         pulse: 0.4,
         rings: 0,
         links: 0,
-        coreGlow: 0.35,
+        coreGlow: 0.45,
         coreScale: 2.4,
-        dim: 0.9,
+        dim: 1.15,
         narrowX: 2.6,
         narrowY: 0,
-        narrowDim: 0.75
+        narrowDim: 0.85
     },
     {
-        x: 3.2,
-        y: -0.6,
+        x: 6.5,
+        y: 2.6,
         distance: 12.5,
         elevation: 0.95,
         yaw: 0.25,
@@ -94,12 +94,12 @@ export const orbitFrames: readonly [OrbitFrame, ...OrbitFrame[]] = [
         pulse: 1,
         rings: 1,
         links: 0.9,
-        coreGlow: 0.8,
+        coreGlow: 1.1,
         coreScale: 3,
-        dim: 0.62,
-        narrowX: 0.4,
-        narrowY: 2.8,
-        narrowDim: 0.45
+        dim: 0.8,
+        narrowX: 1,
+        narrowY: 3.1,
+        narrowDim: 0.5
     },
     {
         x: 1.5,
@@ -117,8 +117,8 @@ export const orbitFrames: readonly [OrbitFrame, ...OrbitFrame[]] = [
         coreGlow: 2.2,
         coreScale: 4.2,
         dim: 1,
-        narrowX: 1.2,
-        narrowY: 1.65,
+        narrowX: 1.32,
+        narrowY: 0.8,
         narrowDim: 1
     }
 ];
