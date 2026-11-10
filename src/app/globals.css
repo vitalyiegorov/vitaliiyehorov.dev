@@ -14,6 +14,7 @@
     --fg-dim: color-mix(in srgb, var(--fg) 55%, var(--bg-deep));
     --muted-dim: color-mix(in srgb, var(--muted) 66%, var(--bg-deep));
     --accent-dim: color-mix(in srgb, var(--accent) 55%, var(--bg-deep));
+    --link-dim: color-mix(in srgb, var(--fg) 70%, var(--bg-deep));
 }
 
 @theme inline {
@@ -409,17 +410,27 @@ html[data-scene='off'] .cast-label {
             html[data-scene='live']:not([data-motion='paused']) .career-intro {
                 top: 35vh;
             }
+        }
 
-            html[data-scene='live']:not([data-motion='paused']) .work-row :is(h3, p, span) {
-                transition: color 0.4s var(--ease-out);
-            }
+        html[data-scene='live']:not([data-motion='paused']) :is(.work-row, .step) :is(h3, p, span, a) {
+            transition: color 0.4s var(--ease-out);
+        }
 
-            html[data-scene='live']:not([data-motion='paused']) .work-row:not([data-cast-active], :hover, :focus-within) {
-                --fg: var(--fg-dim);
-                --muted: var(--muted-dim);
-                --accent: var(--accent-dim);
-                color: var(--fg);
-            }
+        html[data-scene='live']:not([data-motion='paused']) .step-body {
+            animation: none;
+            opacity: 1;
+        }
+
+        html[data-scene='live']:not([data-motion='paused'])
+            :is(.work-row:not([data-cast-active], :hover, :focus-within), .step:not([data-cast-active])) {
+            --fg: var(--fg-dim);
+            --muted: var(--muted-dim);
+            --accent: var(--accent-dim);
+            color: var(--fg);
+        }
+
+        html[data-scene='live']:not([data-motion='paused']) .work-row:not([data-cast-active], :hover, :focus-within) .work-link {
+            color: var(--link-dim);
         }
     }
 }

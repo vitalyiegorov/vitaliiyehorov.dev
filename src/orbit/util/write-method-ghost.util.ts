@@ -17,7 +17,7 @@ const ghostAlpha = 0.3;
 export const writeMethodGhost = (pose: CastPose, view: CastView, layer: CastLayer, weight: number, tilt: number, cap: number): void => {
     const slots = Math.min(view.methodSlotCount, 3);
     const active = Math.min(Math.round(view.methodProgress), slots - 1);
-    const firstDot = 2 + pose.majors + pose.dust - slots * dots;
+    const firstDot = 2 + pose.majors + pose.dust - slots * (dots + 2);
     for (let slot = 0; slot < 3; slot += 1) {
         const start = castLineRange.ghost + slot * castLineRange.ghostSegments;
         const shown = slot < slots && view.method ? ghostAlpha * (slot === active ? 1 - view.methodFade : 1) : 0;
@@ -37,10 +37,12 @@ export const writeMethodGhost = (pose: CastPose, view: CastView, layer: CastLaye
         } else {
             writeCastEllipse(layer, start, shape, cx, cy, rx, ry, 0, shown * weight * 1.4, 0.85);
         }
-        writeCastEllipse(layer, start + shape, castLineRange.ghostSegments - shape, cx, cy, 9, 9, 0, shown * weight * 1.6, 1);
         if (slot >= slots) {
             continue;
         }
+        const core = firstDot + slots * dots + slot * 2;
+        setCastPoint(pose, core, cx, cy, view.narrow ? 56 : 64, shown * 2, 1);
+        setCastPoint(pose, core + 1, cx, cy, view.narrow ? 12 : 14, shown * 3, 0.6);
         for (let index = 0; index < dots; index += 1) {
             const angle = slot === 1 ? (index / dots) * tau + 0.35 : (index / dots) * tau + view.time * 0.05;
             const live = slot === 1 && index === dots - 1 ? 0 : shown;

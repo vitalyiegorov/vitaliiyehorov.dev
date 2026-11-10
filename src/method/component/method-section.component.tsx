@@ -30,17 +30,17 @@ export function MethodSection() {
                         </div>
                     </div>
                     <div className="hidden lg:sticky lg:top-[calc(50svh-8.5rem)] lg:mt-6 lg:block" aria-hidden="true">
-                        <div data-cast-slot="method" className="cast-slot h-68" />
+                        <div data-cast-slot="method" className="cast-slot h-68 w-[calc(100%+2rem)]" />
                     </div>
                 </div>
                 <ol className="lg:col-span-6 lg:col-start-7 lg:-m-6 lg:rounded-2xl lg:bg-linear-to-r lg:from-bg-deep/90 lg:via-bg-deep/70 lg:via-78% lg:to-transparent lg:p-6">
-                    <MethodStep index="01 / Plan" title="Plan once">
+                    <MethodStep index="01" label="Plan" title="Plan once">
                         One session reads the code, writes the plan and splits it into narrow briefs.
                     </MethodStep>
-                    <MethodStep index="02 / Delegate" title="Fan out">
+                    <MethodStep index="02" label="Delegate" title="Fan out">
                         Agents from different model families build in parallel.
                     </MethodStep>
-                    <MethodStep index="03 / Review" title="Review by council">
+                    <MethodStep index="03" label="Review" title="Review by council">
                         One reviewer per model family reads the diff. A UI change stays only if it wins a blind before-and-after vote.
                     </MethodStep>
                 </ol>
