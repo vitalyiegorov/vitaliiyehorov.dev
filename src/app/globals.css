@@ -365,6 +365,10 @@ button:focus-visible {
         }
 
         @media (width >= 64rem) {
+            html[data-scene='live']:not([data-motion='paused']) .career-intro {
+                top: 35vh;
+            }
+
             html[data-scene='live']:not([data-motion='paused']) .work-row > * {
                 transition: opacity 0.4s var(--ease-out);
             }
