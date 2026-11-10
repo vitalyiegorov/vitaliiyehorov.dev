@@ -12,6 +12,8 @@ const gap = 12;
 const offset = 24;
 const pad = 4;
 const railClear = 64;
+const coreClear = 56;
+const turns = [0, 0.6, -0.6, 1.2, -1.2, 1.8, -1.8] as const;
 
 const inside = (x: number, y: number, left: number, top: number, right: number, bottom: number): boolean =>
     x > left && x < right && y > top && y < bottom;
@@ -95,18 +97,28 @@ export const updateCastLabel = (dom: CastDom, view: CastView, layer: CastLayer, 
     const normalX = at(view.workNormals, active * 2);
     const normalY = at(view.workNormals, active * 2 + 1);
     const leader = castLineRange.leaders + active;
-    let side = 0;
-    let [bestX, bestY] = placeAlong(view, state, nodeX, nodeY, normalX, normalY);
-    const crossed = crossings(layer, leader, bestX - pad, bestY - pad, bestX + state.width + pad, bestY + state.height + pad);
-    if (crossed > 0) {
-        const [x, y] = placeAlong(view, state, nodeX, nodeY, -normalX, -normalY);
-        if (crossings(layer, leader, x - pad, y - pad, x + state.width + pad, y + state.height + pad) < crossed) {
-            side = 1;
-            bestX = x;
-            bestY = y;
+    let best = 0;
+    let bestScore = Number.POSITIVE_INFINITY;
+    let bestX = nodeX;
+    let bestY = nodeY;
+    for (let side = 0; side < turns.length; side += 1) {
+        const turn = turns[side] ?? 0;
+        const cos = Math.cos(turn);
+        const sin = Math.sin(turn);
+        const [left, top] = placeAlong(view, state, nodeX, nodeY, normalX * cos - normalY * sin, normalX * sin + normalY * cos);
+        const right = left + state.width;
+        const bottom = top + state.height;
+        const crossed = crossings(layer, leader, left - pad, top - pad, right + pad, bottom + pad);
+        const core = Math.hypot(Math.max(left - view.workX, view.workX - right, 0), Math.max(top - view.workY, view.workY - bottom, 0));
+        const score = crossed * 50 + (core < coreClear ? 40 : 0) + Math.abs(turn) * 4 - (side === state.side ? 1.5 : 0);
+        if (score < bestScore) {
+            bestScore = score;
+            best = side;
+            bestX = left;
+            bestY = top;
         }
     }
-    state.side = side;
+    state.side = best;
     const x = Math.round(bestX);
     const y = Math.round(bestY);
     clearPoints(layer, point, x - pad, y - pad, x + state.width + pad, y + state.height + pad);
