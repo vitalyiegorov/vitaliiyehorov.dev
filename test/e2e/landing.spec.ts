@@ -55,6 +55,28 @@ test('has no horizontal overflow', async ({ page }) => {
     expect(overflow).toBeLessThanOrEqual(0);
 });
 
+test('keeps every text element inside the viewport width', async ({ page }) => {
+    await page.goto('/');
+    await scrollThrough(page);
+    const escaped = await page.evaluate(
+        () =>
+            [...document.querySelectorAll('main :is(h1, h2, h3, p, a, dt, dd)')]
+                .map(element => element.getBoundingClientRect())
+                .filter(rect => rect.width > 0 && (rect.left < -1 || rect.right > window.innerWidth + 1)).length
+    );
+    expect(escaped).toBe(0);
+});
+
+test('fills the career rail as the section scrolls', async ({ page }) => {
+    await page.goto('/');
+    const scale = (): Promise<number> =>
+        page.evaluate(() => new DOMMatrixReadOnly(getComputedStyle(document.querySelector('.rail-fill')!).transform).d);
+    await page.evaluate(() => document.querySelector('#career')!.scrollIntoView({ behavior: 'instant', block: 'start' }));
+    await expect.poll(scale).toBeLessThan(0.9);
+    await page.evaluate(() => document.querySelector('#contact')!.scrollIntoView({ behavior: 'instant', block: 'start' }));
+    await expect.poll(scale).toBeGreaterThan(0.99);
+});
+
 test('logs no console errors while scrolling', async ({ page }) => {
     const errors: string[] = [];
     page.on('console', message => {

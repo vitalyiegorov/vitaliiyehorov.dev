@@ -14,7 +14,7 @@ export function MotionToggle() {
     return (
         <button
             type="button"
-            className="telemetry pointer-events-auto flex min-h-11 cursor-pointer items-center gap-2 px-1 text-muted transition-colors duration-300 hover:text-fg"
+            className="telemetry pointer-events-auto flex motion-reduce:hidden min-h-11 cursor-pointer items-center gap-2 px-1 text-muted transition-colors duration-300 hover:text-fg"
             aria-pressed={paused}
             onClick={toggle}
         >

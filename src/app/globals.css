@@ -242,6 +242,10 @@ button:focus-visible {
 }
 
 @keyframes fill-y {
+    from {
+        transform: scaleY(0);
+    }
+
     to {
         transform: scaleY(1);
     }
