@@ -144,7 +144,7 @@ export const orbitFrames: readonly [OrbitFrame, ...OrbitFrame[]] = [
         shortY: 0.25,
         shortDistance: 10.5,
         narrowX: 0.49,
-        narrowY: 0.47,
+        narrowY: 0.29,
         narrowDistance: 11,
         narrowDim: 1,
         narrowElevation: 0.3,

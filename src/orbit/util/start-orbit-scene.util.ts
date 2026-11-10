@@ -10,6 +10,7 @@ import {
     Points,
     Scene,
     ShaderMaterial,
+    Vector2,
     Vector3,
     Vector4,
     WebGLRenderer
@@ -56,6 +57,8 @@ const anchorGap = 48;
 const shieldLimit = 6;
 const shieldPad = 12;
 const shieldFeather = 44;
+const guardClear = 48;
+const guardFeather = 80;
 
 const orbitGeometry = (orbit: Float32Array, node: Float32Array): BufferGeometry => {
     const geometry = new BufferGeometry();
@@ -99,6 +102,8 @@ export const startOrbitScene = (canvas: HTMLCanvasElement, callbacks: Callbacks)
         uStarDim: { value: 1 },
         uShield: { value: Array.from({ length: shieldLimit }, () => new Vector4(0, 0, -1, -1)) },
         uShieldFeather: { value: shieldFeather * pixelRatio },
+        uGuard: { value: new Vector4(0, 0, -1, -1) },
+        uGuardRange: { value: new Vector2(guardClear * pixelRatio, (guardClear + guardFeather) * pixelRatio) },
         uBase: { value: new Vector3(0.78, 0.85, 0.91) },
         uAccent: { value: new Vector3(0.78, 0.98, 0.31) }
     };
@@ -132,6 +137,7 @@ export const startOrbitScene = (canvas: HTMLCanvasElement, callbacks: Callbacks)
     let stages: StageBox[] = [];
     let anchor: HTMLElement | null = null;
     let shields: HTMLElement[] = [];
+    let guard: HTMLElement | null = null;
     let aspect = 1;
     let frame = 0;
     let running = false;
@@ -151,6 +157,7 @@ export const startOrbitScene = (canvas: HTMLCanvasElement, callbacks: Callbacks)
         camera.updateProjectionMatrix();
         stages = measureStages(aspect >= 0.9);
         anchor = document.querySelector<HTMLElement>('[data-orbit-anchor]');
+        guard = document.querySelector<HTMLElement>('[data-orbit-guard]');
         shields = Array.from(document.querySelectorAll<HTMLElement>('[data-orbit-shield]')).filter(
             element => element.dataset.orbitShield !== (aspect >= 0.9 ? 'narrow' : 'wide')
         );
@@ -177,6 +184,17 @@ export const startOrbitScene = (canvas: HTMLCanvasElement, callbacks: Callbacks)
         }
         for (const slot of uniforms.uShield.value.slice(count)) {
             slot.set(0, 0, -1, -1);
+        }
+        const box = guard?.getBoundingClientRect();
+        if (box && box.width > 0) {
+            uniforms.uGuard.value.set(
+                box.left * pixelRatio,
+                (height - box.bottom) * pixelRatio,
+                box.right * pixelRatio,
+                (height - box.top) * pixelRatio
+            );
+        } else {
+            uniforms.uGuard.value.set(0, 0, -1, -1);
         }
     };
 
