@@ -255,10 +255,30 @@ button:focus-visible {
 }
 
 @keyframes light-up {
+    from {
+        background: transparent;
+        box-shadow: none;
+    }
+
     to {
         background: var(--accent);
         border-color: var(--accent);
         box-shadow: 0 0 1.25rem var(--accent);
+    }
+}
+
+@keyframes light-up-now {
+    from {
+        background: transparent;
+        box-shadow: none;
+    }
+
+    to {
+        background: var(--accent);
+        box-shadow:
+            0 0 0 0.375rem var(--bg-deep),
+            0 0 0 0.4375rem color-mix(in srgb, var(--accent) 45%, transparent),
+            0 0 1.75rem 0.25rem var(--accent);
     }
 }
 
@@ -317,6 +337,20 @@ button:focus-visible {
 
 html[data-scene='off'] .cast-label {
     display: none;
+}
+
+.rail-dot {
+    background: var(--accent);
+    box-shadow: 0 0 1.25rem var(--accent);
+}
+
+.rail li:last-child > .rail-dot {
+    width: 1rem;
+    height: 1rem;
+    box-shadow:
+        0 0 0 0.375rem var(--bg-deep),
+        0 0 0 0.4375rem color-mix(in srgb, var(--accent) 45%, transparent),
+        0 0 1.75rem 0.25rem var(--accent);
 }
 
 .rail,
@@ -430,6 +464,10 @@ html[data-scene='off'] .cast-label {
             animation: light-up linear both;
             animation-timeline: view();
             animation-range: cover 42% cover 50%;
+        }
+
+        html:not([data-motion='paused']) .rail li:last-child > .rail-dot {
+            animation-name: light-up-now;
         }
 
         .step {
