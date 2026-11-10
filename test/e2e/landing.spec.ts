@@ -46,6 +46,9 @@ const expectContent = async (page: Page): Promise<void> => {
     expect(hrefs).toEqual(workLinks);
 };
 
+const workOpacity = (page: Page): Promise<string[]> =>
+    page.locator('#work ol > li > *').evaluateAll(parts => [...new Set(parts.map(part => getComputedStyle(part).opacity))]);
+
 const railOpacity = (page: Page): Promise<string[]> =>
     page.locator('#career .rail-dot').evaluateAll(dots => dots.map(dot => getComputedStyle(dot).opacity));
 
@@ -248,6 +251,16 @@ test('hands the career timeline to the live scene', async ({ page }) => {
     await expect.poll(() => railOpacity(page)).toEqual(['0', '0', '0', '0', '0']);
     await expect(page.locator('#career .rail-fill')).toHaveCSS('opacity', '0');
     await expect(page.locator('[data-cast-slot]:visible')).not.toHaveCount(0);
+    await page.locator('#method ol > li').first().scrollIntoViewIfNeeded();
+    await expect(page.locator('#method [data-cast-active]')).toHaveCount(1);
+    if ((page.viewportSize()?.width ?? 0) >= 1024) {
+        await page
+            .locator('#work ol > li')
+            .nth(2)
+            .evaluate(row => row.scrollIntoView({ block: 'center', behavior: 'instant' }));
+        await expect(page.locator('#work [data-cast-active]')).toHaveCount(1);
+        await expect.poll(() => workOpacity(page)).toEqual(expect.arrayContaining(['1', '0.55', '0.66']));
+    }
     await expectContent(page);
 });
 
@@ -258,6 +271,7 @@ test('brings the career rail back when motion is paused', async ({ page }) => {
     await page.getByRole('button', { name: 'Pause motion' }).click();
     await expect.poll(() => railOpacity(page)).toEqual(['1', '1', '1', '1', '1']);
     await expectContent(page);
+    await expect.poll(() => workOpacity(page)).toEqual(['1']);
 });
 
 test('falls back to the rail, the ruled list and static steps without WebGL', async ({ page }) => {
@@ -275,4 +289,6 @@ test('falls back to the rail, the ruled list and static steps without WebGL', as
     await expect(page.locator('[data-cast-slot]:visible')).toHaveCount(0);
     await expect.poll(() => railOpacity(page)).toEqual(['1', '1', '1', '1', '1']);
     await expectContent(page);
+    await expect(page.locator('[data-cast-active]')).toHaveCount(0);
+    await expect.poll(() => workOpacity(page)).toEqual(['1']);
 });
