@@ -1,4 +1,5 @@
 import { readStageMix } from './read-stage-mix.util';
+import { smoothstep } from './smoothstep.util';
 
 import type { StageBox } from '../type/stage-box.type';
 
@@ -9,9 +10,8 @@ const fadeFor = (box: StageBox | undefined, coreY: number, viewportHeight: numbe
         return 1;
     }
     const top = box.cover.getBoundingClientRect().top;
-    const value = Math.min(Math.max((top - coreY) / (viewportHeight * coverRange), 0), 1);
 
-    return value * value * (3 - 2 * value);
+    return smoothstep((top - coreY) / (viewportHeight * coverRange));
 };
 
 export const readCoverFade = (stages: readonly StageBox[], stage: number, coreY: number, viewportHeight: number): number => {
