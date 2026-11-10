@@ -149,7 +149,7 @@ export const startOrbitScene = (canvas: HTMLCanvasElement, callbacks: Callbacks)
     cast.lines.visible = castOn;
     cast.points.visible = castOn;
     const castPoses = [createCastPose(castMajors, castDust), createCastPose(castMajors, castDust)] as const;
-    const castLabel: CastLabelState = { index: -1, width: 0, height: 0, x: Number.NaN, y: Number.NaN, opacity: -1 };
+    const castLabel: CastLabelState = { index: -1, width: 0, height: 0, x: Number.NaN, y: Number.NaN, opacity: -1, side: -1 };
     const view: CastView = {
         width: 1,
         height: 1,
@@ -299,6 +299,8 @@ export const startOrbitScene = (canvas: HTMLCanvasElement, callbacks: Callbacks)
             readCastRects(dom, view, from, to, still);
             const methodOn = view.method && (from === dom.methodStage || to === dom.methodStage);
             marks.method = markCastActive(dom.methodSteps, methodOn ? Math.round(view.methodProgress) : -1, marks.method);
+            const workOn = view.workWidth > 0 && (from === dom.workStage || to === dom.workStage);
+            marks.work = markCastActive(dom.workRows, workOn ? view.workActive : -1, marks.work);
         }
         blendFrames(stage, target);
         const transit = 1 - Math.sin(Math.PI * (stage - Math.floor(stage))) ** 0.35 * 0.85;
@@ -387,7 +389,7 @@ export const startOrbitScene = (canvas: HTMLCanvasElement, callbacks: Callbacks)
             view.coreY = ((1 - current.y) / 2) * view.height;
             updateCast(cast, castPoses, view, dom, from, to, mix);
             const workWeight = (from === dom.workStage ? 1 - mix : 0) + (to === dom.workStage ? (from === to ? 0 : mix) : 0);
-            updateCastLabel(dom, view, cast.pointPosition.array, Math.min(workWeight, 1), castLabel);
+            updateCastLabel(dom, view, cast, Math.min(workWeight, 1), castLabel);
         }
     };
 

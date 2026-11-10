@@ -24,9 +24,9 @@ const orbitY = (cy: number, radius: number, angle: number, tilt: number): number
 
 const writeFleet = (pose: CastPose, view: CastView, layer: CastLayer, weight: number): void => {
     const { workX: cx, workY: cy, time } = view;
-    const reach = Math.min(view.workWidth * 0.46, view.workHeight * 1.1);
+    const reach = Math.min(view.workWidth * 0.535, view.workHeight * 1.25);
     const active = view.workActive;
-    setCastPoint(pose, 0, cx, cy, 150, 0.95, 1);
+    setCastPoint(pose, 0, cx, cy, 170, 1, 1);
 
     for (let index = 0; index < pose.majors; index += 1) {
         const point = index + 2;
@@ -42,8 +42,8 @@ const writeFleet = (pose: CastPose, view: CastView, layer: CastLayer, weight: nu
                 point,
                 orbitX(cx, radius, angle, tilt),
                 orbitY(cy, radius, angle, tilt),
-                18 * (0.9 + 0.15 * depth) * (1 + 0.8 * glow),
-                Math.min(0.72 + 0.1 * depth + 0.4 * glow, 1),
+                20 * (0.9 + 0.15 * depth) * (1 + 0.8 * glow),
+                Math.min(0.85 + 0.1 * depth + 0.4 * glow, 1),
                 0.1 + 0.9 * glow
             );
         } else {
@@ -51,7 +51,7 @@ const writeFleet = (pose: CastPose, view: CastView, layer: CastLayer, weight: nu
             const angle = at(layer.seed, point * 2) * tau + time * 0.04;
             const radius = (orbitRadius[orbit] ?? 1) * reach;
             const tilt = orbitTilt[orbit] ?? 0;
-            setCastPoint(pose, point, orbitX(cx, radius, angle, tilt), orbitY(cy, radius, angle, tilt), 7, 0.32, 0.3);
+            setCastPoint(pose, point, orbitX(cx, radius, angle, tilt), orbitY(cy, radius, angle, tilt), 8, 0.42, 0.3);
         }
     }
 
@@ -61,7 +61,7 @@ const writeFleet = (pose: CastPose, view: CastView, layer: CastLayer, weight: nu
         const angle = at(layer.seed, point * 2) * tau + time * (0.05 + orbit * 0.02);
         const radius = ((orbitRadius[orbit] ?? 1) + (at(layer.seed, point * 2 + 1) - 0.5) * 0.04) * reach;
         const tilt = orbitTilt[orbit] ?? 0;
-        setCastPoint(pose, point, orbitX(cx, radius, angle, tilt), orbitY(cy, radius, angle, tilt), 2.4, 0.2, 0.35);
+        setCastPoint(pose, point, orbitX(cx, radius, angle, tilt), orbitY(cy, radius, angle, tilt), 2.6, 0.26, 0.35);
     }
 
     const activeOrbit = active >= 0 ? (projectOrbit[active % projectOrbit.length] ?? -1) : -1;
@@ -77,14 +77,14 @@ const writeFleet = (pose: CastPose, view: CastView, layer: CastLayer, weight: nu
             radius,
             radius * orbitSquash,
             orbitTilt[orbit] ?? 0,
-            (0.09 + lift) * weight,
+            (0.12 + lift) * weight,
             0.3 + lift * 6
         );
     }
 
     const tipY = active >= 0 ? at(view.workTitles, active) : cy;
-    const tipX = view.workEdge + 22;
-    setCastPoint(pose, 1, tipX, tipY, 9, active >= 0 ? 0.95 * at(view.workGlow, active) : 0, 1);
+    const tipX = view.workEdge;
+    setCastPoint(pose, 1, tipX, tipY, 12, active >= 0 ? at(view.workGlow, active) : 0, 1);
     for (let index = 0; index < castLineRange.total - castLineRange.leaders; index += 1) {
         const point = index + 2;
         const glow = index < view.workCount ? at(view.workGlow, index) : 0;
@@ -107,7 +107,7 @@ const writeStrip = (pose: CastPose, view: CastView, layer: CastLayer, weight: nu
     const spanY = view.height * 0.3;
     const spanX = 9;
     const { time } = view;
-    setCastPoint(pose, 0, x, cy, 50, 0.75, 1);
+    setCastPoint(pose, 0, x, cy, 50, 0, 1);
     setCastPoint(pose, 1, x, cy, 4, 0, 1);
 
     for (let index = 0; index < pose.majors; index += 1) {
@@ -120,13 +120,13 @@ const writeStrip = (pose: CastPose, view: CastView, layer: CastLayer, weight: nu
                 point,
                 x + (index % 2 === 0 ? -1 : 1) * spanX * Math.sqrt(1 - slot * slot),
                 cy + slot * spanY,
-                14 * (1 + 0.9 * glow),
-                0.7 + 0.3 * glow,
-                0.15 + 0.85 * glow
+                11 + 16 * glow,
+                0.85 + 0.15 * glow,
+                glow
             );
         } else {
             const angle = at(layer.seed, point * 2) * tau + time * 0.04;
-            setCastPoint(pose, point, x + Math.cos(angle) * spanX * 1.7, cy + Math.sin(angle) * spanY * 1.12, 5, 0.22, 0.3);
+            setCastPoint(pose, point, x + Math.cos(angle) * spanX * 1.7, cy + Math.sin(angle) * spanY * 1.12, 5, 0, 0.3);
         }
     }
 
