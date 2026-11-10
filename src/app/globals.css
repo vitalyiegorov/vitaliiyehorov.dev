@@ -40,7 +40,14 @@ html {
     }
 }
 
-html[data-motion='paused'] .signal-dot {
+html[data-motion='paused'] .signal-dot,
+html[data-motion='paused'] .reveal,
+html[data-motion='paused'] .hero-exit,
+html[data-motion='paused'] .hero-exit-slow,
+html[data-motion='paused'] .rail-fill,
+html[data-motion='paused'] .rail-dot,
+html[data-motion='paused'] .step-body,
+html[data-motion='paused'] .step-index {
     animation: none;
 }
 

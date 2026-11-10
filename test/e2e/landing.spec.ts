@@ -104,6 +104,18 @@ test('lets visitors pause the background motion', async ({ page }) => {
     await toggle.click();
     await expect(page.getByRole('button', { name: 'Resume motion' })).toHaveAttribute('aria-pressed', 'true');
     await expect(page.locator('html')).toHaveAttribute('data-motion', 'paused');
+    const hero = page.locator('.hero-exit').first();
+    const opacityAt = async (top: number): Promise<string> => {
+        await page.evaluate(value => window.scrollTo({ top: value, behavior: 'instant' }), top);
+        await page.waitForTimeout(150);
+        return hero.evaluate(element => getComputedStyle(element).opacity);
+    };
+    const resting = await opacityAt(0);
+    expect(resting).toBe('1');
+    expect(await opacityAt(360)).toBe(resting);
+    expect(await opacityAt(720)).toBe(resting);
+    await scrollThrough(page);
+    await expectVisible(page, '.reveal');
 });
 
 test('redraws the scene after a resize while motion is paused', async ({ page }) => {
