@@ -2,6 +2,16 @@ import { expect, test } from '@playwright/test';
 
 import type { Page } from '@playwright/test';
 
+const expectVisible = async (page: Page, selector: string): Promise<void> => {
+    const items = page.locator(selector);
+    const count = await items.count();
+    expect(count, selector).toBeGreaterThan(0);
+    for (let index = 0; index < count; index += 1) {
+        await expect(items.nth(index)).toHaveCSS('opacity', '1');
+        await expect(items.nth(index)).toBeVisible();
+    }
+};
+
 const scrollThrough = async (page: Page): Promise<void> => {
     await page.evaluate(async () => {
         const step = Math.round(window.innerHeight * 0.8);
@@ -54,7 +64,9 @@ test('logs no console errors while scrolling', async ({ page }) => {
     });
     page.on('pageerror', error => errors.push(error.message));
     await page.goto('/');
-    await expect(page.locator('.orbit-stage')).not.toHaveAttribute('data-state', 'idle', { timeout: 15_000 });
+    await expect(page.locator('.orbit-stage')).toHaveAttribute('data-state', 'live', { timeout: 15_000 });
+    await expect(page.locator('.orbit-canvas')).toBeVisible();
+    await expect(page.locator('.orbit-canvas')).toHaveCSS('opacity', '1');
     await scrollThrough(page);
     await page.waitForTimeout(500);
     expect(errors).toEqual([]);
@@ -94,6 +106,43 @@ test('lets visitors pause the background motion', async ({ page }) => {
     await expect(page.locator('html')).toHaveAttribute('data-motion', 'paused');
 });
 
+test('redraws the scene after a resize while motion is paused', async ({ page }) => {
+    await page.goto('/');
+    await expect(page.locator('.orbit-stage')).toHaveAttribute('data-state', 'live', { timeout: 15_000 });
+    await page.getByRole('button', { name: 'Pause motion' }).click();
+    await expect(page.locator('html')).toHaveAttribute('data-motion', 'paused');
+    await page.evaluate(() => {
+        for (const selector of ['.grain', '.orbit-scrim', 'header', 'main', 'footer']) {
+            for (const element of document.querySelectorAll(selector)) {
+                if (element instanceof HTMLElement) {
+                    element.style.visibility = 'hidden';
+                }
+            }
+        }
+    });
+    await page.setViewportSize({ width: 1280, height: 800 });
+    await page.waitForTimeout(500);
+    const shot = await page.locator('.orbit-stage').screenshot();
+    expect(shot.byteLength).toBeGreaterThan(20_000);
+});
+
+test('shows the full page without scroll-driven animation support', async ({ page }) => {
+    await page.route('**/*', async route => {
+        if (route.request().resourceType() !== 'document') {
+            return route.fallback();
+        }
+        const response = await route.fetch();
+        const body = (await response.text()).replace('<head>', '<head><style>* { animation: none !important; }</style>');
+        return route.fulfill({ response, body });
+    });
+    await page.goto('/');
+    await scrollThrough(page);
+    await expectVisible(page, '.reveal');
+    await expectVisible(page, '.step-body');
+    await expectVisible(page, '#career ol > li');
+    await expectVisible(page, '#work article');
+});
+
 test.describe('with reduced motion', () => {
     test.use({ reducedMotion: 'reduce' });
 
@@ -108,7 +157,7 @@ test.describe('with reduced motion', () => {
         await expect(page.getByRole('heading', { name: 'Budgie' })).toBeVisible();
         const hidden = await page.evaluate(
             () =>
-                [...document.querySelectorAll('.reveal, .step, .rise, .hero-exit, .hero-exit-slow')].filter(
+                [...document.querySelectorAll('.reveal, .step-body, .rise, .hero-exit, .hero-exit-slow')].filter(
                     element => getComputedStyle(element).opacity !== '1'
                 ).length
         );

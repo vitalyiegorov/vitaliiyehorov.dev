@@ -117,8 +117,8 @@ export const startOrbitScene = (canvas: HTMLCanvasElement, callbacks: Callbacks)
     let aspect = 1;
     let frame = 0;
     let running = false;
+    let lost = false;
     let visible = !document.hidden;
-    let onScreen = true;
     let last = performance.now();
     let time = reducedMotion ? 18 : 0;
     let first = true;
@@ -192,7 +192,7 @@ export const startOrbitScene = (canvas: HTMLCanvasElement, callbacks: Callbacks)
     };
 
     const sync = (): void => {
-        const shouldRun = !reducedMotion && !paused && visible && onScreen;
+        const shouldRun = !reducedMotion && !paused && visible && !lost;
         if (shouldRun && !running) {
             running = true;
             last = performance.now();
@@ -219,6 +219,7 @@ export const startOrbitScene = (canvas: HTMLCanvasElement, callbacks: Callbacks)
     };
     const onLost = (event: Event): void => {
         event.preventDefault();
+        lost = true;
         running = false;
         window.cancelAnimationFrame(frame);
         callbacks.onLost();
@@ -226,7 +227,7 @@ export const startOrbitScene = (canvas: HTMLCanvasElement, callbacks: Callbacks)
 
     const resizeObserver = new ResizeObserver(() => {
         resize();
-        if (reducedMotion) {
+        if (!running) {
             renderStill();
         }
     });
@@ -237,11 +238,6 @@ export const startOrbitScene = (canvas: HTMLCanvasElement, callbacks: Callbacks)
         sync();
     });
     motionObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['data-motion'] });
-    const intersectionObserver = new IntersectionObserver(entries => {
-        onScreen = entries.some(entry => entry.isIntersecting);
-        sync();
-    });
-    intersectionObserver.observe(canvas);
     document.addEventListener('visibilitychange', onVisibility);
     canvas.addEventListener('webglcontextlost', onLost);
     if (finePointer && !reducedMotion) {
@@ -258,7 +254,6 @@ export const startOrbitScene = (canvas: HTMLCanvasElement, callbacks: Callbacks)
         window.cancelAnimationFrame(frame);
         resizeObserver.disconnect();
         motionObserver.disconnect();
-        intersectionObserver.disconnect();
         document.removeEventListener('visibilitychange', onVisibility);
         canvas.removeEventListener('webglcontextlost', onLost);
         window.removeEventListener('pointermove', onPointer);

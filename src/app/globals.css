@@ -4,12 +4,10 @@
     color-scheme: dark;
     --bg: oklch(0.145 0.012 250);
     --bg-deep: oklch(0.11 0.012 250);
-    --panel: oklch(0.17 0.012 250 / 0.72);
     --fg: oklch(0.96 0.006 240);
     --muted: oklch(0.78 0.014 250);
     --faint: oklch(0.7 0.014 250);
     --accent: oklch(0.92 0.2 125);
-    --accent-soft: oklch(0.92 0.2 125 / 0.14);
     --line: oklch(0.96 0.006 240 / 0.12);
     --line-strong: oklch(0.96 0.006 240 / 0.24);
     --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
@@ -18,12 +16,10 @@
 @theme inline {
     --color-bg: var(--bg);
     --color-bg-deep: var(--bg-deep);
-    --color-panel: var(--panel);
     --color-fg: var(--fg);
     --color-muted: var(--muted);
     --color-faint: var(--faint);
     --color-accent: var(--accent);
-    --color-accent-soft: var(--accent-soft);
     --color-line: var(--line);
     --color-line-strong: var(--line-strong);
     --font-display: var(--font-display), ui-sans-serif, system-ui, sans-serif;
