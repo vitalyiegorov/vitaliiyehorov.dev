@@ -49,7 +49,7 @@ export function WorkSection() {
                         title="JointLens"
                         links={<WorkLink href="https://jointlens.ai" label="jointlens.ai" />}
                     >
-                        An AI second opinion on MRI, CT and X-ray scans of eleven joints. Several models read the scan and agree on one
+                        An AI second opinion on MRI, CT and X‑ray scans of eleven joints. Several models read the scan and agree on one
                         report.
                     </WorkCard>
                     <WorkCard
@@ -68,7 +68,7 @@ export function WorkSection() {
                         title="Tart Runner Fleet"
                         links={<WorkLink href="https://github.com/vitalyiegorov/tart-runner-fleet" label="GitHub" />}
                     >
-                        GitHub Actions runners on Apple-silicon Macs. Every job gets a throwaway VM.
+                        GitHub Actions runners on Apple‑silicon Macs. Every job gets a throwaway VM.
                     </WorkCard>
                     <WorkCard
                         className="lg:col-span-6"
@@ -87,7 +87,7 @@ export function WorkSection() {
                             </>
                         }
                     >
-                        30 pull requests opened to t3code, plus fixes to simlock, agent-device and simslim.
+                        30 pull requests opened to t3code, plus fixes to simlock, agent‑device and simslim.
                     </WorkCard>
                 </div>
             </div>

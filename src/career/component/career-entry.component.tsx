@@ -9,7 +9,7 @@ interface Props {
 
 export function CareerEntry({ years, title, company, children }: Props) {
     return (
-        <li className="reveal relative pb-16 pl-12 last:pb-0 sm:pl-16 lg:pb-24">
+        <li className="reveal relative pb-16 pl-7 last:pb-0 sm:pl-16 lg:pb-24">
             <span
                 className="rail-dot absolute top-2 left-0 size-3 -translate-x-1/2 rounded-full border-2 border-accent bg-transparent"
                 aria-hidden="true"

@@ -19,7 +19,7 @@ export function CareerSection() {
                             40+ projects for startups in Europe and the US. A team of 20+ engineers.
                         </CareerEntry>
                         <CareerEntry years="2017 – 2019" title="CTO" company="Omnivalor · Kyiv / Stockholm">
-                            Two teams, one e-commerce SaaS.
+                            Two teams, one e‑commerce SaaS.
                         </CareerEntry>
                         <CareerEntry years="2019 – 2021" title="VP of Engineering" company="Clearmove · Kyiv / London">
                             Built R&amp;D from zero to 20+ engineers.
