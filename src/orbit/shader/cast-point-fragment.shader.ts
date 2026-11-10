@@ -36,11 +36,13 @@ void main() {
         float ring = (1.0 - smoothstep(0.0, 0.07, abs(d - 0.66))) * smoothstep(0.55, 1.0, vLit) * 0.45;
         color = mix(tint, vec3(1.0), hot * 0.6);
         a = hot + halo * (0.28 + vLit * 0.5) + ring;
-        float unit = 2.0 / vSize;
-        float band = abs(d - 4.0 * unit);
-        float hollow = 1.0 - smoothstep(0.7 * unit, 1.3 * unit, band);
-        color = mix(color, uAccent, vHollow);
-        a = mix(a, hollow, vHollow) * vAlpha;
+        if (vHollow > 0.001) {
+            float unit = 2.0 / vSize;
+            float hollow = 1.0 - smoothstep(0.7 * unit, 1.3 * unit, abs(d - 4.0 * unit));
+            color = mix(color, uAccent, vHollow);
+            a = mix(a, hollow, vHollow);
+        }
+        a *= vAlpha;
     }
     a += (fract(sin(dot(gl_FragCoord.xy, vec2(12.9898, 78.233))) * 43758.5453) - 0.5) * 0.01;
     gl_FragColor = vec4(color, max(a, 0.0) * shieldMask());

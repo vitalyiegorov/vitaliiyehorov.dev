@@ -11,6 +11,9 @@
     --line: oklch(0.96 0.006 240 / 0.12);
     --line-strong: oklch(0.96 0.006 240 / 0.24);
     --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+    --fg-dim: color-mix(in srgb, var(--fg) 55%, var(--bg-deep));
+    --muted-dim: color-mix(in srgb, var(--muted) 66%, var(--bg-deep));
+    --accent-dim: color-mix(in srgb, var(--accent) 55%, var(--bg-deep));
 }
 
 @theme inline {
@@ -369,20 +372,15 @@ button:focus-visible {
                 top: 35vh;
             }
 
-            html[data-scene='live']:not([data-motion='paused']) .work-row > * {
-                transition: opacity 0.4s var(--ease-out);
+            html[data-scene='live']:not([data-motion='paused']) .work-row :is(h3, p, span) {
+                transition: color 0.4s var(--ease-out);
             }
 
-            html[data-scene='live']:not([data-motion='paused']) .work-row > :is(h3, ul) {
-                opacity: 0.55;
-            }
-
-            html[data-scene='live']:not([data-motion='paused']) .work-row > p {
-                opacity: 0.66;
-            }
-
-            html[data-scene='live']:not([data-motion='paused']) .work-row:is([data-cast-active], :hover, :focus-within) > * {
-                opacity: 1;
+            html[data-scene='live']:not([data-motion='paused']) .work-row:not([data-cast-active], :hover, :focus-within) {
+                --fg: var(--fg-dim);
+                --muted: var(--muted-dim);
+                --accent: var(--accent-dim);
+                color: var(--fg);
             }
         }
     }
