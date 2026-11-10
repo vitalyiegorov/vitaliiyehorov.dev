@@ -18,6 +18,8 @@ const onScreen = (view: CastView, y: number): boolean => y > 0 && y < view.heigh
 const writeStage = (stage: number, pose: CastPose, view: CastView, dom: CastDom, layer: CastLayer, weight: number): void => {
     const lines = weight ** 3;
     pose.hollow.fill(0);
+    pose.focus.fill(0);
+    pose.crown.fill(0);
     if (stage === dom.methodStage) {
         writeMethodPose(pose, view, layer, lines);
     } else if (stage === dom.careerStage) {
@@ -48,6 +50,7 @@ export const updateCast = (
     const blend = to === from ? 0 : mix;
     const position = layer.pointPosition.array;
     const shade = layer.pointShade.array;
+    const mark = layer.pointMark.array;
     for (let index = 0; index < start.count; index += 1) {
         const delay = index < 2 ? 0 : at(layer.seed, index * 2 + 1) * stagger;
         let t = smoothstep((blend - delay) / (1 - stagger));
@@ -62,6 +65,8 @@ export const updateCast = (
         const size = at(start.size, index) + (at(target.size, index) - at(start.size, index)) * t;
         const lit = at(start.lit, index) + (at(target.lit, index) - at(start.lit, index)) * t;
         const hollow = at(start.hollow, index) + (at(target.hollow, index) - at(start.hollow, index)) * t;
+        const focus = at(start.focus, index) + (at(target.focus, index) - at(start.focus, index)) * t;
+        const crown = at(start.crown, index) + (at(target.crown, index) - at(start.crown, index)) * t;
         let alpha = at(start.alpha, index) + (at(target.alpha, index) - at(start.alpha, index)) * t;
         if (alpha > 0.002 && index !== 1) {
             alpha *= readCastClearance(view, x, y, size * 0.16 + 2);
@@ -72,9 +77,12 @@ export const updateCast = (
         shade[index * 4 + 1] = alpha;
         shade[index * 4 + 2] = lit;
         shade[index * 4 + 3] = hollow;
+        mark[index * 2] = focus;
+        mark[index * 2 + 1] = crown;
     }
     layer.pointPosition.needsUpdate = true;
     layer.pointShade.needsUpdate = true;
+    layer.pointMark.needsUpdate = true;
     layer.linePosition.needsUpdate = true;
     layer.lineShade.needsUpdate = true;
 };

@@ -10,6 +10,8 @@ varying float vLit;
 varying float vKind;
 varying float vHollow;
 varying float vSize;
+varying float vFocus;
+varying float vCrown;
 
 void main() {
     float d = length(gl_PointCoord - 0.5) * 2.0;
@@ -30,12 +32,16 @@ void main() {
         color = mix(uAccent, vec3(1.0), clamp(hot * 1.4, 0.0, 1.0));
         a = (hot * 1.6 + glow + halo + ring) * breathe * vAlpha * (1.0 - smoothstep(0.7, 0.95, d));
     } else {
-        float hot = 1.0 - smoothstep(0.0, 0.34, d);
-        float halo = 1.0 - smoothstep(0.0, 1.0, d);
+        float dn = d * (1.0 + 0.5 * vCrown);
+        float hot = 1.0 - smoothstep(0.0, 0.34, dn);
+        float halo = 1.0 - smoothstep(0.0, 1.0, dn);
         halo *= halo;
-        float ring = (1.0 - smoothstep(0.0, 0.07, abs(d - 0.66))) * smoothstep(0.55, 1.0, vLit) * 0.45;
-        color = mix(tint, vec3(1.0), hot * 0.6);
-        a = hot + halo * (0.28 + vLit * 0.5) + ring;
+        float ring = (1.0 - smoothstep(0.0, 0.07, abs(dn - 0.66))) * vFocus * 0.5;
+        float breathe = 0.75 + 0.25 * sin(uTime * 1.2);
+        float crownRing = (1.0 - smoothstep(0.0, 0.08, abs(dn - 1.04))) * vCrown * 0.34;
+        float aura = exp(-dn * dn * 2.4) * vCrown * 0.42 * breathe * (1.0 - smoothstep(0.8, 1.0, d));
+        color = mix(tint, vec3(1.0), hot * (0.25 + 0.35 * max(vFocus, vCrown)));
+        a = hot + halo * (0.28 + vLit * 0.5 + vFocus * 0.3) + ring + crownRing + aura;
         if (vHollow > 0.001) {
             float unit = 2.0 / vSize;
             float hollow = 1.0 - smoothstep(0.7 * unit, 1.3 * unit, abs(d - 4.0 * unit));
