@@ -84,6 +84,13 @@ const expectMethodStep = async (page: Page, index: number): Promise<void> => {
     await expect(step).toHaveAttribute('data-cast-active', '');
     await expect(page.locator('#method [data-cast-active]')).toHaveCount(1);
     await expect(step.locator('.step-mark')).toHaveCSS('opacity', '1');
+    await expect
+        .poll(() =>
+            page
+                .locator('#method [data-cast-step] h3')
+                .evaluateAll(titles => new Set(titles.map(title => getComputedStyle(title).color)).size)
+        )
+        .toBe(2);
 };
 
 const centreMethodSteps = async (page: Page): Promise<void> => {
@@ -111,6 +118,28 @@ test('renders the hero with a single h1', async ({ page }) => {
     await expect(page.locator('h1')).toHaveCount(1);
     await expect(page.getByRole('heading', { level: 1 })).toHaveText(/Vitalii\s*Yehorov/u);
     await expect(page.getByText('fleet of AI agents').first()).toBeVisible();
+});
+
+test('keeps each hero separator with the item it introduces', async ({ page }) => {
+    await page.goto('/');
+    const groups = page.locator('#top p.max-w-md > span.whitespace-nowrap');
+    await expect(groups).toHaveText([
+        /^Engineering Manager at ToolSense, Vienna$/u,
+        '· 15+ years',
+        '· ex-founder, ex-CTO',
+        '· still writes code'
+    ]);
+    const ends = await page
+        .locator('#top p.max-w-md')
+        .evaluate(paragraph =>
+            [...paragraph.childNodes].filter(node => node.nodeType === Node.TEXT_NODE).map(node => node.textContent?.trim())
+        );
+    expect(ends.filter(Boolean)).toEqual([]);
+});
+
+test('numbers the progress rail like the sections', async ({ page }) => {
+    await page.goto('/');
+    await expect(page.locator('[data-orbit-guard] .telemetry')).toHaveText(['01', '06']);
 });
 
 test('contact links point to LinkedIn, GitHub and email', async ({ page }) => {
@@ -271,6 +300,8 @@ test.describe('with reduced motion', () => {
         await expect(page.getByRole('heading', { name: 'Budgie' })).toBeVisible();
         await expect(page.locator('.orbit-stage')).toHaveAttribute('data-state', 'live', { timeout: 15_000 });
         await expect.poll(() => railOpacity(page)).toEqual(['1', '1', '1', '1', '1']);
+        await expect(page.locator('#career .rail-dot').last()).not.toHaveCSS('box-shadow', 'none');
+        await expect(page.locator('#career .rail-dot').first()).not.toHaveCSS('background-color', 'rgba(0, 0, 0, 0)');
         await expectContent(page);
         const hidden = await page.evaluate(
             () =>
@@ -343,13 +374,14 @@ test('hands the career timeline to the live scene', async ({ page }) => {
     await expect(page.locator('[data-cast-slot]:visible')).not.toHaveCount(0);
     if ((page.viewportSize()?.width ?? 0) >= 1024) {
         await expect(page.locator('.career-intro')).toHaveCSS('top', '315px');
-        await page
-            .locator('#work ol > li')
-            .nth(2)
-            .evaluate(row => row.scrollIntoView({ block: 'center', behavior: 'instant' }));
-        await expect(page.locator('#work [data-cast-active]')).toHaveCount(1);
-        await expect.poll(() => workColors(page)).toBe(2);
     }
+    await page
+        .locator('#work ol > li')
+        .nth(2)
+        .evaluate(row => row.scrollIntoView({ block: 'center', behavior: 'instant' }));
+    await expect(page.locator('#work [data-cast-active]')).toHaveCount(1);
+    await expect(page.locator('#work ol > li').nth(2)).toHaveAttribute('data-cast-active', '');
+    await expect.poll(() => workColors(page)).toBe(2);
     await expectContent(page);
 });
 
