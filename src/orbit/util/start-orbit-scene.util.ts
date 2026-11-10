@@ -40,7 +40,6 @@ import { markCastActive } from './mark-cast-active.util';
 import { measureCastDom } from './measure-cast-dom.util';
 import { measureStages } from './measure-stages.util';
 import { readCastRects } from './read-cast-rects.util';
-import { readCoverFade } from './read-cover-fade.util';
 import { readNarrowDrift } from './read-narrow-drift.util';
 import { readStageMix } from './read-stage-mix.util';
 import { readStage } from './read-stage.util';
@@ -81,7 +80,8 @@ const orbitGeometry = (orbit: Float32Array, node: Float32Array): BufferGeometry 
 };
 
 export const startOrbitScene = (canvas: HTMLCanvasElement, callbacks: Callbacks): (() => void) => {
-    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    let reducedMotion = motionQuery.matches;
     const finePointer = window.matchMedia('(pointer: fine)').matches;
     const compact = Math.min(window.innerWidth, window.innerHeight) < 700;
     const pixelRatio = Math.min(window.devicePixelRatio || 1, compact ? 1.5 : 2);
@@ -221,7 +221,7 @@ export const startOrbitScene = (canvas: HTMLCanvasElement, callbacks: Callbacks)
         dom = measureCastDom();
         camera.aspect = aspect;
         camera.updateProjectionMatrix();
-        stages = measureStages(aspect >= 0.9);
+        stages = measureStages();
         maxScroll = document.documentElement.scrollHeight - window.innerHeight;
         anchor = document.querySelector<HTMLElement>('[data-orbit-anchor]');
         guard = document.querySelector<HTMLElement>('[data-orbit-guard]');
@@ -288,13 +288,18 @@ export const startOrbitScene = (canvas: HTMLCanvasElement, callbacks: Callbacks)
         const still = reducedMotion || paused;
         const raw = readStage(stages, window.scrollY, window.innerHeight, maxScroll);
         const stage = still ? Math.round(raw) : raw;
-        const { from, to, mix } = readStageMix(stage, stages.length);
+        const { from, to: next, mix } = readStageMix(stage, stages.length);
+        const to = mix === 0 ? from : next;
         view.width = canvas.clientWidth || window.innerWidth;
         view.height = canvas.clientHeight || window.innerHeight;
         view.time = time;
         view.ease = snap ? 1 : 1 - Math.exp(-dt * 7);
         view.narrow = aspect < 0.9;
         view.career = castOn && !still;
+        const career = view.career ? 'on' : 'off';
+        if (canvas.dataset.career !== career) {
+            canvas.dataset.career = career;
+        }
         if (castOn) {
             readCastRects(dom, view, from, to, still);
             const methodOn = view.method && (from === dom.methodStage || to === dom.methodStage);
@@ -342,9 +347,6 @@ export const startOrbitScene = (canvas: HTMLCanvasElement, callbacks: Callbacks)
         target.coreGlow *= mute;
         target.links *= mute;
         target.rings *= mute;
-        const cover = readCoverFade(stages, stage, ((1 - target.y) * window.innerHeight) / 2, window.innerHeight);
-        target.dim *= cover;
-        target.coreGlow *= cover;
         const ease = first || snap ? 1 : 1 - Math.exp(-dt * 2.2);
         for (const key of orbitFrameKeys) {
             current[key] += (target[key] - current[key]) * ease;
@@ -447,6 +449,9 @@ export const startOrbitScene = (canvas: HTMLCanvasElement, callbacks: Callbacks)
         sync();
     };
     const onPointer = (event: PointerEvent): void => {
+        if (reducedMotion) {
+            return;
+        }
         pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
         pointer.y = (event.clientY / window.innerHeight) * 2 - 1;
     };
@@ -455,34 +460,42 @@ export const startOrbitScene = (canvas: HTMLCanvasElement, callbacks: Callbacks)
         lost = true;
         running = false;
         window.cancelAnimationFrame(frame);
+        marks.method = markCastActive(dom.methodSteps, -1, marks.method);
+        marks.work = markCastActive(dom.workRows, -1, marks.work);
         callbacks.onLost();
     };
 
     const resizeObserver = new ResizeObserver(() => {
         resize();
-        if (!running) {
+        if (!running && !lost) {
             renderStill();
         }
     });
     resizeObserver.observe(canvas);
     resizeObserver.observe(document.body);
-    const motionObserver = new MutationObserver(() => {
-        paused = document.documentElement.dataset.motion === 'paused';
+    const settleMotion = (): void => {
         sync();
-        if (paused && !lost) {
+        if (!running && !lost) {
             renderStill();
         }
+    };
+    const motionObserver = new MutationObserver(() => {
+        paused = document.documentElement.dataset.motion === 'paused';
+        settleMotion();
     });
+    const onMotionQuery = (event: MediaQueryListEvent): void => {
+        reducedMotion = event.matches;
+        settleMotion();
+    };
     motionObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['data-motion'] });
+    motionQuery.addEventListener('change', onMotionQuery);
     document.addEventListener('visibilitychange', onVisibility);
     window.addEventListener('scroll', requestStill, { passive: true });
     document.addEventListener('focusin', onHover);
     document.addEventListener('focusout', onLeave);
     canvas.addEventListener('webglcontextlost', onLost);
-    if (finePointer && !reducedMotion) {
-        window.addEventListener('pointermove', onPointer, { passive: true });
-    }
     if (finePointer) {
+        window.addEventListener('pointermove', onPointer, { passive: true });
         document.addEventListener('pointerover', onHover, { passive: true });
     }
 
@@ -497,6 +510,7 @@ export const startOrbitScene = (canvas: HTMLCanvasElement, callbacks: Callbacks)
         window.cancelAnimationFrame(pending);
         resizeObserver.disconnect();
         motionObserver.disconnect();
+        motionQuery.removeEventListener('change', onMotionQuery);
         document.removeEventListener('visibilitychange', onVisibility);
         canvas.removeEventListener('webglcontextlost', onLost);
         window.removeEventListener('pointermove', onPointer);
@@ -514,6 +528,7 @@ export const startOrbitScene = (canvas: HTMLCanvasElement, callbacks: Callbacks)
         });
         markCastActive(dom.methodSteps, -1, marks.method);
         markCastActive(dom.workRows, -1, marks.work);
+        delete canvas.dataset.career;
         renderer.dispose();
     };
 };

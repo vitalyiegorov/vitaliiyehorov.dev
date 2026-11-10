@@ -40,7 +40,7 @@ export function OrbitStage() {
             }
         };
         const cancelIdle = whenIdle(() => {
-            if (supportsWebgl()) {
+            if (document.documentElement.dataset.scene !== 'off' && supportsWebgl()) {
                 start().catch(() => setState('fallback'));
             } else {
                 setState('fallback');

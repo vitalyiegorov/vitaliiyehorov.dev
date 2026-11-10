@@ -52,6 +52,55 @@ const workColors = (page: Page): Promise<number> =>
 const railOpacity = (page: Page): Promise<string[]> =>
     page.locator('#career .rail-dot').evaluateAll(dots => dots.map(dot => getComputedStyle(dot).opacity));
 
+const hiddenRail = ['0', '0', '0', '0', '0'];
+const shownRail = ['1', '1', '1', '1', '1'];
+
+const expectOneTimeline = async (page: Page, scene: boolean): Promise<void> => {
+    await expect(page.locator('.orbit-canvas')).toHaveAttribute('data-career', scene ? 'on' : 'off');
+    await expect.poll(() => railOpacity(page), { timeout: 10_000 }).toEqual(scene ? hiddenRail : shownRail);
+};
+
+const showCareer = async (page: Page): Promise<void> => {
+    await expect(page.locator('.orbit-stage')).toHaveAttribute('data-state', 'live', { timeout: 15_000 });
+    await page
+        .locator('#career ol > li')
+        .nth(1)
+        .evaluate(entry => entry.scrollIntoView({ block: 'center', behavior: 'instant' }));
+};
+
+const disableWebgl = async (page: Page): Promise<void> => {
+    await page.addInitScript(() => {
+        const original: unknown = Object.getOwnPropertyDescriptor(HTMLCanvasElement.prototype, 'getContext')?.value;
+        Object.defineProperty(HTMLCanvasElement.prototype, 'getContext', {
+            value(this: HTMLCanvasElement, type: string, ...rest: unknown[]) {
+                return type.startsWith('webgl') || typeof original !== 'function' ? null : Reflect.apply(original, this, [type, ...rest]);
+            }
+        });
+    });
+};
+
+const expectMethodStep = async (page: Page, index: number): Promise<void> => {
+    const step = page.locator('#method [data-cast-step]').nth(index);
+    await expect(step).toHaveAttribute('data-cast-active', '');
+    await expect(page.locator('#method [data-cast-active]')).toHaveCount(1);
+    await expect(step.locator('.step-mark')).toHaveCSS('opacity', '1');
+};
+
+const centreMethodSteps = async (page: Page): Promise<void> => {
+    await page.evaluate(() => {
+        const top = document.querySelector('#method')!.getBoundingClientRect().top + window.scrollY;
+        window.scrollTo({ top, behavior: 'instant' });
+    });
+    await expectMethodStep(page, 0);
+    for (let index = 0; index < 3; index += 1) {
+        await page
+            .locator('#method [data-cast-step] h3')
+            .nth(index)
+            .evaluate(title => title.scrollIntoView({ block: 'center', behavior: 'instant' }));
+        await expectMethodStep(page, index);
+    }
+};
+
 test.beforeEach(async ({ page }) => {
     await page.route('**/_vercel/**', route => route.fulfill({ status: 200, contentType: 'application/javascript', body: '' }));
 });
@@ -235,6 +284,44 @@ test.describe('with reduced motion', () => {
         }
         await expect(page.getByText('35,058', { exact: true }).first()).toBeAttached();
     });
+
+    test('hands the timeline to the scene when reduced motion is switched off', async ({ page }) => {
+        await page.goto('/');
+        await showCareer(page);
+        await expectOneTimeline(page, false);
+        await page.emulateMedia({ reducedMotion: 'no-preference' });
+        await expectOneTimeline(page, true);
+        await page.emulateMedia({ reducedMotion: 'reduce' });
+        await expectOneTimeline(page, false);
+    });
+});
+
+test('takes the timeline back from the scene when reduced motion is switched on', async ({ page }) => {
+    await page.goto('/');
+    await showCareer(page);
+    await expectOneTimeline(page, true);
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await expectOneTimeline(page, false);
+    await page.emulateMedia({ reducedMotion: 'no-preference' });
+    await expectOneTimeline(page, true);
+});
+
+test('marks the method step nearest the viewport centre', async ({ page }) => {
+    await page.goto('/');
+    await expect(page.locator('.orbit-stage')).toHaveAttribute('data-state', 'live', { timeout: 15_000 });
+    await centreMethodSteps(page);
+    if ((page.viewportSize()?.width ?? 0) >= 1024) {
+        await page.setViewportSize({ width: 1280, height: 560 });
+        await centreMethodSteps(page);
+    }
+});
+
+test('keeps a deep link in place without WebGL', async ({ page }) => {
+    await disableWebgl(page);
+    await page.goto('/#career');
+    await expect(page.locator('.orbit-stage')).toHaveAttribute('data-state', 'fallback', { timeout: 15_000 });
+    await page.waitForTimeout(1500);
+    await expect.poll(() => page.locator('#career').evaluate(section => Math.abs(section.getBoundingClientRect().top))).toBeLessThan(4);
 });
 
 test('lists the work as an open ruled list, not cards', async ({ page }) => {
@@ -254,8 +341,6 @@ test('hands the career timeline to the live scene', async ({ page }) => {
     await expect.poll(() => railOpacity(page), { timeout: 10_000 }).toEqual(['0', '0', '0', '0', '0']);
     await expect(page.locator('#career .rail-fill')).toHaveCSS('opacity', '0');
     await expect(page.locator('[data-cast-slot]:visible')).not.toHaveCount(0);
-    await page.locator('#method ol > li').first().scrollIntoViewIfNeeded();
-    await expect(page.locator('#method [data-cast-active]')).toHaveCount(1);
     if ((page.viewportSize()?.width ?? 0) >= 1024) {
         await expect(page.locator('.career-intro')).toHaveCSS('top', '315px');
         await page
@@ -279,14 +364,7 @@ test('brings the career rail back when motion is paused', async ({ page }) => {
 });
 
 test('falls back to the rail, the ruled list and static steps without WebGL', async ({ page }) => {
-    await page.addInitScript(() => {
-        const original: unknown = Object.getOwnPropertyDescriptor(HTMLCanvasElement.prototype, 'getContext')?.value;
-        Object.defineProperty(HTMLCanvasElement.prototype, 'getContext', {
-            value(this: HTMLCanvasElement, type: string, ...rest: unknown[]) {
-                return type.startsWith('webgl') || typeof original !== 'function' ? null : Reflect.apply(original, this, [type, ...rest]);
-            }
-        });
-    });
+    await disableWebgl(page);
     await page.goto('/');
     await expect(page.locator('.orbit-stage')).toHaveAttribute('data-state', 'fallback', { timeout: 15_000 });
     await expect(page.locator('html')).toHaveAttribute('data-scene', 'off');

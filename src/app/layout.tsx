@@ -3,6 +3,7 @@ import { Analytics } from '@vercel/analytics/next';
 import type { Metadata, Viewport } from 'next';
 import type { ReactNode } from 'react';
 
+import { sceneProbeScript } from '@/orbit/constant/scene-probe-script.constant';
 import { site } from '@/site/constant/site.constant';
 import { displayFont } from '@/site/font/display.font';
 import { monoFont } from '@/site/font/mono.font';
@@ -60,7 +61,10 @@ interface Props {
 
 export default function RootLayout({ children }: Props) {
     return (
-        <html lang="en" className={`${displayFont.variable} ${monoFont.variable}`}>
+        <html lang="en" className={`${displayFont.variable} ${monoFont.variable}`} suppressHydrationWarning>
+            <head>
+                <script dangerouslySetInnerHTML={{ __html: sceneProbeScript }} />
+            </head>
             <body>
                 {children}
                 <Analytics />

@@ -16,6 +16,7 @@ export const measureCastDom = (): CastDom => {
         careerStage: sections.findIndex(section => section.id === 'career'),
         workStage: sections.findIndex(section => section.id === 'work'),
         text: sections.map(section => Array.from(section.querySelectorAll<HTMLElement>(textSelector))),
+        methodSection: document.querySelector<HTMLElement>('#method'),
         methodBox: document.querySelector<HTMLElement>('[data-cast-slot="method"]'),
         methodSlots: all('[data-cast-slot="method-step"]'),
         methodSteps,

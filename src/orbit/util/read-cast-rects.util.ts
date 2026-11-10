@@ -4,6 +4,7 @@ import type { CastDom } from '../type/cast-dom.type';
 import type { CastView } from '../type/cast-view.type';
 
 const reach = 80;
+const holdRange = 12;
 
 const readText = (elements: readonly HTMLElement[] | undefined, view: CastView): void => {
     if (!elements) {
@@ -23,17 +24,22 @@ const readText = (elements: readonly HTMLElement[] | undefined, view: CastView):
     }
 };
 
+const centerOf = (element: HTMLElement | undefined): number => {
+    const rect = element?.getBoundingClientRect();
+
+    return rect ? (rect.top + rect.bottom) / 2 : 0;
+};
+
 const readMethod = (dom: CastDom, view: CastView, still: boolean): void => {
     const box = dom.methodBox?.getBoundingClientRect();
     const boxed = Boolean(box && box.width > 0);
-    const lift = box && boxed ? Math.max((box.top + box.bottom) / 2 - view.height * 0.5, 0) * 0.85 : 0;
-    const reading = view.height * 0.5 - lift;
-    const steps = boxed ? dom.methodTitles : dom.methodSlots;
+    const middle = view.height * 0.5;
+    const hold = Math.min(Math.max(1 + (dom.methodSection?.getBoundingClientRect().top ?? 0) / holdRange, 0), 1);
+    const reading = middle + (Math.min(middle, centerOf(dom.methodTitles[0])) - middle) * hold;
     let progress = 0;
     let previous = 0;
-    for (let index = 0; index < steps.length; index += 1) {
-        const rect = steps[index]?.getBoundingClientRect();
-        const center = rect ? (rect.top + rect.bottom) / 2 : 0;
+    for (let index = 0; index < dom.methodTitles.length; index += 1) {
+        const center = centerOf(dom.methodTitles[index]);
         if (index > 0 && reading > previous) {
             progress = index - 1 + Math.min((reading - previous) / Math.max(center - previous, 1), 1);
         }

@@ -85,7 +85,7 @@ const writeFleet = (pose: CastPose, view: CastView, layer: CastLayer, weight: nu
     const tipY = active >= 0 ? at(view.workTitles, active) : cy;
     const tipX = view.workEdge;
     setCastPoint(pose, 1, tipX, tipY, 12, active >= 0 ? at(view.workGlow, active) : 0, 1);
-    for (let index = 0; index < castLineRange.total - castLineRange.leaders; index += 1) {
+    for (let index = 0; index < castLineRange.ghost - castLineRange.leaders; index += 1) {
         const point = index + 2;
         const glow = index < view.workCount ? at(view.workGlow, index) : 0;
         writeCastSegment(

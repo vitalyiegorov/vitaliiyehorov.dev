@@ -315,6 +315,10 @@ button:focus-visible {
     transition: opacity 0.35s var(--ease-out);
 }
 
+html[data-scene='off'] .cast-label {
+    display: none;
+}
+
 .rail,
 .rail-fill,
 .rail-dot {
