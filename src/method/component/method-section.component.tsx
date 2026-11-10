@@ -5,16 +5,10 @@ import { TelemetryLabel } from '@/shared/component/telemetry-label.component';
 
 export function MethodSection() {
     return (
-        <section
-            id="method"
-            data-orbit-stage
-            data-orbit-cover-next
-            aria-labelledby="method-title"
-            className="relative pt-20 sm:pt-24 lg:pt-14"
-        >
+        <section id="method" data-orbit-stage aria-labelledby="method-title" className="relative pt-20 sm:pt-24 lg:pt-14">
             <div className="mx-auto grid max-w-[96rem] gap-10 px-5 sm:px-8 lg:grid-cols-12 lg:gap-8 lg:px-14">
                 <div className="lg:col-span-5 lg:pt-10">
-                    <div className="lg:sticky lg:top-24">
+                    <div className="method-intro">
                         <TelemetryLabel index="03">Method · how I work with agents</TelemetryLabel>
                         <h2
                             id="method-title"
@@ -34,6 +28,9 @@ export function MethodSection() {
                                 <ModelFamily name="DeepSeek" />
                             </ul>
                         </div>
+                    </div>
+                    <div className="hidden lg:sticky lg:top-[calc(50svh-8.5rem)] lg:mt-6 lg:block" aria-hidden="true">
+                        <div data-cast-slot="method" className="cast-slot h-68" />
                     </div>
                 </div>
                 <ol className="lg:col-span-6 lg:col-start-7 lg:-m-6 lg:rounded-2xl lg:bg-linear-to-r lg:from-bg-deep/90 lg:via-bg-deep/70 lg:via-78% lg:to-transparent lg:p-6">

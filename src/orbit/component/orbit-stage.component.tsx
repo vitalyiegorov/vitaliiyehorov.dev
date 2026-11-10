@@ -12,6 +12,18 @@ export function OrbitStage() {
     const [state, setState] = useState<StageState>('idle');
 
     useEffect(() => {
+        if (state === 'idle') {
+            return undefined;
+        }
+        const root = document.documentElement;
+        root.dataset.scene = state === 'live' ? 'live' : 'off';
+
+        return () => {
+            delete root.dataset.scene;
+        };
+    }, [state]);
+
+    useEffect(() => {
         const canvas = canvasRef.current;
         if (!canvas) {
             return undefined;
@@ -28,7 +40,7 @@ export function OrbitStage() {
             }
         };
         const cancelIdle = whenIdle(() => {
-            if (supportsWebgl()) {
+            if (document.documentElement.dataset.scene !== 'off' && supportsWebgl()) {
                 start().catch(() => setState('fallback'));
             } else {
                 setState('fallback');

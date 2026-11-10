@@ -33,12 +33,22 @@ import { starFragmentShader } from '../shader/star-fragment.shader';
 import { starVertexShader } from '../shader/star-vertex.shader';
 
 import { blendFrames } from './blend-frames.util';
+import { createCastLayer } from './create-cast-layer.util';
+import { createCastPose } from './create-cast-pose.util';
 import { createOrbitGeometryData } from './create-orbit-geometry-data.util';
+import { markCastActive } from './mark-cast-active.util';
+import { measureCastDom } from './measure-cast-dom.util';
 import { measureStages } from './measure-stages.util';
-import { readCoverFade } from './read-cover-fade.util';
+import { readCastRects } from './read-cast-rects.util';
 import { readNarrowDrift } from './read-narrow-drift.util';
+import { readStageMix } from './read-stage-mix.util';
 import { readStage } from './read-stage.util';
+import { updateCastLabel } from './update-cast-label.util';
+import { updateCast } from './update-cast.util';
 
+import type { CastDom } from '../type/cast-dom.type';
+import type { CastLabelState } from '../type/cast-label-state.type';
+import type { CastView } from '../type/cast-view.type';
 import type { OrbitFrame } from '../type/orbit-frame.type';
 import type { StageBox } from '../type/stage-box.type';
 
@@ -70,10 +80,12 @@ const orbitGeometry = (orbit: Float32Array, node: Float32Array): BufferGeometry 
 };
 
 export const startOrbitScene = (canvas: HTMLCanvasElement, callbacks: Callbacks): (() => void) => {
-    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    let reducedMotion = motionQuery.matches;
     const finePointer = window.matchMedia('(pointer: fine)').matches;
     const compact = Math.min(window.innerWidth, window.innerHeight) < 700;
     const pixelRatio = Math.min(window.devicePixelRatio || 1, compact ? 1.5 : 2);
+    const castOn = typeof CSS !== 'undefined' && CSS.supports('animation-timeline: view()');
 
     const renderer = new WebGLRenderer({ canvas, alpha: true, antialias: pixelRatio < 1.5, powerPreference: 'default' });
     renderer.setPixelRatio(pixelRatio);
@@ -104,6 +116,7 @@ export const startOrbitScene = (canvas: HTMLCanvasElement, callbacks: Callbacks)
         uShieldFeather: { value: shieldFeather * pixelRatio },
         uGuard: { value: new Vector4(0, 0, -1, -1) },
         uGuardRange: { value: new Vector2(guardClear * pixelRatio, (guardClear + guardFeather) * pixelRatio) },
+        uView: { value: new Vector2(1, 1) },
         uBase: { value: new Vector3(0.78, 0.85, 0.91) },
         uAccent: { value: new Vector3(0.78, 0.98, 0.31) }
     };
@@ -129,6 +142,51 @@ export const startOrbitScene = (canvas: HTMLCanvasElement, callbacks: Callbacks)
     }
     stars.frustumCulled = false;
 
+    const castMajors = compact ? 14 : 18;
+    const castDust = compact ? 72 : 180;
+    const cast = createCastLayer(castMajors, castDust, uniforms);
+    scene.add(cast.lines, cast.points);
+    cast.lines.visible = castOn;
+    cast.points.visible = castOn;
+    const castPoses = [createCastPose(castMajors, castDust), createCastPose(castMajors, castDust)] as const;
+    const castLabel: CastLabelState = { index: -1, width: 0, height: 0, x: Number.NaN, y: Number.NaN, opacity: -1, side: -1 };
+    const view: CastView = {
+        width: 1,
+        height: 1,
+        time: 0,
+        ease: 1,
+        narrow: false,
+        coreX: 0,
+        coreY: 0,
+        career: false,
+        method: false,
+        methodX: 0,
+        methodY: 0,
+        methodWidth: 0,
+        methodHeight: 0,
+        methodProgress: 0,
+        methodFade: 1,
+        methodSlots: new Float32Array(12),
+        methodSlotCount: 0,
+        careerNodes: new Float32Array(10),
+        careerCount: 0,
+        careerEnd: 0,
+        workX: 0,
+        workY: 0,
+        workWidth: 0,
+        workHeight: 0,
+        workEdge: 0,
+        workActive: -1,
+        workCount: 0,
+        hover: -1,
+        workGlow: new Float32Array(6),
+        workTitles: new Float32Array(6),
+        text: new Float32Array(64 * 4),
+        textCount: 0
+    };
+    let dom: CastDom = measureCastDom();
+    const marks = { method: -1, work: -1 };
+
     const current: OrbitFrame = { ...orbitFrames[0] };
     const target: OrbitFrame = { ...current };
     const pointer = { x: 0, y: 0, smoothX: 0, smoothY: 0 };
@@ -148,15 +206,22 @@ export const startOrbitScene = (canvas: HTMLCanvasElement, callbacks: Callbacks)
     let time = reducedMotion ? 18 : 0;
     let first = true;
     let paused = document.documentElement.dataset.motion === 'paused';
+    let pending = 0;
 
     const resize = (): void => {
         const width = canvas.clientWidth || window.innerWidth;
         const height = canvas.clientHeight || window.innerHeight;
         aspect = width / height;
         renderer.setSize(width, height, false);
+        uniforms.uView.value.set(width, height);
+        markCastActive(dom.methodSteps, -1, marks.method);
+        markCastActive(dom.workRows, -1, marks.work);
+        marks.method = -1;
+        marks.work = -1;
+        dom = measureCastDom();
         camera.aspect = aspect;
         camera.updateProjectionMatrix();
-        stages = measureStages(aspect >= 0.9);
+        stages = measureStages();
         maxScroll = document.documentElement.scrollHeight - window.innerHeight;
         anchor = document.querySelector<HTMLElement>('[data-orbit-anchor]');
         guard = document.querySelector<HTMLElement>('[data-orbit-guard]');
@@ -209,8 +274,39 @@ export const startOrbitScene = (canvas: HTMLCanvasElement, callbacks: Callbacks)
         }
     };
 
-    const apply = (dt: number): void => {
-        const stage = reducedMotion ? 0 : readStage(stages, window.scrollY, window.innerHeight, maxScroll);
+    const hasAnchor = (index: number): boolean =>
+        castOn && ((index === dom.methodStage && view.method) || (index === dom.workStage && view.workWidth > 0));
+    const anchorX = (index: number): number => ((index === dom.methodStage ? view.methodX : view.workX) / view.width) * 2 - 1;
+    const anchorY = (index: number): number => 1 - ((index === dom.methodStage ? view.methodY : view.workY) / view.height) * 2;
+    const muteOf = (index: number): number => {
+        const drawn = (index === dom.methodStage && view.method) || (index === dom.careerStage && view.career) || index === dom.workStage;
+
+        return castOn && drawn ? (orbitFrames[index]?.mute ?? 0) : 0;
+    };
+
+    const apply = (dt: number, snap: boolean): void => {
+        const still = reducedMotion || paused;
+        const raw = readStage(stages, window.scrollY, window.innerHeight, maxScroll);
+        const stage = still ? Math.round(raw) : raw;
+        const { from, to: next, mix } = readStageMix(stage, stages.length);
+        const to = mix === 0 ? from : next;
+        view.width = canvas.clientWidth || window.innerWidth;
+        view.height = canvas.clientHeight || window.innerHeight;
+        view.time = time;
+        view.ease = snap ? 1 : 1 - Math.exp(-dt * 7);
+        view.narrow = aspect < 0.9;
+        view.career = castOn && !still;
+        const career = view.career ? 'on' : 'off';
+        if (canvas.dataset.career !== career) {
+            canvas.dataset.career = career;
+        }
+        if (castOn) {
+            readCastRects(dom, view, from, to, still);
+            const methodOn = view.method && (from === dom.methodStage || to === dom.methodStage);
+            marks.method = markCastActive(dom.methodSteps, methodOn ? Math.round(view.methodProgress) : -1, marks.method);
+            const workOn = view.workWidth > 0 && (from === dom.workStage || to === dom.workStage);
+            marks.work = markCastActive(dom.workRows, workOn ? view.workActive : -1, marks.work);
+        }
         blendFrames(stage, target);
         const transit = 1 - Math.sin(Math.PI * (stage - Math.floor(stage))) ** 0.35 * 0.85;
         target.dim *= transit;
@@ -238,10 +334,20 @@ export const startOrbitScene = (canvas: HTMLCanvasElement, callbacks: Callbacks)
                 target.y += (lineY - target.y) * target.line;
             }
         }
-        const cover = readCoverFade(stages, stage, ((1 - target.y) * window.innerHeight) / 2, window.innerHeight);
-        target.dim *= cover;
-        target.coreGlow *= cover;
-        const ease = first ? 1 : 1 - Math.exp(-dt * 2.2);
+        const fromAnchor = hasAnchor(from);
+        const toAnchor = hasAnchor(to);
+        if (fromAnchor || toAnchor) {
+            const startX = fromAnchor ? anchorX(from) : target.x;
+            const startY = fromAnchor ? anchorY(from) : target.y;
+            target.x = startX + ((toAnchor ? anchorX(to) : target.x) - startX) * mix;
+            target.y = startY + ((toAnchor ? anchorY(to) : target.y) - startY) * mix;
+        }
+        const mute = 1 - (muteOf(from) + (muteOf(to) - muteOf(from)) * mix);
+        target.dim *= mute;
+        target.coreGlow *= mute;
+        target.links *= mute;
+        target.rings *= mute;
+        const ease = first || snap ? 1 : 1 - Math.exp(-dt * 2.2);
         for (const key of orbitFrameKeys) {
             current[key] += (target[key] - current[key]) * ease;
         }
@@ -280,13 +386,20 @@ export const startOrbitScene = (canvas: HTMLCanvasElement, callbacks: Callbacks)
         uniforms.uCoreScale.value = current.coreScale;
         uniforms.uStarDim.value = 0.55 + current.dim * 0.45;
         first = false;
+        if (castOn) {
+            view.coreX = ((current.x + 1) / 2) * view.width;
+            view.coreY = ((1 - current.y) / 2) * view.height;
+            updateCast(cast, castPoses, view, dom, from, to, mix);
+            const workWeight = (from === dom.workStage ? 1 - mix : 0) + (to === dom.workStage ? (from === to ? 0 : mix) : 0);
+            updateCastLabel(dom, view, cast, Math.min(workWeight, 1), castLabel);
+        }
     };
 
     const render = (now: number): void => {
         const dt = Math.min((now - last) / 1000, 0.05);
         last = now;
         time += dt;
-        apply(dt);
+        apply(dt, false);
         updateShields();
         renderer.render(scene, camera);
         frame = window.requestAnimationFrame(render);
@@ -306,7 +419,8 @@ export const startOrbitScene = (canvas: HTMLCanvasElement, callbacks: Callbacks)
     };
 
     const renderStill = (): void => {
-        apply(0);
+        pending = 0;
+        apply(0, true);
         if (reducedMotion || paused) {
             clearShields();
         } else {
@@ -315,11 +429,29 @@ export const startOrbitScene = (canvas: HTMLCanvasElement, callbacks: Callbacks)
         renderer.render(scene, camera);
     };
 
+    const requestStill = (): void => {
+        if (!running && !lost && pending === 0) {
+            pending = window.requestAnimationFrame(renderStill);
+        }
+    };
+    const onHover = (event: Event): void => {
+        const row = event.target instanceof Element ? event.target.closest('[data-cast-row]') : null;
+        view.hover = row instanceof HTMLElement ? dom.workRows.indexOf(row) : -1;
+        requestStill();
+    };
+    const onLeave = (): void => {
+        view.hover = -1;
+        requestStill();
+    };
+
     const onVisibility = (): void => {
         visible = !document.hidden;
         sync();
     };
     const onPointer = (event: PointerEvent): void => {
+        if (reducedMotion) {
+            return;
+        }
         pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
         pointer.y = (event.clientY / window.innerHeight) * 2 - 1;
     };
@@ -328,29 +460,43 @@ export const startOrbitScene = (canvas: HTMLCanvasElement, callbacks: Callbacks)
         lost = true;
         running = false;
         window.cancelAnimationFrame(frame);
+        marks.method = markCastActive(dom.methodSteps, -1, marks.method);
+        marks.work = markCastActive(dom.workRows, -1, marks.work);
         callbacks.onLost();
     };
 
     const resizeObserver = new ResizeObserver(() => {
         resize();
-        if (!running) {
+        if (!running && !lost) {
             renderStill();
         }
     });
     resizeObserver.observe(canvas);
     resizeObserver.observe(document.body);
-    const motionObserver = new MutationObserver(() => {
-        paused = document.documentElement.dataset.motion === 'paused';
+    const settleMotion = (): void => {
         sync();
-        if (paused && !lost) {
+        if (!running && !lost) {
             renderStill();
         }
+    };
+    const motionObserver = new MutationObserver(() => {
+        paused = document.documentElement.dataset.motion === 'paused';
+        settleMotion();
     });
+    const onMotionQuery = (event: MediaQueryListEvent): void => {
+        reducedMotion = event.matches;
+        settleMotion();
+    };
     motionObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['data-motion'] });
+    motionQuery.addEventListener('change', onMotionQuery);
     document.addEventListener('visibilitychange', onVisibility);
+    window.addEventListener('scroll', requestStill, { passive: true });
+    document.addEventListener('focusin', onHover);
+    document.addEventListener('focusout', onLeave);
     canvas.addEventListener('webglcontextlost', onLost);
-    if (finePointer && !reducedMotion) {
+    if (finePointer) {
         window.addEventListener('pointermove', onPointer, { passive: true });
+        document.addEventListener('pointerover', onHover, { passive: true });
     }
 
     resize();
@@ -361,11 +507,17 @@ export const startOrbitScene = (canvas: HTMLCanvasElement, callbacks: Callbacks)
     return () => {
         running = false;
         window.cancelAnimationFrame(frame);
+        window.cancelAnimationFrame(pending);
         resizeObserver.disconnect();
         motionObserver.disconnect();
+        motionQuery.removeEventListener('change', onMotionQuery);
         document.removeEventListener('visibilitychange', onVisibility);
         canvas.removeEventListener('webglcontextlost', onLost);
         window.removeEventListener('pointermove', onPointer);
+        window.removeEventListener('scroll', requestStill);
+        document.removeEventListener('focusin', onHover);
+        document.removeEventListener('focusout', onLeave);
+        document.removeEventListener('pointerover', onHover);
         scene.traverse(object => {
             if (object instanceof Mesh || object instanceof Points || object instanceof LineSegments) {
                 object.geometry.dispose();
@@ -374,6 +526,9 @@ export const startOrbitScene = (canvas: HTMLCanvasElement, callbacks: Callbacks)
                 }
             }
         });
+        markCastActive(dom.methodSteps, -1, marks.method);
+        markCastActive(dom.workRows, -1, marks.work);
+        delete canvas.dataset.career;
         renderer.dispose();
     };
 };

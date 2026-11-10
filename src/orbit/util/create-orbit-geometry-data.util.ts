@@ -68,7 +68,7 @@ export const createOrbitGeometryData = (compact: boolean): OrbitGeometryData => 
         }
     });
 
-    const starCount = compact ? 520 : 1500;
+    const starCount = compact ? 448 : 1500;
     const starPosition = new Float32Array(starCount * 3);
     const starSeed = new Float32Array(starCount);
     for (let index = 0; index < starCount; index += 1) {
