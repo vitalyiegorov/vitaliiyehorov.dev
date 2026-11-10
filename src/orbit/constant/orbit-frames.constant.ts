@@ -62,7 +62,7 @@ export const orbitFrames: readonly [OrbitFrame, ...OrbitFrame[]] = [
         narrowDim: 0.5
     },
     {
-        x: -3.9,
+        x: 0,
         y: 0,
         distance: 10,
         elevation: 0.04,

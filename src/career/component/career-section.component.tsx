@@ -8,13 +8,13 @@ export function CareerSection() {
         <section id="career" data-orbit-stage aria-labelledby="career-title" className="relative isolate overflow-x-clip py-28 sm:py-36">
             <SectionNumeral value="04" className="top-40 left-6" />
             <div className="mx-auto grid max-w-[96rem] gap-14 px-5 sm:px-8 lg:grid-cols-12 lg:gap-8 lg:px-14">
-                <div className="reveal lg:col-span-6 lg:col-start-6">
+                <div className="lg:col-span-5 lg:sticky lg:top-[16vh] lg:self-start">
                     <TelemetryLabel index="04">Trajectory · 2010 to now</TelemetryLabel>
                     <h2 id="career-title" className="display readable mt-6 text-[clamp(2.6rem,6vw,6rem)] font-semibold text-balance">
                         Fifteen years of building teams that ship.
                     </h2>
                 </div>
-                <div className="rail relative ml-1.5 border-l border-line lg:col-span-6 lg:col-start-6">
+                <div className="rail relative ml-1.5 border-l border-line lg:col-span-6 lg:col-start-7">
                     <span className="rail-fill absolute top-0 -left-px block h-full w-px bg-accent" aria-hidden="true" />
                     <ol>
                         <CareerEntry years="2010 – 2017" title="Founder & CEO" company="SamsonOS · Kyiv">
