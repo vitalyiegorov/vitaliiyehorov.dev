@@ -13,6 +13,8 @@ import type { CastView } from '../type/cast-view.type';
 
 const stagger = 0.35;
 
+const onScreen = (view: CastView, y: number): boolean => y > 0 && y < view.height;
+
 const writeStage = (stage: number, pose: CastPose, view: CastView, dom: CastDom, layer: CastLayer, weight: number): void => {
     const lines = weight ** 3;
     if (stage === dom.methodStage) {
@@ -47,7 +49,13 @@ export const updateCast = (
     const shade = layer.pointShade.array;
     for (let index = 0; index < start.count; index += 1) {
         const delay = index < 2 ? 0 : at(layer.seed, index * 2 + 1) * stagger;
-        const t = smoothstep((blend - delay) / (1 - stagger));
+        let t = smoothstep((blend - delay) / (1 - stagger));
+        if (to === dom.careerStage && onScreen(view, at(target.y, index))) {
+            t = Math.max(t, smoothstep(blend / 0.25));
+        }
+        if (from === dom.careerStage && onScreen(view, at(start.y, index))) {
+            t = Math.min(t, smoothstep((blend - 0.6) / 0.4));
+        }
         const x = at(start.x, index) + (at(target.x, index) - at(start.x, index)) * t;
         const y = at(start.y, index) + (at(target.y, index) - at(start.y, index)) * t;
         const size = at(start.size, index) + (at(target.size, index) - at(start.size, index)) * t;
