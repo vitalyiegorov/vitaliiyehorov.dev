@@ -7,4 +7,5 @@ export interface CastPose {
     readonly size: Float32Array;
     readonly alpha: Float32Array;
     readonly lit: Float32Array;
+    readonly hollow: Float32Array;
 }

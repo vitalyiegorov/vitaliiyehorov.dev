@@ -12,6 +12,7 @@ import type { CastPose } from '../type/cast-pose.type';
 import type { CastView } from '../type/cast-view.type';
 
 const lead = 90;
+const merge = 24;
 
 const fadeAt = (y: number, start: number, lastY: number, tail: number): number =>
     smoothstep((y - start) / lead) * (1 - smoothstep((y - lastY) / tail) * 0.9);
@@ -33,8 +34,13 @@ export const writeCareerPose = (pose: CastPose, view: CastView, layer: CastLayer
     const head = Math.min(Math.max(reading, firstY), end);
     const visible = view.career ? 1 : 0;
     const scale = view.narrow ? 0.78 : 1;
+    let gap = Number.POSITIVE_INFINITY;
+    for (let index = 0; index < count; index += 1) {
+        gap = Math.min(gap, Math.abs(head - at(nodes, index * 2 + 1)));
+    }
+    const free = smoothstep((gap - merge) / merge);
 
-    setCastPoint(pose, 0, readCareerPathX(view, head), head, 66 * scale, 0.95 * visible * fadeAt(head, start, lastY, tail), 1);
+    setCastPoint(pose, 0, readCareerPathX(view, head), head, 40 * scale, 0.7 * visible * free * fadeAt(head, start, lastY, tail), 1);
     setCastPoint(pose, 1, readCareerPathX(view, head), head, 4, 0, 1);
 
     for (let index = 0; index < pose.majors; index += 1) {
@@ -49,13 +55,13 @@ export const writeCareerPose = (pose: CastPose, view: CastView, layer: CastLayer
                 point,
                 at(nodes, index * 2),
                 y,
-                21 * scale * (1 + 0.5 * lit + 0.8 * flash),
-                (0.78 + 0.22 * lit) * visible,
-                lit
+                14 + (21 * scale * (1.5 + 0.8 * flash) - 14) * lit,
+                (0.4 + 0.6 * lit) * visible,
+                1
             );
+            pose.hollow[point] = 1 - lit;
         } else {
-            const y = firstY + ((index - count + 0.5) / (pose.majors - count)) * (lastY - firstY);
-            setCastPoint(pose, point, readCareerPathX(view, y), y, 5 * scale, 0.4 * visible, smoothstep((head - y) / 16 + 0.5));
+            setCastPoint(pose, point, readCareerPathX(view, lastY), lastY, 4, 0, 1);
         }
     }
 
@@ -65,7 +71,7 @@ export const writeCareerPose = (pose: CastPose, view: CastView, layer: CastLayer
         const spin = at(layer.seed, point * 2 + 1);
         const y = start + ((seed + view.time * 0.012) % 1) * (end - start);
         const lit = smoothstep((head - y) / 20 + 0.5);
-        const near = Math.exp(-(((y - head) / 55) ** 2));
+        const near = Math.exp(-(((y - head) / 55) ** 2)) * free;
         setCastPoint(
             pose,
             point,

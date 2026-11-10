@@ -17,6 +17,7 @@ const onScreen = (view: CastView, y: number): boolean => y > 0 && y < view.heigh
 
 const writeStage = (stage: number, pose: CastPose, view: CastView, dom: CastDom, layer: CastLayer, weight: number): void => {
     const lines = weight ** 3;
+    pose.hollow.fill(0);
     if (stage === dom.methodStage) {
         writeMethodPose(pose, view, layer, lines);
     } else if (stage === dom.careerStage) {
@@ -60,15 +61,17 @@ export const updateCast = (
         const y = at(start.y, index) + (at(target.y, index) - at(start.y, index)) * t;
         const size = at(start.size, index) + (at(target.size, index) - at(start.size, index)) * t;
         const lit = at(start.lit, index) + (at(target.lit, index) - at(start.lit, index)) * t;
+        const hollow = at(start.hollow, index) + (at(target.hollow, index) - at(start.hollow, index)) * t;
         let alpha = at(start.alpha, index) + (at(target.alpha, index) - at(start.alpha, index)) * t;
-        if (alpha > 0.002) {
+        if (alpha > 0.002 && index !== 1) {
             alpha *= readCastClearance(view, x, y, size * 0.16 + 2);
         }
         position[index * 3] = x;
         position[index * 3 + 1] = y;
-        shade[index * 3] = size;
-        shade[index * 3 + 1] = alpha;
-        shade[index * 3 + 2] = lit;
+        shade[index * 4] = size;
+        shade[index * 4 + 1] = alpha;
+        shade[index * 4 + 2] = lit;
+        shade[index * 4 + 3] = hollow;
     }
     layer.pointPosition.needsUpdate = true;
     layer.pointShade.needsUpdate = true;

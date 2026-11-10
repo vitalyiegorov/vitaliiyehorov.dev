@@ -7,6 +7,7 @@ export interface CastDom {
     readonly methodSlots: readonly HTMLElement[];
     readonly methodSteps: readonly HTMLElement[];
     readonly careerNodes: readonly HTMLElement[];
+    readonly careerDates: readonly HTMLElement[];
     readonly careerSection: HTMLElement | null;
     readonly workBox: HTMLElement | null;
     readonly workList: HTMLElement | null;

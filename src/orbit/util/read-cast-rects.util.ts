@@ -69,9 +69,10 @@ const readCareer = (dom: CastDom, view: CastView): void => {
     let count = 0;
     for (let index = 0; index < dom.careerNodes.length && count < limit; index += 1) {
         const rect = dom.careerNodes[index]?.getBoundingClientRect();
-        if (rect && rect.height > 0) {
+        const date = dom.careerDates[index]?.getBoundingClientRect() ?? rect;
+        if (rect && date && rect.height > 0) {
             view.careerNodes[count * 2] = (rect.left + rect.right) / 2;
-            view.careerNodes[count * 2 + 1] = (rect.top + rect.bottom) / 2;
+            view.careerNodes[count * 2 + 1] = (date.top + date.bottom) / 2;
             count += 1;
         }
     }

@@ -11,7 +11,7 @@ export function CareerSection() {
             className="relative isolate overflow-x-clip pt-20 pb-28 sm:pb-36 lg:pt-28"
         >
             <div className="mx-auto grid max-w-[96rem] gap-14 px-5 sm:px-8 lg:grid-cols-12 lg:gap-8 lg:px-14">
-                <div data-orbit-anchor data-orbit-shield="wide" className="lg:col-span-5 lg:sticky lg:top-[115px] lg:self-start">
+                <div data-orbit-anchor data-orbit-shield="wide" className="lg:col-span-5 lg:sticky lg:top-[35vh] lg:self-start">
                     <TelemetryLabel index="04">Trajectory · 2010 to now</TelemetryLabel>
                     <h2 id="career-title" className="display readable mt-6 text-[clamp(2.6rem,6vw,6rem)] font-semibold text-balance">
                         Fifteen years of building teams that ship.

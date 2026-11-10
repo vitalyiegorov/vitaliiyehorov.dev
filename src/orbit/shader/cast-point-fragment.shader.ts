@@ -8,6 +8,8 @@ uniform vec3 uAccent;
 varying float vAlpha;
 varying float vLit;
 varying float vKind;
+varying float vHollow;
+varying float vSize;
 
 void main() {
     float d = length(gl_PointCoord - 0.5) * 2.0;
@@ -33,7 +35,12 @@ void main() {
         halo *= halo;
         float ring = (1.0 - smoothstep(0.0, 0.07, abs(d - 0.66))) * smoothstep(0.55, 1.0, vLit) * 0.45;
         color = mix(tint, vec3(1.0), hot * 0.6);
-        a = (hot + halo * (0.28 + vLit * 0.5) + ring) * vAlpha;
+        a = hot + halo * (0.28 + vLit * 0.5) + ring;
+        float unit = 2.0 / vSize;
+        float band = abs(d - 4.0 * unit);
+        float hollow = 1.0 - smoothstep(0.7 * unit, 1.3 * unit, band);
+        color = mix(color, uAccent, vHollow);
+        a = mix(a, hollow, vHollow) * vAlpha;
     }
     a += (fract(sin(dot(gl_FragCoord.xy, vec2(12.9898, 78.233))) * 43758.5453) - 0.5) * 0.01;
     gl_FragColor = vec4(color, max(a, 0.0) * shieldMask());

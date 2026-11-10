@@ -14,7 +14,7 @@ export const readCareerPathX = (view: CastView, y: number): number => {
         if (y <= toY) {
             const t = (y - fromY) / Math.max(toY - fromY, 1);
             const fromX = at(nodes, index * 2);
-            const bend = view.narrow ? 0 : Math.sin(Math.PI * t) * 14 * (index % 2 === 0 ? -1 : 1);
+            const bend = view.narrow ? 0 : Math.sin(Math.PI * t) * 5 * (index % 2 === 0 ? -1 : 1);
 
             return fromX + (at(nodes, index * 2 + 2) - fromX) * t + bend;
         }

@@ -23,7 +23,7 @@ export const createCastLayer = (majors: number, dust: number, uniforms: Record<s
     kind.fill(2, 2 + majors);
 
     const pointPosition = dynamic(count, 3);
-    const pointShade = dynamic(count, 3);
+    const pointShade = dynamic(count, 4);
     const pointGeometry = new BufferGeometry();
     pointGeometry.setAttribute('position', pointPosition);
     pointGeometry.setAttribute('aCast', pointShade);
