@@ -39,7 +39,7 @@ test('contact links point to LinkedIn, GitHub and email', async ({ page }) => {
     const expected = [
         ['LinkedIn', 'https://www.linkedin.com/in/vitalii-iegorov'],
         ['GitHub', 'https://github.com/vitalyiegorov'],
-        ['hello@vitaliiyehorov.dev', 'mailto:hello@vitaliiyehorov.dev']
+        ['vitalyiegorov@gmail.com', 'mailto:vitalyiegorov@gmail.com']
     ] as const;
     for (const scope of ['#top', '#contact']) {
         for (const [name, href] of expected) {
