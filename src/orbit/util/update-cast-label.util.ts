@@ -37,7 +37,9 @@ export const updateCastLabel = (
     const point = active + 2;
     const nodeY = at(positions, point * 3 + 1);
     const below = at(view.workTitles, active) < nodeY;
-    const x = Math.round(at(positions, point * 3) - state.width - gap * 0.5);
+    const nodeX = at(positions, point * 3);
+    const leftX = nodeX - state.width - gap * 0.5;
+    const x = Math.round(leftX < view.workEdge + gap * 2 ? nodeX + gap * 0.5 : leftX);
     const y = Math.round(below ? nodeY + gap * 0.6 : nodeY - state.height - gap * 0.6);
     if (x !== state.x || y !== state.y) {
         state.x = x;
