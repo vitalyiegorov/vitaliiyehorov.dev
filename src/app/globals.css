@@ -6,8 +6,8 @@
     --bg-deep: oklch(0.11 0.012 250);
     --panel: oklch(0.17 0.012 250 / 0.72);
     --fg: oklch(0.96 0.006 240);
-    --muted: oklch(0.76 0.014 250);
-    --faint: oklch(0.64 0.014 250);
+    --muted: oklch(0.78 0.014 250);
+    --faint: oklch(0.7 0.014 250);
     --accent: oklch(0.92 0.2 125);
     --accent-soft: oklch(0.92 0.2 125 / 0.14);
     --line: oklch(0.96 0.006 240 / 0.12);
@@ -138,13 +138,19 @@ button:focus-visible {
     line-height: 0.86;
 }
 
+.display-numeral {
+    font-variation-settings: 'wdth' 82;
+    letter-spacing: -0.05em;
+    line-height: 0.82;
+}
+
 .telemetry {
     font-family: var(--font-mono);
     font-size: 0.75rem;
     line-height: 1.4;
-    letter-spacing: 0.14em;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
-    color: var(--faint);
+    color: var(--muted);
 }
 
 .hairline {
@@ -208,16 +214,7 @@ button:focus-visible {
 @keyframes reveal {
     from {
         opacity: 0;
-        transform: translate3d(0, 3.5rem, 0) scale(0.97);
-    }
-}
-
-@keyframes drift {
-    from {
-        transform: translate3d(0, 18vh, 0);
-    }
-    to {
-        transform: translate3d(0, -18vh, 0);
+        transform: translate3d(0, 2rem, 0) scale(0.985);
     }
 }
 
@@ -251,14 +248,14 @@ button:focus-visible {
 
 @keyframes step-focus {
     0% {
-        opacity: 0.75;
+        opacity: 0.85;
     }
     35%,
     65% {
         opacity: 1;
     }
     100% {
-        opacity: 0.75;
+        opacity: 0.85;
     }
 }
 
@@ -274,12 +271,7 @@ button:focus-visible {
         .reveal {
             animation: reveal linear both;
             animation-timeline: view();
-            animation-range: entry 0% entry 85%;
-        }
-
-        .drift {
-            animation: drift linear both;
-            animation-timeline: view();
+            animation-range: entry 0% entry 15%;
         }
 
         .hero-exit {
@@ -343,15 +335,4 @@ button:focus-visible {
     .signal-dot {
         animation: none;
     }
-}
-
-.numeral {
-    font-family: var(--font-display);
-    font-size: clamp(16rem, 30vw, 30rem);
-    font-weight: 800;
-    line-height: 0.8;
-    letter-spacing: -0.06em;
-    color: transparent;
-    -webkit-text-stroke: 1px oklch(0.96 0.006 240 / 0.09);
-    z-index: -1;
 }

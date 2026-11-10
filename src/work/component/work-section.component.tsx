@@ -1,21 +1,19 @@
 import { WorkCard } from './work-card.component';
 import { WorkLink } from './work-link.component';
 
-import { SectionNumeral } from '@/shared/component/section-numeral.component';
 import { TelemetryLabel } from '@/shared/component/telemetry-label.component';
 
 export function WorkSection() {
     return (
-        <section id="work" data-orbit-stage aria-labelledby="work-title" className="relative isolate overflow-x-clip py-28 sm:py-36">
-            <SectionNumeral value="05" className="top-16 right-10" />
+        <section id="work" data-orbit-stage aria-labelledby="work-title" className="relative isolate overflow-x-clip pt-24 pb-28 sm:pb-36">
             <div className="mx-auto max-w-[96rem] px-5 sm:px-8 lg:px-14">
                 <div className="reveal max-w-3xl">
                     <TelemetryLabel index="05">Selected work</TelemetryLabel>
-                    <h2 id="work-title" className="display readable mt-6 text-[clamp(2.6rem,6vw,6rem)] font-semibold text-balance">
+                    <h2 id="work-title" className="display readable mt-5 text-[clamp(2.6rem,5.4vw,5.25rem)] font-semibold text-balance">
                         Things I build, ship and maintain.
                     </h2>
                 </div>
-                <div className="mt-14 grid gap-4 sm:mt-20 lg:grid-cols-12 lg:gap-5">
+                <div className="mt-10 grid gap-4 lg:grid-cols-12 lg:gap-5">
                     <WorkCard
                         className="lg:col-span-6"
                         index="W.01"

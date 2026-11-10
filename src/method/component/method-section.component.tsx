@@ -5,7 +5,7 @@ import { TelemetryLabel } from '@/shared/component/telemetry-label.component';
 
 export function MethodSection() {
     return (
-        <section id="method" data-orbit-stage aria-labelledby="method-title" className="relative py-24 sm:py-32">
+        <section id="method" data-orbit-stage aria-labelledby="method-title" className="relative pt-20 pb-24 sm:pt-24 sm:pb-32">
             <div className="mx-auto grid max-w-[96rem] gap-10 px-5 sm:px-8 lg:grid-cols-12 lg:gap-8 lg:px-14">
                 <div className="lg:sticky lg:top-[16vh] lg:col-span-5 lg:self-start">
                     <div>
