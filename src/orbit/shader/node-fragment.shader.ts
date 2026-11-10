@@ -6,12 +6,13 @@ varying float vAlpha;
 
 void main() {
     float d = length(gl_PointCoord - 0.5);
-    float hot = smoothstep(0.13, 0.0, d);
-    float halo = smoothstep(0.5, 0.0, d);
+    float hot = 1.0 - smoothstep(0.0, 0.13, d);
+    float halo = 1.0 - smoothstep(0.0, 0.5, d);
     halo *= halo;
     vec3 color = mix(uBase, uAccent, vLit);
     color = mix(color, vec3(1.0), hot * 0.6);
     float a = (hot + halo * (0.28 + vLit * 0.5)) * vAlpha;
-    gl_FragColor = vec4(color, a);
+    a += (fract(sin(dot(gl_FragCoord.xy, vec2(12.9898, 78.233))) * 43758.5453) - 0.5) * 0.01;
+    gl_FragColor = vec4(color, max(a, 0.0));
 }
 `;

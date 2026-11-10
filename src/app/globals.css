@@ -47,7 +47,7 @@ html[data-motion='paused'] .hero-exit-slow,
 html[data-motion='paused'] .rail-fill,
 html[data-motion='paused'] .rail-dot,
 html[data-motion='paused'] .step-body,
-html[data-motion='paused'] .step-index {
+html[data-motion='paused'] .step-mark {
     animation: none;
 }
 
@@ -166,8 +166,10 @@ button:focus-visible {
 }
 
 .panel {
-    background: linear-gradient(160deg, oklch(0.19 0.014 250 / 0.82), oklch(0.13 0.012 250 / 0.88));
+    background: linear-gradient(160deg, oklch(0.19 0.014 250 / 0.9), oklch(0.13 0.012 250 / 0.9));
     border: 1px solid var(--line);
+    -webkit-backdrop-filter: blur(14px);
+    backdrop-filter: blur(14px);
 }
 
 .signal-dot {
@@ -190,6 +192,10 @@ button:focus-visible {
 .scroll-progress {
     transform-origin: top;
     transform: scaleY(0);
+}
+
+.step-mark {
+    opacity: 0;
 }
 
 .rise {
@@ -262,10 +268,13 @@ button:focus-visible {
     }
 }
 
-@keyframes index-glow {
-    35%,
-    65% {
-        color: var(--accent);
+@keyframes step-mark {
+    0%,
+    100% {
+        opacity: 0;
+    }
+    50% {
+        opacity: 1;
     }
 }
 
@@ -321,10 +330,10 @@ button:focus-visible {
             animation-range: cover 10% cover 90%;
         }
 
-        .step-index {
-            animation: index-glow linear both;
-            animation-timeline: view();
-            animation-range: cover 10% cover 90%;
+        .step-mark {
+            animation: step-mark linear both;
+            animation-timeline: --step;
+            animation-range: cover 38% cover 62%;
         }
     }
 }
