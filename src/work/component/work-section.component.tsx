@@ -1,4 +1,4 @@
-import { WorkCard } from './work-card.component';
+import { WorkItem } from './work-item.component';
 import { WorkLink } from './work-link.component';
 
 import { TelemetryLabel } from '@/shared/component/telemetry-label.component';
@@ -13,84 +13,84 @@ export function WorkSection() {
                         Things I build and maintain.
                     </h2>
                 </div>
-                <div data-orbit-cover className="mt-10 grid gap-4 lg:grid-cols-12 lg:gap-5">
-                    <WorkCard
-                        className="lg:col-span-6"
-                        index="W.01"
-                        kind="Open source · React Native"
-                        title="Budgie"
-                        links={
-                            <>
-                                <WorkLink href="https://www.budgie.at" label="budgie.at" />
-                                <WorkLink href="https://github.com/budgie-at/budgie" label="GitHub" />
-                            </>
-                        }
-                    >
-                        Privacy-first, offline-first money app with an AI chat over your own data.
-                    </WorkCard>
-                    <WorkCard
-                        className="lg:col-span-6"
-                        index="W.02"
-                        kind="Open source · Expo"
-                        title="Suuudokuuu"
-                        links={
-                            <>
-                                <WorkLink href="https://suuudokuuu.com" label="suuudokuuu.com" />
-                                <WorkLink href="https://github.com/vitalyiegorov/suuudokuuu" label="GitHub" />
-                            </>
-                        }
-                    >
-                        Sudoku for web, iOS and Android from one codebase.
-                    </WorkCard>
-                    <WorkCard
-                        className="lg:col-span-6"
-                        index="W.03"
-                        kind="Product · Next.js · LLMs"
-                        title="JointLens"
-                        links={<WorkLink href="https://jointlens.ai" label="jointlens.ai" />}
-                    >
-                        An AI second opinion on MRI, CT and X‑ray scans of eleven joints. Several models read the scan and agree on one
-                        report.
-                    </WorkCard>
-                    <WorkCard
-                        className="lg:col-span-6"
-                        index="W.04"
-                        kind="Open source · TypeScript"
-                        title="rnw-community"
-                        links={<WorkLink href="https://github.com/rnw-community/rnw-community" label="GitHub" />}
-                    >
-                        26 npm packages for NestJS and React Native. The largest gets 325k downloads a month.
-                    </WorkCard>
-                    <WorkCard
-                        className="lg:col-span-6"
-                        index="W.05"
-                        kind="Open source · Go"
-                        title="Tart Runner Fleet"
-                        links={<WorkLink href="https://github.com/vitalyiegorov/tart-runner-fleet" label="GitHub" />}
-                    >
-                        GitHub Actions runners on Apple‑silicon Macs. Every job gets a throwaway VM.
-                    </WorkCard>
-                    <WorkCard
-                        className="lg:col-span-6"
-                        index="W.06"
-                        kind="Upstream contributions"
-                        title="Agent tooling"
-                        links={
-                            <>
-                                <WorkLink
-                                    href="https://github.com/pingdotgg/t3code/pulls?q=is%3Apr+author%3Avitalyiegorov"
-                                    label="t3code"
-                                />
-                                <WorkLink href="https://github.com/callstackincubator/simlock" label="simlock" />
-                                <WorkLink href="https://github.com/callstack/agent-device" label="agent-device" />
-                                <WorkLink href="https://github.com/MobAI-App/simslim" label="simslim" />
-                            </>
-                        }
-                    >
-                        30 pull requests opened to t3code, plus fixes to simlock, agent‑device and simslim.
-                    </WorkCard>
+                <div className="mt-10 lg:grid lg:grid-cols-12 lg:gap-8">
+                    <ol data-cast-list className="work-list lg:col-span-7">
+                        <WorkItem
+                            index="W.01"
+                            kind="Open source · React Native"
+                            title="Budgie"
+                            links={
+                                <>
+                                    <WorkLink href="https://www.budgie.at" label="budgie.at" />
+                                    <WorkLink href="https://github.com/budgie-at/budgie" label="GitHub" />
+                                </>
+                            }
+                        >
+                            Privacy-first, offline-first money app with an AI chat over your own data.
+                        </WorkItem>
+                        <WorkItem
+                            index="W.02"
+                            kind="Open source · Expo"
+                            title="Suuudokuuu"
+                            links={
+                                <>
+                                    <WorkLink href="https://suuudokuuu.com" label="suuudokuuu.com" />
+                                    <WorkLink href="https://github.com/vitalyiegorov/suuudokuuu" label="GitHub" />
+                                </>
+                            }
+                        >
+                            Sudoku for web, iOS and Android from one codebase.
+                        </WorkItem>
+                        <WorkItem
+                            index="W.03"
+                            kind="Product · Next.js · LLMs"
+                            title="JointLens"
+                            links={<WorkLink href="https://jointlens.ai" label="jointlens.ai" />}
+                        >
+                            An AI second opinion on MRI, CT and X‑ray scans of eleven joints. Several models read the scan and agree on one
+                            report.
+                        </WorkItem>
+                        <WorkItem
+                            index="W.04"
+                            kind="Open source · TypeScript"
+                            title="rnw-community"
+                            links={<WorkLink href="https://github.com/rnw-community/rnw-community" label="GitHub" />}
+                        >
+                            26 npm packages for NestJS and React Native. The largest gets 325k downloads a month.
+                        </WorkItem>
+                        <WorkItem
+                            index="W.05"
+                            kind="Open source · Go"
+                            title="Tart Runner Fleet"
+                            links={<WorkLink href="https://github.com/vitalyiegorov/tart-runner-fleet" label="GitHub" />}
+                        >
+                            GitHub Actions runners on Apple‑silicon Macs. Every job gets a throwaway VM.
+                        </WorkItem>
+                        <WorkItem
+                            index="W.06"
+                            kind="Upstream contributions"
+                            title="Agent tooling"
+                            links={
+                                <>
+                                    <WorkLink
+                                        href="https://github.com/pingdotgg/t3code/pulls?q=is%3Apr+author%3Avitalyiegorov"
+                                        label="t3code"
+                                    />
+                                    <WorkLink href="https://github.com/callstackincubator/simlock" label="simlock" />
+                                    <WorkLink href="https://github.com/callstack/agent-device" label="agent-device" />
+                                    <WorkLink href="https://github.com/MobAI-App/simslim" label="simslim" />
+                                </>
+                            }
+                        >
+                            30 pull requests opened to t3code, plus fixes to simlock, agent‑device and simslim.
+                        </WorkItem>
+                    </ol>
+                    <div className="hidden lg:col-span-5 lg:block" aria-hidden="true">
+                        <div data-cast-slot="work" className="cast-slot sticky top-[calc(50svh-13rem)] h-[26rem]" />
+                    </div>
                 </div>
             </div>
+            <span data-cast-label aria-hidden="true" className="cast-label telemetry" />
         </section>
     );
 }

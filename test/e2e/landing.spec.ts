@@ -22,6 +22,33 @@ const scrollThrough = async (page: Page): Promise<void> => {
     });
 };
 
+const workLinks = [
+    'https://www.budgie.at',
+    'https://github.com/budgie-at/budgie',
+    'https://suuudokuuu.com',
+    'https://github.com/vitalyiegorov/suuudokuuu',
+    'https://jointlens.ai',
+    'https://github.com/rnw-community/rnw-community',
+    'https://github.com/vitalyiegorov/tart-runner-fleet',
+    'https://github.com/pingdotgg/t3code/pulls?q=is%3Apr+author%3Avitalyiegorov',
+    'https://github.com/callstackincubator/simlock',
+    'https://github.com/callstack/agent-device',
+    'https://github.com/MobAI-App/simslim'
+];
+
+const expectContent = async (page: Page): Promise<void> => {
+    await scrollThrough(page);
+    await expectVisible(page, '#method ol > li');
+    await expectVisible(page, '#career ol > li');
+    await expectVisible(page, '#work ol > li');
+    await expect(page.locator('#work ol > li')).toHaveCount(6);
+    const hrefs = await page.locator('#work ol > li a').evaluateAll(links => links.map(link => link.getAttribute('href')));
+    expect(hrefs).toEqual(workLinks);
+};
+
+const railOpacity = (page: Page): Promise<string[]> =>
+    page.locator('#career .rail-dot').evaluateAll(dots => dots.map(dot => getComputedStyle(dot).opacity));
+
 test.beforeEach(async ({ page }) => {
     await page.route('**/_vercel/**', route => route.fulfill({ status: 200, contentType: 'application/javascript', body: '' }));
 });
@@ -173,8 +200,9 @@ test('shows the full page without scroll-driven animation support', async ({ pag
     await scrollThrough(page);
     await expectVisible(page, '.reveal');
     await expectVisible(page, '.step-body');
+    await expectVisible(page, '#method ol > li');
     await expectVisible(page, '#career ol > li');
-    await expectVisible(page, '#work article');
+    await expectVisible(page, '#work ol > li');
 });
 
 test.describe('with reduced motion', () => {
@@ -189,6 +217,9 @@ test.describe('with reduced motion', () => {
         }
         await expect(page.getByRole('heading', { name: 'Founder & CEO' })).toBeVisible();
         await expect(page.getByRole('heading', { name: 'Budgie' })).toBeVisible();
+        await expect(page.locator('.orbit-stage')).toHaveAttribute('data-state', 'live', { timeout: 15_000 });
+        await expect.poll(() => railOpacity(page)).toEqual(['1', '1', '1', '1', '1']);
+        await expectContent(page);
         const hidden = await page.evaluate(
             () =>
                 [...document.querySelectorAll('.reveal, .step-body, .rise, .hero-exit, .hero-exit-slow')].filter(
@@ -198,4 +229,50 @@ test.describe('with reduced motion', () => {
         expect(hidden).toBe(0);
         await expect(page.getByText('35,058', { exact: true }).first()).toBeAttached();
     });
+});
+
+test('lists the work as an open ruled list, not cards', async ({ page }) => {
+    await page.goto('/');
+    await expect(page.locator('#work ol[data-cast-list] > li[data-cast-row]')).toHaveCount(6);
+    await expect(page.locator('#work article, #work .panel')).toHaveCount(0);
+    await expect(page.locator('#work [data-cast-index]')).toHaveText(['W.01', 'W.02', 'W.03', 'W.04', 'W.05', 'W.06']);
+    await expect(page.locator('#work [data-cast-label]')).toHaveAttribute('aria-hidden', 'true');
+    await expectContent(page);
+});
+
+test('hands the career timeline to the live scene', async ({ page }) => {
+    await page.goto('/');
+    await expect(page.locator('.orbit-stage')).toHaveAttribute('data-state', 'live', { timeout: 15_000 });
+    await expect(page.locator('html')).toHaveAttribute('data-scene', 'live');
+    await expect(page.locator('#career .rail-dot')).toHaveCount(5);
+    await expect.poll(() => railOpacity(page)).toEqual(['0', '0', '0', '0', '0']);
+    await expect(page.locator('#career .rail-fill')).toHaveCSS('opacity', '0');
+    await expect(page.locator('[data-cast-slot]:visible')).not.toHaveCount(0);
+    await expectContent(page);
+});
+
+test('brings the career rail back when motion is paused', async ({ page }) => {
+    await page.goto('/');
+    await expect(page.locator('.orbit-stage')).toHaveAttribute('data-state', 'live', { timeout: 15_000 });
+    await expect.poll(() => railOpacity(page)).toEqual(['0', '0', '0', '0', '0']);
+    await page.getByRole('button', { name: 'Pause motion' }).click();
+    await expect.poll(() => railOpacity(page)).toEqual(['1', '1', '1', '1', '1']);
+    await expectContent(page);
+});
+
+test('falls back to the rail, the ruled list and static steps without WebGL', async ({ page }) => {
+    await page.addInitScript(() => {
+        const original: unknown = Object.getOwnPropertyDescriptor(HTMLCanvasElement.prototype, 'getContext')?.value;
+        Object.defineProperty(HTMLCanvasElement.prototype, 'getContext', {
+            value(this: HTMLCanvasElement, type: string, ...rest: unknown[]) {
+                return type.startsWith('webgl') || typeof original !== 'function' ? null : Reflect.apply(original, this, [type, ...rest]);
+            }
+        });
+    });
+    await page.goto('/');
+    await expect(page.locator('.orbit-stage')).toHaveAttribute('data-state', 'fallback', { timeout: 15_000 });
+    await expect(page.locator('html')).toHaveAttribute('data-scene', 'off');
+    await expect(page.locator('[data-cast-slot]:visible')).toHaveCount(0);
+    await expect.poll(() => railOpacity(page)).toEqual(['1', '1', '1', '1', '1']);
+    await expectContent(page);
 });
