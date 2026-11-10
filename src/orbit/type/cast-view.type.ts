@@ -1,0 +1,32 @@
+export interface CastView {
+    width: number;
+    height: number;
+    time: number;
+    ease: number;
+    narrow: boolean;
+    coreX: number;
+    coreY: number;
+    career: boolean;
+    method: boolean;
+    methodX: number;
+    methodY: number;
+    methodWidth: number;
+    methodHeight: number;
+    methodProgress: number;
+    methodFade: number;
+    readonly careerNodes: Float32Array;
+    careerCount: number;
+    careerEnd: number;
+    workX: number;
+    workY: number;
+    workWidth: number;
+    workHeight: number;
+    workEdge: number;
+    workActive: number;
+    workCount: number;
+    hover: number;
+    readonly workGlow: Float32Array;
+    readonly workTitles: Float32Array;
+    readonly text: Float32Array;
+    textCount: number;
+}

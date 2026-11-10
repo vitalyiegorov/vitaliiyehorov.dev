@@ -24,4 +24,5 @@ export interface OrbitFrame {
     coreGlow: number;
     coreScale: number;
     dim: number;
+    mute?: number;
 }

@@ -76,7 +76,8 @@ export const orbitFrames: readonly [OrbitFrame, ...OrbitFrame[]] = [
         links: 1.25,
         coreGlow: 0.7,
         coreScale: 2.6,
-        dim: 0.88
+        dim: 0.88,
+        mute: 0.94
     },
     {
         x: -0.58,
@@ -101,7 +102,8 @@ export const orbitFrames: readonly [OrbitFrame, ...OrbitFrame[]] = [
         links: 0,
         coreGlow: 0.45,
         coreScale: 2.4,
-        dim: 1.15
+        dim: 1.15,
+        mute: 1
     },
     {
         x: 0.64,
@@ -126,7 +128,8 @@ export const orbitFrames: readonly [OrbitFrame, ...OrbitFrame[]] = [
         links: 0.9,
         coreGlow: 0.9,
         coreScale: 3,
-        dim: 0.8
+        dim: 0.8,
+        mute: 0.85
     },
     {
         x: 0.4,
