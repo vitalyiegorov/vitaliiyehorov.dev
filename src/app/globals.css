@@ -168,7 +168,7 @@ html[data-scene='live'] .cast-canvas {
 .display {
     font-family: var(--font-display);
     font-variation-settings: 'wdth' 88;
-    letter-spacing: -0.045em;
+    letter-spacing: -0.04em;
     line-height: 0.86;
 }
 
