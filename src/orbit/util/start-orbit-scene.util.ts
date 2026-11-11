@@ -339,7 +339,7 @@ export const startOrbitScene = (canvas: HTMLCanvasElement, castCanvas: HTMLCanva
         if (!slotted) {
             lock.pinned = false;
         } else if (lock.stage !== stage) {
-            lock.pinned = true;
+            lock.pinned = false;
         } else if (travel > 1) {
             lock.pinned = Math.abs(slotY - lock.anchorY) < travel * 0.5;
         }

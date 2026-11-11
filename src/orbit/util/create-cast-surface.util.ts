@@ -19,7 +19,14 @@ export const createCastSurface = (
     pixelRatio: number,
     compact: boolean
 ): CastSurface => {
-    const renderer = new WebGLRenderer({ canvas, alpha: true, antialias: pixelRatio < 1.5, powerPreference: 'default' });
+    const renderer = new WebGLRenderer({
+        canvas,
+        alpha: true,
+        antialias: pixelRatio < 1.5,
+        depth: false,
+        stencil: false,
+        powerPreference: 'default'
+    });
     renderer.setPixelRatio(pixelRatio);
     renderer.setClearColor(0x000000, 0);
     const scene = new Scene();
