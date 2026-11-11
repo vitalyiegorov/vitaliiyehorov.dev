@@ -237,12 +237,16 @@ test('keeps the scene decorative and the page structured', async ({ page }) => {
     await expect(page.locator('main')).toHaveCount(1);
     await expect(page.getByRole('link', { name: 'Skip to content' })).toHaveAttribute('href', '#main');
     const schema = await page.locator('script[type="application/ld+json"]').textContent();
-    const person: unknown = JSON.parse(schema ?? '{}');
-    expect(person).toMatchObject({
-        '@type': 'Person',
-        name: 'Vitalii Yehorov',
-        jobTitle: 'Engineering Manager',
-        sameAs: expect.arrayContaining(['https://www.linkedin.com/in/vitalii-iegorov', 'https://github.com/vitalyiegorov'])
+    const parsed: unknown = JSON.parse(schema ?? '{}');
+    expect(parsed).toMatchObject({
+        '@graph': expect.arrayContaining([
+            expect.objectContaining({
+                '@type': 'Person',
+                name: 'Vitalii Yehorov',
+                jobTitle: 'Engineering Manager',
+                sameAs: expect.arrayContaining(['https://www.linkedin.com/in/vitalii-iegorov', 'https://github.com/vitalyiegorov'])
+            })
+        ])
     });
 });
 

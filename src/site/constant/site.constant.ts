@@ -3,7 +3,8 @@ export const site = {
     name: 'Vitalii Yehorov',
     title: 'Vitalii Yehorov · Engineering Manager, AI-native engineering',
     description:
-        'Vitalii Yehorov is an Engineering Manager at ToolSense in Vienna. 15+ years in software, ex-founder, ex-CTO, hands-on TypeScript engineer who leads engineers and a fleet of AI agents that ship to production.',
+        'Vitalii Yehorov is an Engineering Manager at ToolSense in Vienna. 15+ years in software, ex-founder, ex-CTO. He leads engineers and a fleet of AI agents.',
+    updated: '2026-11-11',
     jobTitle: 'Engineering Manager',
     employer: 'ToolSense',
     employerUrl: 'https://toolsense.io',

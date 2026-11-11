@@ -13,10 +13,15 @@ export function SiteHeader() {
                 <p className="telemetry hidden md:block">48.2082° N · 16.3738° E · Vienna</p>
                 <div className="flex items-center gap-4 sm:gap-6">
                     <MotionToggle />
-                    <a className="telemetry pointer-events-auto flex min-h-11 items-center gap-2 text-fg hover:text-accent" href="#contact">
-                        <span className="signal-dot" aria-hidden="true" />
-                        Contact
-                    </a>
+                    <nav aria-label="Primary" className="flex">
+                        <a
+                            className="telemetry pointer-events-auto flex min-h-11 items-center gap-2 text-fg hover:text-accent"
+                            href="#contact"
+                        >
+                            <span className="signal-dot" aria-hidden="true" />
+                            Contact
+                        </a>
+                    </nav>
                 </div>
             </div>
         </header>

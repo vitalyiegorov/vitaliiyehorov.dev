@@ -3,9 +3,10 @@ import { ArrowIcon } from '@/shared/component/arrow-icon.component';
 interface Props {
     readonly href: string;
     readonly label: string;
+    readonly project?: string;
 }
 
-export function WorkLink({ href, label }: Props) {
+export function WorkLink({ href, label, project }: Props) {
     return (
         <li>
             <a
@@ -14,6 +15,7 @@ export function WorkLink({ href, label }: Props) {
                 target="_blank"
                 rel="noopener noreferrer"
             >
+                {project === undefined ? null : <span className="sr-only">{project} on </span>}
                 {label}
                 <ArrowIcon className="link-arrow" />
             </a>

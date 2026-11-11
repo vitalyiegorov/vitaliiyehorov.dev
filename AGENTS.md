@@ -32,4 +32,4 @@ The repo is public. Never publish: phone numbers, private email addresses, "open
 
 ## Skills
 
-Project skills live in `.agents/skills` (mirrored to `.claude/skills`, pinned in `skills-lock.json`): frontend-design, web-design-guidelines, vercel-react-best-practices, vercel-composition-patterns, copywriting, ui-ux-pro-max, next-bundle-optimizer.
+Project skills live in `.agents/skills` (mirrored to `.claude/skills`, pinned in `skills-lock.json`): frontend-design, web-design-guidelines, vercel-react-best-practices, vercel-composition-patterns, copywriting, ui-ux-pro-max, next-bundle-optimizer, seo-audit, schema, ai-seo.

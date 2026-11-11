@@ -28,7 +28,7 @@ export const metadata: Metadata = {
         'ToolSense',
         'Vienna'
     ],
-    alternates: { canonical: '/' },
+    alternates: { canonical: '/', types: { 'text/plain': [{ url: '/llms.txt', title: 'llms.txt' }] } },
     openGraph: {
         type: 'profile',
         url: site.url,
