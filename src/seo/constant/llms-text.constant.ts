@@ -1,10 +1,14 @@
-# Vitalii Yehorov
+import { site } from '@/site/constant/site.constant';
 
-> Engineering Manager at ToolSense in Vienna, Austria. 15+ years in software, ex-founder, ex-CTO, hands-on TypeScript engineer who leads a product engineering team and runs a multi-provider fleet of AI coding agents.
+export const llmsText = `# ${site.name}
+
+> ${site.jobTitle} at ${site.employer} in Vienna, Austria. 15+ years in software, ex-founder, ex-CTO, hands-on TypeScript engineer who leads a product engineering team and runs a multi-provider fleet of AI coding agents.
+
+Personal site: ${site.url}. Last updated: ${site.updated}.
 
 ## Profile
 
-- Role: Engineering Manager, ToolSense (https://toolsense.io), B2B SaaS asset operations platform, since 2023
+- Role: ${site.jobTitle}, ${site.employer} (${site.employerUrl}), B2B SaaS asset operations platform, since 2023
 - Previously: CTO at OnTheWay (2021-2023), VP of Engineering at Clearmove (2019-2021), CTO at Omnivalor (2017-2019), Founder and CEO of SamsonOS (2010-2017)
 - Stack: TypeScript, Node.js, NestJS, React, React Native, Next.js, Go, CI/CD, monorepos, microservices
 - Languages: English, Ukrainian
@@ -31,6 +35,7 @@ One session plans the work, agents from different model families build it in par
 
 ## Contact
 
-- LinkedIn: https://www.linkedin.com/in/vitalii-iegorov
-- GitHub: https://github.com/vitalyiegorov
-- Email: vitalyiegorov@gmail.com
+- LinkedIn: ${site.linkedin}
+- GitHub: ${site.github}
+- Email: ${site.email}
+`;

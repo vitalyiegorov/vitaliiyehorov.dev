@@ -1,6 +1,7 @@
 export interface CastView {
     width: number;
     height: number;
+    reach: number;
     time: number;
     ease: number;
     narrow: boolean;

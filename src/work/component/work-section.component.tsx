@@ -22,7 +22,7 @@ export function WorkSection() {
                             links={
                                 <>
                                     <WorkLink href="https://www.budgie.at" label="budgie.at" />
-                                    <WorkLink href="https://github.com/budgie-at/budgie" label="GitHub" />
+                                    <WorkLink href="https://github.com/budgie-at/budgie" label="GitHub" project="Budgie" />
                                 </>
                             }
                         >
@@ -35,7 +35,7 @@ export function WorkSection() {
                             links={
                                 <>
                                     <WorkLink href="https://suuudokuuu.com" label="suuudokuuu.com" />
-                                    <WorkLink href="https://github.com/vitalyiegorov/suuudokuuu" label="GitHub" />
+                                    <WorkLink href="https://github.com/vitalyiegorov/suuudokuuu" label="GitHub" project="Suuudokuuu" />
                                 </>
                             }
                         >
@@ -54,7 +54,9 @@ export function WorkSection() {
                             index="W.04"
                             kind="Open source · TypeScript"
                             title="rnw-community"
-                            links={<WorkLink href="https://github.com/rnw-community/rnw-community" label="GitHub" />}
+                            links={
+                                <WorkLink href="https://github.com/rnw-community/rnw-community" label="GitHub" project="rnw-community" />
+                            }
                         >
                             26 npm packages for NestJS and React Native. The largest gets 325k downloads a month.
                         </WorkItem>
@@ -62,7 +64,13 @@ export function WorkSection() {
                             index="W.05"
                             kind="Open source · Go"
                             title="Tart Runner Fleet"
-                            links={<WorkLink href="https://github.com/vitalyiegorov/tart-runner-fleet" label="GitHub" />}
+                            links={
+                                <WorkLink
+                                    href="https://github.com/vitalyiegorov/tart-runner-fleet"
+                                    label="GitHub"
+                                    project="Tart Runner Fleet"
+                                />
+                            }
                         >
                             GitHub Actions runners on Apple‑silicon Macs. Every job gets a throwaway VM.
                         </WorkItem>

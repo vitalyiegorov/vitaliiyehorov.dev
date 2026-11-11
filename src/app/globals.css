@@ -56,6 +56,7 @@ html[data-motion='paused'] .step-mark {
 }
 
 body {
+    position: relative;
     margin: 0;
     min-height: 100svh;
     overflow-x: clip;
@@ -128,6 +129,32 @@ button:focus-visible {
 
 .orbit-stage[data-state='live'] .orbit-fallback {
     opacity: 0;
+}
+
+.cast-stage {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    overflow: clip;
+    pointer-events: none;
+}
+
+.cast-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    opacity: 0;
+    transition: opacity 1.8s var(--ease-out);
+    will-change: transform;
+}
+
+.cast-stage[data-lock='view'] > .cast-canvas {
+    position: fixed;
+}
+
+html[data-scene='live'] .cast-canvas {
+    opacity: 1;
 }
 
 .orbit-scrim {

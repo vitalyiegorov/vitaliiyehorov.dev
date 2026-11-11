@@ -13,7 +13,7 @@ const readText = (elements: readonly HTMLElement[] | undefined, view: CastView):
     const limit = view.text.length / 4;
     for (let index = 0; index < elements.length && view.textCount < limit; index += 1) {
         const rect = elements[index]?.getBoundingClientRect();
-        if (rect && rect.width > 0 && rect.bottom > -reach && rect.top < view.height + reach) {
+        if (rect && rect.width > 0 && rect.bottom > -reach - view.reach && rect.top < view.height + reach + view.reach) {
             const offset = view.textCount * 4;
             view.text[offset] = rect.left;
             view.text[offset + 1] = rect.top;
