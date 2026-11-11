@@ -9,6 +9,7 @@ type StageState = 'idle' | 'live' | 'fallback';
 
 export function OrbitStage() {
     const canvasRef = useRef<HTMLCanvasElement>(null);
+    const castRef = useRef<HTMLCanvasElement>(null);
     const [state, setState] = useState<StageState>('idle');
 
     useEffect(() => {
@@ -25,7 +26,8 @@ export function OrbitStage() {
 
     useEffect(() => {
         const canvas = canvasRef.current;
-        if (!canvas) {
+        const castCanvas = castRef.current;
+        if (!canvas || !castCanvas) {
             return undefined;
         }
         let dispose: (() => void) | undefined;
@@ -33,7 +35,7 @@ export function OrbitStage() {
         const start = async (): Promise<void> => {
             const { startOrbitScene } = await import('../util/start-orbit-scene.util');
             if (!cancelled) {
-                dispose = startOrbitScene(canvas, {
+                dispose = startOrbitScene(canvas, castCanvas, {
                     onReady: () => setState('live'),
                     onLost: () => setState('fallback')
                 });
@@ -55,10 +57,15 @@ export function OrbitStage() {
     }, []);
 
     return (
-        <div className="orbit-stage" data-state={state} aria-hidden="true">
-            <div className="orbit-fallback" />
-            <canvas ref={canvasRef} className="orbit-canvas" />
-            <div className="orbit-scrim" />
-        </div>
+        <>
+            <div className="orbit-stage" data-state={state} aria-hidden="true">
+                <div className="orbit-fallback" />
+                <canvas ref={canvasRef} className="orbit-canvas" />
+                <div className="orbit-scrim" />
+            </div>
+            <div className="cast-stage" aria-hidden="true">
+                <canvas ref={castRef} className="cast-canvas" />
+            </div>
+        </>
     );
 }

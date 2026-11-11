@@ -35,6 +35,7 @@ import { starVertexShader } from '../shader/star-vertex.shader';
 import { blendFrames } from './blend-frames.util';
 import { createCastLayer } from './create-cast-layer.util';
 import { createCastPose } from './create-cast-pose.util';
+import { createCastSurface } from './create-cast-surface.util';
 import { createOrbitGeometryData } from './create-orbit-geometry-data.util';
 import { markCastActive } from './mark-cast-active.util';
 import { measureCastDom } from './measure-cast-dom.util';
@@ -79,7 +80,13 @@ const orbitGeometry = (orbit: Float32Array, node: Float32Array): BufferGeometry 
     return geometry;
 };
 
-export const startOrbitScene = (canvas: HTMLCanvasElement, callbacks: Callbacks): (() => void) => {
+const clearShieldSlots = (slots: readonly Vector4[], from: number): void => {
+    for (let index = from; index < slots.length; index += 1) {
+        slots[index]?.set(0, 0, -1, -1);
+    }
+};
+
+export const startOrbitScene = (canvas: HTMLCanvasElement, castCanvas: HTMLCanvasElement, callbacks: Callbacks): (() => void) => {
     const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
     let reducedMotion = motionQuery.matches;
     const finePointer = window.matchMedia('(pointer: fine)').matches;
@@ -144,10 +151,9 @@ export const startOrbitScene = (canvas: HTMLCanvasElement, callbacks: Callbacks)
 
     const castMajors = compact ? 14 : 18;
     const castDust = compact ? 72 : 180;
-    const cast = createCastLayer(castMajors, castDust, uniforms);
-    scene.add(cast.lines, cast.points);
-    cast.lines.visible = castOn;
-    cast.points.visible = castOn;
+    const surface = castOn ? createCastSurface(castCanvas, uniforms, pixelRatio, compact) : null;
+    const cast = createCastLayer(castMajors, castDust, surface?.uniforms ?? uniforms);
+    surface?.scene.add(cast.lines, cast.points);
     const castPoses = [createCastPose(castMajors, castDust), createCastPose(castMajors, castDust)] as const;
     const castLabel: CastLabelState = {
         index: -1,
@@ -163,6 +169,7 @@ export const startOrbitScene = (canvas: HTMLCanvasElement, callbacks: Callbacks)
     const view: CastView = {
         width: 1,
         height: 1,
+        reach: 0,
         time: 0,
         ease: 1,
         narrow: false,
@@ -218,6 +225,7 @@ export const startOrbitScene = (canvas: HTMLCanvasElement, callbacks: Callbacks)
     let first = true;
     let paused = document.documentElement.dataset.motion === 'paused';
     let pending = 0;
+    const lock = { pinned: false, stage: -1, anchorY: 0, scrollY: 0 };
 
     const resize = (): void => {
         const width = canvas.clientWidth || window.innerWidth;
@@ -225,6 +233,8 @@ export const startOrbitScene = (canvas: HTMLCanvasElement, callbacks: Callbacks)
         aspect = width / height;
         renderer.setSize(width, height, false);
         uniforms.uView.value.set(width, height);
+        surface?.resize(width, height);
+        view.reach = surface?.margin ?? 0;
         markCastActive(dom.methodSteps, -1, marks.method);
         markCastActive(dom.workRows, -1, marks.work);
         marks.method = -1;
@@ -241,47 +251,52 @@ export const startOrbitScene = (canvas: HTMLCanvasElement, callbacks: Callbacks)
         );
     };
 
-    const clearShieldSlots = (from: number): void => {
-        for (let index = from; index < uniforms.uShield.value.length; index += 1) {
-            uniforms.uShield.value[index]?.set(0, 0, -1, -1);
+    const clearShields = (): void => {
+        clearShieldSlots(uniforms.uShield.value, 0);
+        uniforms.uGuard.value.set(0, 0, -1, -1);
+        if (surface) {
+            clearShieldSlots(surface.shield, 0);
+            surface.guard.set(0, 0, -1, -1);
         }
     };
 
-    const clearShields = (): void => {
-        clearShieldSlots(0);
-        uniforms.uGuard.value.set(0, 0, -1, -1);
-    };
-
-    const updateShields = (): void => {
-        const height = canvas.clientHeight || window.innerHeight;
+    const writeShields = (slots: readonly Vector4[], edge: Vector4, height: number, shift: number, reach: number): void => {
+        const viewHeight = canvas.clientHeight || window.innerHeight;
         let count = 0;
         for (const element of shields) {
             const rect = element.getBoundingClientRect();
-            const slot = uniforms.uShield.value[count];
+            const slot = slots[count];
             if (!slot) {
                 break;
             }
-            if (rect.width > 0 && rect.bottom > -shieldFeather && rect.top < height + shieldFeather) {
+            if (rect.width > 0 && rect.bottom > -reach && rect.top < viewHeight + reach) {
                 slot.set(
                     (rect.left - shieldPad) * pixelRatio,
-                    (height - rect.bottom - shieldPad) * pixelRatio,
+                    (height - rect.bottom - shift - shieldPad) * pixelRatio,
                     (rect.right + shieldPad) * pixelRatio,
-                    (height - rect.top + shieldPad) * pixelRatio
+                    (height - rect.top - shift + shieldPad) * pixelRatio
                 );
                 count += 1;
             }
         }
-        clearShieldSlots(count);
+        clearShieldSlots(slots, count);
         const box = guard?.getBoundingClientRect();
         if (box && box.width > 0) {
-            uniforms.uGuard.value.set(
+            edge.set(
                 box.left * pixelRatio,
-                (height - box.bottom) * pixelRatio,
+                (height - box.bottom - shift) * pixelRatio,
                 box.right * pixelRatio,
-                (height - box.top) * pixelRatio
+                (height - box.top - shift) * pixelRatio
             );
         } else {
-            uniforms.uGuard.value.set(0, 0, -1, -1);
+            edge.set(0, 0, -1, -1);
+        }
+    };
+
+    const updateShields = (): void => {
+        writeShields(uniforms.uShield.value, uniforms.uGuard.value, canvas.clientHeight || window.innerHeight, 0, shieldFeather);
+        if (surface) {
+            writeShields(surface.shield, surface.guard, surface.height, surface.shift, shieldFeather + surface.margin);
         }
     };
 
@@ -308,6 +323,30 @@ export const startOrbitScene = (canvas: HTMLCanvasElement, callbacks: Callbacks)
         const drawn = (index === dom.methodStage && view.method) || (index === dom.careerStage && view.career) || index === dom.workStage;
 
         return castOn && drawn ? (orbitFrames[index]?.mute ?? 0) : 0;
+    };
+
+    /**
+     * Graphics tied to rows that scroll must ride the page; graphics tied to a sticky slot must ride the viewport.
+     * Comparing how far the slot moved with how far the page scrolled tells the two apart, including while a
+     * sticky slot is not stuck yet.
+     */
+    const placeCast = (stage: number): void => {
+        const scrollY = window.scrollY;
+        const slotted =
+            (stage === dom.methodStage && view.method && view.methodSlotCount === 0) || (stage === dom.workStage && view.workWidth > 0);
+        const slotY = stage === dom.methodStage ? view.methodY : view.workY;
+        const travel = Math.abs(scrollY - lock.scrollY);
+        if (!slotted) {
+            lock.pinned = false;
+        } else if (lock.stage !== stage) {
+            lock.pinned = true;
+        } else if (travel > 1) {
+            lock.pinned = Math.abs(slotY - lock.anchorY) < travel * 0.5;
+        }
+        lock.stage = slotted ? stage : -1;
+        lock.anchorY = slotY;
+        lock.scrollY = scrollY;
+        surface?.place(scrollY, lock.pinned);
     };
 
     const apply = (dt: number, snap: boolean): void => {
@@ -419,6 +458,7 @@ export const startOrbitScene = (canvas: HTMLCanvasElement, callbacks: Callbacks)
             updateCast(cast, castPoses, view, dom, from, to, mix);
             const workWeight = (from === dom.workStage ? 1 - mix : 0) + (to === dom.workStage ? (from === to ? 0 : mix) : 0);
             updateCastLabel(dom, view, cast, Math.min(workWeight, 1), castLabel);
+            placeCast(mix < 0.5 ? from : to);
         }
     };
 
@@ -429,6 +469,7 @@ export const startOrbitScene = (canvas: HTMLCanvasElement, callbacks: Callbacks)
         apply(dt, false);
         updateShields();
         renderer.render(scene, camera);
+        surface?.render();
         frame = window.requestAnimationFrame(render);
     };
 
@@ -454,6 +495,7 @@ export const startOrbitScene = (canvas: HTMLCanvasElement, callbacks: Callbacks)
             updateShields();
         }
         renderer.render(scene, camera);
+        surface?.render();
     };
 
     const requestStill = (): void => {
@@ -521,6 +563,7 @@ export const startOrbitScene = (canvas: HTMLCanvasElement, callbacks: Callbacks)
     document.addEventListener('focusin', onHover);
     document.addEventListener('focusout', onLeave);
     canvas.addEventListener('webglcontextlost', onLost);
+    castCanvas.addEventListener('webglcontextlost', onLost);
     if (finePointer) {
         window.addEventListener('pointermove', onPointer, { passive: true });
         document.addEventListener('pointerover', onHover, { passive: true });
@@ -540,11 +583,19 @@ export const startOrbitScene = (canvas: HTMLCanvasElement, callbacks: Callbacks)
         motionQuery.removeEventListener('change', onMotionQuery);
         document.removeEventListener('visibilitychange', onVisibility);
         canvas.removeEventListener('webglcontextlost', onLost);
+        castCanvas.removeEventListener('webglcontextlost', onLost);
         window.removeEventListener('pointermove', onPointer);
         window.removeEventListener('scroll', requestStill);
         document.removeEventListener('focusin', onHover);
         document.removeEventListener('focusout', onLeave);
         document.removeEventListener('pointerover', onHover);
+        for (const object of [cast.lines, cast.points]) {
+            object.geometry.dispose();
+            if (object.material instanceof ShaderMaterial) {
+                object.material.dispose();
+            }
+        }
+        surface?.dispose();
         scene.traverse(object => {
             if (object instanceof Mesh || object instanceof Points || object instanceof LineSegments) {
                 object.geometry.dispose();
