@@ -19,7 +19,7 @@ export function ContactSection() {
                         </h2>
                         <div data-orbit-core className="absolute top-1/2 right-0 size-36 -translate-y-1/2 sm:hidden" aria-hidden="true" />
                     </div>
-                    <p className="readable mt-8 max-w-lg text-lg leading-relaxed text-muted text-balance">
+                    <p className="readable mt-8 max-w-lg text-lg leading-relaxed text-muted text-balance sm:max-w-2xl sm:text-[clamp(1.25rem,1.8vw,1.75rem)] sm:leading-snug sm:text-fg">
                         Building with AI agents, or leading a team that does? Write to me.
                     </p>
                     <div className="mt-10">
