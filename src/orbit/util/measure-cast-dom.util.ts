@@ -38,6 +38,8 @@ export const measureCastDom = (): CastDom => {
         methodStage: sections.findIndex(section => section.id === 'method'),
         careerStage: sections.findIndex(section => section.id === 'career'),
         workStage: sections.findIndex(section => section.id === 'work'),
+        contactStage: sections.findIndex(section => section.id === 'contact'),
+        contactCore: document.querySelector<HTMLElement>('[data-orbit-core]'),
         text: sections.map(section => Array.from(section.querySelectorAll<HTMLElement>(textSelector))),
         methodSection: document.querySelector<HTMLElement>('#method'),
         methodBox: document.querySelector<HTMLElement>('[data-cast-slot="method"]'),

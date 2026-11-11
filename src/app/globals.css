@@ -354,6 +354,21 @@ html[data-scene='off'] .cast-label {
         0 0 1.75rem 0.25rem var(--accent);
 }
 
+.rail-now > span {
+    grid-area: 1 / 1;
+}
+
+.rail-now > span:not(:first-child) {
+    visibility: hidden;
+}
+
+@keyframes rail-now {
+    from,
+    to {
+        visibility: visible;
+    }
+}
+
 .rail,
 .rail-fill,
 .rail-dot {
@@ -370,6 +385,64 @@ html[data-scene='off'] .cast-label {
 }
 
 @supports (animation-timeline: view()) {
+    body {
+        timeline-scope: --section-1, --section-2, --section-3, --section-4, --section-5, --section-6;
+    }
+
+    #top {
+        view-timeline: --section-1 block;
+    }
+
+    #numbers {
+        view-timeline: --section-2 block;
+    }
+
+    #method {
+        view-timeline: --section-3 block;
+    }
+
+    #career {
+        view-timeline: --section-4 block;
+    }
+
+    #work {
+        view-timeline: --section-5 block;
+    }
+
+    #contact {
+        view-timeline: --section-6 block;
+    }
+
+    .rail-now > span {
+        visibility: hidden;
+        animation: rail-now linear none;
+        animation-range: cover 50vh cover calc(100% - 50vh);
+    }
+
+    .rail-now > span:nth-child(1) {
+        animation-timeline: --section-1;
+    }
+
+    .rail-now > span:nth-child(2) {
+        animation-timeline: --section-2;
+    }
+
+    .rail-now > span:nth-child(3) {
+        animation-timeline: --section-3;
+    }
+
+    .rail-now > span:nth-child(4) {
+        animation-timeline: --section-4;
+    }
+
+    .rail-now > span:nth-child(5) {
+        animation-timeline: --section-5;
+    }
+
+    .rail-now > span:nth-child(6) {
+        animation-timeline: --section-6;
+    }
+
     html:not([data-scene='off']) .cast-slot {
         display: block;
     }
@@ -500,6 +573,13 @@ html[data-scene='off'] .cast-label {
         .step:first-child .step-mark {
             animation-name: step-mark-first;
         }
+    }
+}
+
+@media (width < 40rem) {
+    body {
+        letter-spacing: 0;
+        text-rendering: geometricPrecision;
     }
 }
 

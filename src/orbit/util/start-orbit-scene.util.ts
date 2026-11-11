@@ -275,10 +275,25 @@ export const startOrbitScene = (canvas: HTMLCanvasElement, callbacks: Callbacks)
         }
     };
 
+    const contact = { on: false, x: 0, y: 0 };
+    const readContact = (): void => {
+        const rect = dom.contactCore?.getBoundingClientRect();
+        contact.on = Boolean(rect && rect.width > 0);
+        contact.x = rect ? (rect.left + rect.right) / 2 : 0;
+        contact.y = rect ? (rect.top + rect.bottom) / 2 : 0;
+    };
     const hasAnchor = (index: number): boolean =>
-        castOn && ((index === dom.methodStage && view.method) || (index === dom.workStage && view.workWidth > 0));
-    const anchorX = (index: number): number => ((index === dom.methodStage ? view.methodX : view.workX) / view.width) * 2 - 1;
-    const anchorY = (index: number): number => 1 - ((index === dom.methodStage ? view.methodY : view.workY) / view.height) * 2;
+        (index === dom.contactStage && contact.on) ||
+        (castOn && ((index === dom.methodStage && view.method) || (index === dom.workStage && view.workWidth > 0)));
+    const anchorPoint = (index: number): readonly [number, number] => {
+        if (index === dom.contactStage) {
+            return [contact.x, contact.y];
+        }
+
+        return index === dom.methodStage ? [view.methodX, view.methodY] : [view.workX, view.workY];
+    };
+    const anchorX = (index: number): number => (anchorPoint(index)[0] / view.width) * 2 - 1;
+    const anchorY = (index: number): number => 1 - (anchorPoint(index)[1] / view.height) * 2;
     const muteOf = (index: number): number => {
         const drawn = (index === dom.methodStage && view.method) || (index === dom.careerStage && view.career) || index === dom.workStage;
 
@@ -335,6 +350,7 @@ export const startOrbitScene = (canvas: HTMLCanvasElement, callbacks: Callbacks)
                 target.y += (lineY - target.y) * target.line;
             }
         }
+        readContact();
         const fromAnchor = hasAnchor(from);
         const toAnchor = hasAnchor(to);
         if (fromAnchor || toAnchor) {

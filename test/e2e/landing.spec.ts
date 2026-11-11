@@ -120,26 +120,55 @@ test('renders the hero with a single h1', async ({ page }) => {
     await expect(page.getByText('fleet of AI agents').first()).toBeVisible();
 });
 
-test('keeps each hero separator with the item it introduces', async ({ page }) => {
+test('sets the hero sub-line as deliberate lines without orphan separators', async ({ page }, testInfo) => {
     await page.goto('/');
-    const groups = page.locator('#top p.max-w-md > span.whitespace-nowrap');
-    await expect(groups).toHaveText([
-        /^Engineering Manager at ToolSense, Vienna$/u,
-        '· 15+ years',
-        '· ex-founder, ex-CTO',
-        '· still writes code'
-    ]);
-    const ends = await page
-        .locator('#top p.max-w-md')
-        .evaluate(paragraph =>
-            [...paragraph.childNodes].filter(node => node.nodeType === Node.TEXT_NODE).map(node => node.textContent?.trim())
-        );
-    expect(ends.filter(Boolean)).toEqual([]);
+    const lines = await page.locator('#top p.max-w-md').evaluate(paragraph => {
+        const rows = new Map<number, string>();
+        const range = document.createRange();
+        const walker = document.createTreeWalker(paragraph, NodeFilter.SHOW_TEXT);
+        for (let node = walker.nextNode(); node; node = walker.nextNode()) {
+            const text = node.textContent ?? '';
+            for (let index = 0; index < text.length; index += 1) {
+                range.setStart(node, index);
+                range.setEnd(node, index + 1);
+                const rect = range.getClientRects()[0];
+                if (rect && rect.width > 0) {
+                    const top = Math.round(rect.top);
+                    rows.set(top, `${rows.get(top) ?? ''}${text[index]}`);
+                }
+            }
+        }
+
+        return [...rows.entries()].toSorted(([a], [b]) => a - b).map(([, row]) => row.trim());
+    });
+    expect(lines).toEqual(
+        testInfo.project.name === 'mobile'
+            ? ['Engineering Manager at ToolSense, Vienna', '15+ years · ex-founder, ex-CTO', 'still writes code']
+            : ['Engineering Manager at ToolSense, Vienna', '15+ years · ex-founder, ex-CTO · still writes code']
+    );
 });
 
-test('numbers the progress rail like the sections', async ({ page }) => {
+test('numbers the progress rail like the sections', async ({ page }, testInfo) => {
     await page.goto('/');
-    await expect(page.locator('[data-orbit-guard] .telemetry')).toHaveText(['01', '06']);
+    if (testInfo.project.name === 'mobile') {
+        await expect(page.locator('[data-orbit-guard]')).toBeHidden();
+
+        return;
+    }
+    const current = page.locator('[data-orbit-guard] .rail-now > span:visible');
+    await expect(current).toHaveText('01');
+    await expect(page.locator('[data-orbit-guard] > .telemetry').last()).toHaveText('06');
+    for (const [id, label] of [
+        ['method', '03'],
+        ['work', '05'],
+        ['contact', '06']
+    ] as const) {
+        await page.evaluate(section => {
+            const element = document.getElementById(section);
+            window.scrollTo({ top: (element?.getBoundingClientRect().top ?? 0) + window.scrollY + 40, behavior: 'instant' });
+        }, id);
+        await expect(current).toHaveText(label);
+    }
 });
 
 test('contact links point to LinkedIn, GitHub and email', async ({ page }) => {

@@ -18,6 +18,8 @@ const fanTilt = 0.66;
 const stretchCap = 2.2;
 const ghostDots = 30;
 const planReach = 0.86;
+const councilReach = 0.92;
+const edgePad = 14;
 
 const settle = (value: number): number => smoothstep((Math.min(Math.max(value, 0), 1) - 0.2) / 0.6);
 
@@ -25,7 +27,9 @@ export const writeMethodPose = (pose: CastPose, view: CastView, layer: CastLayer
     const { methodX: cx, methodY: cy, time } = view;
     const ghosts = view.methodSlotCount > 0;
     const radius = view.methodHeight * (ghosts ? 0.45 : 0.6);
-    const stretch = Math.min((view.methodWidth * (ghosts ? 0.47 : 0.5)) / Math.max(radius * (ghosts ? 1 : planReach), 1), stretchCap);
+    const stretch = ghosts
+        ? Math.min((view.methodWidth * 0.47) / Math.max(radius, 1), stretchCap)
+        : Math.min((view.methodWidth * 0.5 - edgePad) / Math.max(radius * councilReach, 1), stretchCap);
     const spread = ghosts ? 1 : 0.88;
     const dust = ghosts ? pose.dust - ghostDots : pose.dust;
     const glow = view.narrow ? 0.78 : 1.5;
@@ -60,8 +64,8 @@ export const writeMethodPose = (pose: CastPose, view: CastView, layer: CastLayer
 
         const ringAngle = (index / pose.majors) * tau + time * 0.05;
         const ringDepth = Math.sin(ringAngle);
-        const ringX = cx + Math.cos(ringAngle) * radius * 0.92 * stretch;
-        const ringY = cy + ringDepth * radius * 0.92 * ringTilt;
+        const ringX = cx + Math.cos(ringAngle) * radius * councilReach * stretch;
+        const ringY = cy + ringDepth * radius * councilReach * ringTilt;
         const ringSize = 20 * scale * (0.82 + 0.3 * ringDepth);
         const ringAlpha = 0.74 + 0.26 * ringDepth;
 
@@ -99,8 +103,8 @@ export const writeMethodPose = (pose: CastPose, view: CastView, layer: CastLayer
         const rayAlpha = 0.85 * Math.sin(Math.PI * flow);
 
         const ringAngle = (index / dust) * tau + time * 0.05;
-        const ringX = cx + Math.cos(ringAngle) * radius * 0.92 * stretch;
-        const ringY = cy + Math.sin(ringAngle) * radius * 0.92 * ringTilt + (seed - 0.5) * 2;
+        const ringX = cx + Math.cos(ringAngle) * radius * councilReach * stretch;
+        const ringY = cy + Math.sin(ringAngle) * radius * councilReach * ringTilt + (seed - 0.5) * 2;
         const ringAlpha = 0.34 * (0.7 + 0.3 * Math.sin(ringAngle));
 
         const x = cloudX + (rayX - cloudX) * fan;
@@ -129,8 +133,8 @@ export const writeMethodPose = (pose: CastPose, view: CastView, layer: CastLayer
         castLineRange.ringSegments,
         cx,
         cy,
-        radius * (planReach + (0.92 - planReach) * council) * stretch,
-        radius * (planReach + (0.92 - planReach) * council) * ringTilt,
+        radius * (planReach + (councilReach - planReach) * council) * stretch,
+        radius * (planReach + (councilReach - planReach) * council) * ringTilt,
         0,
         (0.3 * (1 - fan) + 0.45 * council) * weight * visible,
         0.85
