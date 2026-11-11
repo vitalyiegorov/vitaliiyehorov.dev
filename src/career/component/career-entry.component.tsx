@@ -16,7 +16,7 @@ export function CareerEntry({ years, title, company, children }: Props) {
                 aria-hidden="true"
             />
             <p className="font-mono text-sm tracking-[0.14em] text-accent">{years}</p>
-            <h3 className="display readable mt-3 text-[clamp(2rem,4vw,3.75rem)] font-semibold">{title}</h3>
+            <h3 className="display display-mid readable mt-3 text-[clamp(2rem,4vw,3.75rem)] font-semibold">{title}</h3>
             <p className="telemetry mt-3 text-muted">{company}</p>
             <p className="readable mt-5 max-w-xl text-lg leading-relaxed text-muted text-pretty">{children}</p>
         </li>

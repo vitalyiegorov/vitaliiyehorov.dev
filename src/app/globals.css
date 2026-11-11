@@ -11,10 +11,10 @@
     --line: oklch(0.96 0.006 240 / 0.12);
     --line-strong: oklch(0.96 0.006 240 / 0.24);
     --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
-    --fg-dim: color-mix(in srgb, var(--fg) 55%, var(--bg-deep));
-    --muted-dim: color-mix(in srgb, var(--muted) 66%, var(--bg-deep));
+    --fg-dim: color-mix(in srgb, var(--fg) 72%, var(--bg-deep));
+    --muted-dim: color-mix(in srgb, var(--muted) 82%, var(--bg-deep));
     --accent-dim: color-mix(in srgb, var(--accent) 55%, var(--bg-deep));
-    --link-dim: color-mix(in srgb, var(--fg) 70%, var(--bg-deep));
+    --link-dim: color-mix(in srgb, var(--fg) 85%, var(--bg-deep));
 }
 
 @theme inline {
@@ -172,9 +172,13 @@ html[data-scene='live'] .cast-canvas {
     line-height: 0.86;
 }
 
+.display-mid {
+    letter-spacing: -0.03em;
+}
+
 .display-numeral {
     font-variation-settings: 'wdth' 82;
-    letter-spacing: -0.05em;
+    letter-spacing: -0.035em;
     line-height: 0.82;
 }
 
