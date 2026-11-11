@@ -20,7 +20,7 @@ export function MethodStep({ index, label, title, children }: Props) {
                 />
                 <span className="text-accent">{index}</span> / {label}
             </p>
-            <h3 className="display readable mt-4 text-[clamp(2.2rem,4.4vw,4.25rem)] font-semibold">{title}</h3>
+            <h3 className="display display-mid readable mt-4 text-[clamp(2.2rem,4.4vw,4.25rem)] font-semibold">{title}</h3>
             <p className="step-body readable mt-5 max-w-lg text-lg leading-relaxed text-muted text-pretty">{children}</p>
             <div className="lg:hidden" aria-hidden="true">
                 <div data-cast-slot="method-step" className="cast-slot mt-6 h-44" />

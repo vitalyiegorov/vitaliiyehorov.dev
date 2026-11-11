@@ -17,7 +17,7 @@ export function WorkItem({ index, kind, title, links, children }: Props) {
                 </span>
                 <span className="telemetry">{kind}</span>
             </p>
-            <h3 translate="no" className="display readable mt-4 text-[clamp(2.5rem,4.3vw,4.2rem)] font-semibold">
+            <h3 translate="no" className="display display-mid readable mt-4 text-[clamp(2.5rem,4.3vw,4.2rem)] font-semibold">
                 {title}
             </h3>
             <p className="readable mt-4 max-w-xl text-base leading-relaxed text-muted text-pretty sm:text-lg">{children}</p>
