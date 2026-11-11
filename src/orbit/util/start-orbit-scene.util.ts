@@ -149,7 +149,17 @@ export const startOrbitScene = (canvas: HTMLCanvasElement, callbacks: Callbacks)
     cast.lines.visible = castOn;
     cast.points.visible = castOn;
     const castPoses = [createCastPose(castMajors, castDust), createCastPose(castMajors, castDust)] as const;
-    const castLabel: CastLabelState = { index: -1, width: 0, height: 0, x: Number.NaN, y: Number.NaN, opacity: -1, side: -1 };
+    const castLabel: CastLabelState = {
+        index: -1,
+        width: 0,
+        height: 0,
+        x: Number.NaN,
+        y: Number.NaN,
+        opacity: -1,
+        side: -1,
+        left: 0,
+        top: 0
+    };
     const view: CastView = {
         width: 1,
         height: 1,

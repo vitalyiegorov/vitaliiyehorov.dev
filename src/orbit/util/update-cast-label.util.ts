@@ -53,19 +53,13 @@ const clearPoints = (layer: CastLayer, keep: number, left: number, top: number, 
 
 const clamp = (value: number, low: number, high: number): number => Math.min(Math.max(value, low), Math.max(low, high));
 
-const placeAlong = (
-    view: CastView,
-    state: CastLabelState,
-    nodeX: number,
-    nodeY: number,
-    normalX: number,
-    normalY: number
-): [number, number] => {
+const placeAlong = (view: CastView, state: CastLabelState, nodeX: number, nodeY: number, normalX: number, normalY: number): void => {
     const reach = offset + (Math.abs(normalX) * state.width) / 2 + (Math.abs(normalY) * state.height) / 2;
     const left = nodeX + normalX * reach - state.width / 2;
     const top = nodeY + normalY * reach - state.height / 2;
 
-    return [clamp(left, view.workEdge + gap, view.width - railClear - state.width), clamp(top, gap, view.height - gap - state.height)];
+    state.left = clamp(left, view.workEdge + gap, view.width - railClear - state.width);
+    state.top = clamp(top, gap, view.height - gap - state.height);
 };
 
 export const updateCastLabel = (dom: CastDom, view: CastView, layer: CastLayer, weight: number, state: CastLabelState): void => {
@@ -105,7 +99,9 @@ export const updateCastLabel = (dom: CastDom, view: CastView, layer: CastLayer, 
         const turn = turns[side] ?? 0;
         const cos = Math.cos(turn);
         const sin = Math.sin(turn);
-        const [left, top] = placeAlong(view, state, nodeX, nodeY, normalX * cos - normalY * sin, normalX * sin + normalY * cos);
+        placeAlong(view, state, nodeX, nodeY, normalX * cos - normalY * sin, normalX * sin + normalY * cos);
+        const left = state.left;
+        const top = state.top;
         const right = left + state.width;
         const bottom = top + state.height;
         const crossed = crossings(layer, leader, left - pad, top - pad, right + pad, bottom + pad);
