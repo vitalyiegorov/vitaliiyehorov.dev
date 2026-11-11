@@ -191,6 +191,16 @@ html[data-scene='live'] .cast-canvas {
     color: var(--muted);
 }
 
+@media (width >= 64rem) {
+    .telemetry {
+        font-size: 0.8125rem;
+    }
+
+    dt.telemetry {
+        font-size: 0.875rem;
+    }
+}
+
 .hairline {
     height: 1px;
     background: linear-gradient(to right, var(--line-strong), var(--line) 60%, transparent);
