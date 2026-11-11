@@ -7,7 +7,7 @@ interface Props {
 
 export function Stat({ value, label }: Props) {
     return (
-        <div className="reveal flex flex-col gap-3 border-t border-line pt-5 sm:pt-6 lg:border-t-0">
+        <div className="reveal flex flex-col gap-3 border-t border-line pt-5 sm:pt-6 lg:col-span-3 lg:border-line-strong">
             <dt className="telemetry readable order-2 text-muted">{label}</dt>
             <dd className="order-1 m-0">
                 <span className="display display-numeral readable block text-[clamp(4.25rem,9.8vw,8.8rem)] font-semibold tabular-nums text-fg">

@@ -14,6 +14,7 @@
     --fg-dim: color-mix(in srgb, var(--fg) 55%, var(--bg-deep));
     --muted-dim: color-mix(in srgb, var(--muted) 66%, var(--bg-deep));
     --accent-dim: color-mix(in srgb, var(--accent) 55%, var(--bg-deep));
+    --link-dim: color-mix(in srgb, var(--fg) 70%, var(--bg-deep));
 }
 
 @theme inline {
@@ -255,10 +256,30 @@ button:focus-visible {
 }
 
 @keyframes light-up {
+    from {
+        background: transparent;
+        box-shadow: none;
+    }
+
     to {
         background: var(--accent);
         border-color: var(--accent);
         box-shadow: 0 0 1.25rem var(--accent);
+    }
+}
+
+@keyframes light-up-now {
+    from {
+        background: transparent;
+        box-shadow: none;
+    }
+
+    to {
+        background: var(--accent);
+        box-shadow:
+            0 0 0 0.375rem var(--bg-deep),
+            0 0 0 0.4375rem color-mix(in srgb, var(--accent) 45%, transparent),
+            0 0 1.75rem 0.25rem var(--accent);
     }
 }
 
@@ -305,10 +326,10 @@ button:focus-visible {
     left: 0;
     z-index: 20;
     pointer-events: none;
-    padding: 0.3rem 0.55rem;
+    padding: 0.5rem;
     border: 1px solid var(--line-strong);
     border-radius: 0.375rem;
-    background: oklch(0.11 0.012 250 / 0.85);
+    background: oklch(0.11 0.012 250 / 0.95);
     white-space: nowrap;
     color: var(--fg);
     opacity: 0;
@@ -317,6 +338,35 @@ button:focus-visible {
 
 html[data-scene='off'] .cast-label {
     display: none;
+}
+
+.rail-dot {
+    background: var(--accent);
+    box-shadow: 0 0 1.25rem var(--accent);
+}
+
+.rail li:last-child > .rail-dot {
+    width: 1rem;
+    height: 1rem;
+    box-shadow:
+        0 0 0 0.375rem var(--bg-deep),
+        0 0 0 0.4375rem color-mix(in srgb, var(--accent) 45%, transparent),
+        0 0 1.75rem 0.25rem var(--accent);
+}
+
+.rail-now > span {
+    grid-area: 1 / 1;
+}
+
+.rail-now > span:not(:first-child) {
+    visibility: hidden;
+}
+
+@keyframes rail-now {
+    from,
+    to {
+        visibility: visible;
+    }
 }
 
 .rail,
@@ -335,6 +385,64 @@ html[data-scene='off'] .cast-label {
 }
 
 @supports (animation-timeline: view()) {
+    body {
+        timeline-scope: --section-1, --section-2, --section-3, --section-4, --section-5, --section-6;
+    }
+
+    #top {
+        view-timeline: --section-1 block;
+    }
+
+    #numbers {
+        view-timeline: --section-2 block;
+    }
+
+    #method {
+        view-timeline: --section-3 block;
+    }
+
+    #career {
+        view-timeline: --section-4 block;
+    }
+
+    #work {
+        view-timeline: --section-5 block;
+    }
+
+    #contact {
+        view-timeline: --section-6 block;
+    }
+
+    .rail-now > span {
+        visibility: hidden;
+        animation: rail-now linear none;
+        animation-range: cover 50vh cover calc(100% - 50vh);
+    }
+
+    .rail-now > span:nth-child(1) {
+        animation-timeline: --section-1;
+    }
+
+    .rail-now > span:nth-child(2) {
+        animation-timeline: --section-2;
+    }
+
+    .rail-now > span:nth-child(3) {
+        animation-timeline: --section-3;
+    }
+
+    .rail-now > span:nth-child(4) {
+        animation-timeline: --section-4;
+    }
+
+    .rail-now > span:nth-child(5) {
+        animation-timeline: --section-5;
+    }
+
+    .rail-now > span:nth-child(6) {
+        animation-timeline: --section-6;
+    }
+
     html:not([data-scene='off']) .cast-slot {
         display: block;
     }
@@ -375,17 +483,27 @@ html[data-scene='off'] .cast-label {
             html[data-scene='live']:not([data-motion='paused']) .career-intro {
                 top: 35vh;
             }
+        }
 
-            html[data-scene='live']:not([data-motion='paused']) .work-row :is(h3, p, span) {
-                transition: color 0.4s var(--ease-out);
-            }
+        html[data-scene='live']:not([data-motion='paused']) :is(.work-row, .step) :is(h3, p, span, a) {
+            transition: color 0.4s var(--ease-out);
+        }
 
-            html[data-scene='live']:not([data-motion='paused']) .work-row:not([data-cast-active], :hover, :focus-within) {
-                --fg: var(--fg-dim);
-                --muted: var(--muted-dim);
-                --accent: var(--accent-dim);
-                color: var(--fg);
-            }
+        html[data-scene='live']:not([data-motion='paused']) .step-body {
+            animation: none;
+            opacity: 1;
+        }
+
+        html[data-scene='live']:not([data-motion='paused'])
+            :is(.work-row:not([data-cast-active], :hover, :focus-within), .step:not([data-cast-active])) {
+            --fg: var(--fg-dim);
+            --muted: var(--muted-dim);
+            --accent: var(--accent-dim);
+            color: var(--fg);
+        }
+
+        html[data-scene='live']:not([data-motion='paused']) .work-row:not([data-cast-active], :hover, :focus-within) .work-link {
+            color: var(--link-dim);
         }
     }
 }
@@ -432,6 +550,10 @@ html[data-scene='off'] .cast-label {
             animation-range: cover 42% cover 50%;
         }
 
+        html:not([data-motion='paused']) .rail li:last-child > .rail-dot {
+            animation-name: light-up-now;
+        }
+
         .step {
             view-timeline: --step block;
         }
@@ -451,6 +573,13 @@ html[data-scene='off'] .cast-label {
         .step:first-child .step-mark {
             animation-name: step-mark-first;
         }
+    }
+}
+
+@media (width < 40rem) {
+    body {
+        letter-spacing: 0;
+        text-rendering: geometricPrecision;
     }
 }
 

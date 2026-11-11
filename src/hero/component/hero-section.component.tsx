@@ -18,7 +18,7 @@ export function HeroSection() {
                     <h1
                         translate="no"
                         id="hero-title"
-                        className="display readable text-[clamp(4.6rem,19vw,14.5rem)] font-bold text-fg lg:text-[clamp(6rem,12.4vw,14.5rem)]"
+                        className="display readable text-[clamp(4.6rem,29vw,14.5rem)] font-bold text-fg lg:text-[clamp(6rem,12.4vw,14.5rem)]"
                     >
                         Vitalii
                         <br />
@@ -30,7 +30,7 @@ export function HeroSection() {
                         I lead engineers and a <span className="text-accent">fleet of AI agents</span>. Both ship to production.
                     </p>
                     <p className="rise [--rise:2] readable max-w-md text-base leading-relaxed text-muted text-pretty">
-                        <span className="whitespace-nowrap">
+                        <span className="block whitespace-nowrap">
                             Engineering Manager at{' '}
                             <a
                                 className="inline-block py-4 -my-4 text-fg underline decoration-line-strong underline-offset-4 hover:decoration-accent"
@@ -39,10 +39,12 @@ export function HeroSection() {
                                 ToolSense
                             </a>
                             , Vienna
-                        </span>{' '}
-                        · <span className="whitespace-nowrap">15+ years</span> ·{' '}
-                        <span className="whitespace-nowrap">ex-founder, ex-CTO</span> ·{' '}
-                        <span className="whitespace-nowrap">still writes code</span>
+                        </span>
+                        <span className="block">
+                            <span className="whitespace-nowrap">15+ years · ex-founder, ex-CTO</span>
+                            <span className="max-sm:hidden"> · </span>
+                            <span className="whitespace-nowrap max-sm:block">still writes code</span>
+                        </span>
                     </p>
                     <div className="rise [--rise:3] lg:mt-1">
                         <ContactLinks size="md" />

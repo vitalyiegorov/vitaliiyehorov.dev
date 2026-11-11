@@ -149,7 +149,17 @@ export const startOrbitScene = (canvas: HTMLCanvasElement, callbacks: Callbacks)
     cast.lines.visible = castOn;
     cast.points.visible = castOn;
     const castPoses = [createCastPose(castMajors, castDust), createCastPose(castMajors, castDust)] as const;
-    const castLabel: CastLabelState = { index: -1, width: 0, height: 0, x: Number.NaN, y: Number.NaN, opacity: -1, side: -1 };
+    const castLabel: CastLabelState = {
+        index: -1,
+        width: 0,
+        height: 0,
+        x: Number.NaN,
+        y: Number.NaN,
+        opacity: -1,
+        side: -1,
+        left: 0,
+        top: 0
+    };
     const view: CastView = {
         width: 1,
         height: 1,
@@ -181,6 +191,7 @@ export const startOrbitScene = (canvas: HTMLCanvasElement, callbacks: Callbacks)
         hover: -1,
         workGlow: new Float32Array(6),
         workTitles: new Float32Array(6),
+        workNormals: new Float32Array(12),
         text: new Float32Array(64 * 4),
         textCount: 0
     };
@@ -274,10 +285,25 @@ export const startOrbitScene = (canvas: HTMLCanvasElement, callbacks: Callbacks)
         }
     };
 
+    const contact = { on: false, x: 0, y: 0 };
+    const readContact = (): void => {
+        const rect = dom.contactCore?.getBoundingClientRect();
+        contact.on = Boolean(rect && rect.width > 0);
+        contact.x = rect ? (rect.left + rect.right) / 2 : 0;
+        contact.y = rect ? (rect.top + rect.bottom) / 2 : 0;
+    };
     const hasAnchor = (index: number): boolean =>
-        castOn && ((index === dom.methodStage && view.method) || (index === dom.workStage && view.workWidth > 0));
-    const anchorX = (index: number): number => ((index === dom.methodStage ? view.methodX : view.workX) / view.width) * 2 - 1;
-    const anchorY = (index: number): number => 1 - ((index === dom.methodStage ? view.methodY : view.workY) / view.height) * 2;
+        (index === dom.contactStage && contact.on) ||
+        (castOn && ((index === dom.methodStage && view.method) || (index === dom.workStage && view.workWidth > 0)));
+    const anchorPoint = (index: number): readonly [number, number] => {
+        if (index === dom.contactStage) {
+            return [contact.x, contact.y];
+        }
+
+        return index === dom.methodStage ? [view.methodX, view.methodY] : [view.workX, view.workY];
+    };
+    const anchorX = (index: number): number => (anchorPoint(index)[0] / view.width) * 2 - 1;
+    const anchorY = (index: number): number => 1 - (anchorPoint(index)[1] / view.height) * 2;
     const muteOf = (index: number): number => {
         const drawn = (index === dom.methodStage && view.method) || (index === dom.careerStage && view.career) || index === dom.workStage;
 
@@ -304,7 +330,7 @@ export const startOrbitScene = (canvas: HTMLCanvasElement, callbacks: Callbacks)
             readCastRects(dom, view, from, to, still);
             const methodOn = view.method && (from === dom.methodStage || to === dom.methodStage);
             marks.method = markCastActive(dom.methodSteps, methodOn ? Math.round(view.methodProgress) : -1, marks.method);
-            const workOn = view.workWidth > 0 && (from === dom.workStage || to === dom.workStage);
+            const workOn = view.workCount > 0 && (from === dom.workStage || to === dom.workStage);
             marks.work = markCastActive(dom.workRows, workOn ? view.workActive : -1, marks.work);
         }
         blendFrames(stage, target);
@@ -334,6 +360,7 @@ export const startOrbitScene = (canvas: HTMLCanvasElement, callbacks: Callbacks)
                 target.y += (lineY - target.y) * target.line;
             }
         }
+        readContact();
         const fromAnchor = hasAnchor(from);
         const toAnchor = hasAnchor(to);
         if (fromAnchor || toAnchor) {

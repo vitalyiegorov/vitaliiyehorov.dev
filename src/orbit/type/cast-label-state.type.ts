@@ -6,4 +6,6 @@ export interface CastLabelState {
     y: number;
     opacity: number;
     side: number;
+    left: number;
+    top: number;
 }

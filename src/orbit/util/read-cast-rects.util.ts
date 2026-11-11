@@ -125,7 +125,7 @@ const readWork = (dom: CastDom, view: CastView): void => {
                 nearest = distance;
                 active = index;
             }
-            view.workTitles[index] = (title.top + title.bottom) / 2;
+            view.workTitles[index] = title.top + (dom.workMidlines[index] ?? title.height / 2);
             count += 1;
         }
     }

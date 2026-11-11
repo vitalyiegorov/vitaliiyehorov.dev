@@ -12,6 +12,8 @@ export const createCastPose = (majors: number, dust: number): CastPose => {
         size: new Float32Array(count),
         alpha: new Float32Array(count),
         lit: new Float32Array(count),
-        hollow: new Float32Array(count)
+        hollow: new Float32Array(count),
+        focus: new Float32Array(count),
+        crown: new Float32Array(count)
     };
 };

@@ -24,9 +24,11 @@ export const createCastLayer = (majors: number, dust: number, uniforms: Record<s
 
     const pointPosition = dynamic(count, 3);
     const pointShade = dynamic(count, 4);
+    const pointMark = dynamic(count, 2);
     const pointGeometry = new BufferGeometry();
     pointGeometry.setAttribute('position', pointPosition);
     pointGeometry.setAttribute('aCast', pointShade);
+    pointGeometry.setAttribute('aMark', pointMark);
     pointGeometry.setAttribute('aKind', new BufferAttribute(kind, 1));
 
     const vertices = castLineRange.total * 2;
@@ -53,5 +55,5 @@ export const createCastLayer = (majors: number, dust: number, uniforms: Record<s
     lines.renderOrder = 1;
     points.renderOrder = 2;
 
-    return { points, lines, pointPosition, pointShade, linePosition, lineShade, seed };
+    return { points, lines, pointPosition, pointShade, pointMark, linePosition, lineShade, seed };
 };

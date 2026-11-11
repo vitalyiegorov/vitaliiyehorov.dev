@@ -8,4 +8,6 @@ export interface CastPose {
     readonly alpha: Float32Array;
     readonly lit: Float32Array;
     readonly hollow: Float32Array;
+    readonly focus: Float32Array;
+    readonly crown: Float32Array;
 }
