@@ -39,6 +39,7 @@ test('sets title, description, canonical and social metadata', async ({ page }) 
     await expect(page.locator('meta[property="og:image:alt"]')).toHaveAttribute('content', /Vitalii Yehorov/u);
     await expect(page.locator('meta[name="twitter:card"]')).toHaveAttribute('content', 'summary_large_image');
     await expect(page.locator('link[rel="alternate"][href$="/llms.txt"]')).toHaveCount(1);
+    await expect(page.locator('link[rel="alternate"][href$="/llms-full.txt"]')).toHaveCount(1);
 });
 
 test('ships JSON-LD with a Person inside a ProfilePage', async ({ page }) => {
@@ -90,6 +91,16 @@ test('serves robots.txt, sitemap.xml and llms.txt', async ({ request }) => {
     expect(text.startsWith('# Vitalii Yehorov\n')).toBe(true);
     expect(text).toContain('https://www.linkedin.com/in/vitalii-iegorov');
     expect(text).toContain('https://github.com/vitalyiegorov');
+    expect(text).toContain(`${origin}/llms-full.txt`);
+
+    const full = await request.get('/llms-full.txt');
+    expect(full.status()).toBe(200);
+    expect(full.headers()['content-type']).toContain('text/plain');
+    const fullText = await full.text();
+    expect(fullText.startsWith('# Vitalii Yehorov\n')).toBe(true);
+    for (const heading of ['## About', '## Method', '## Career', '## Selected work', '## Contact']) {
+        expect(fullText).toContain(heading);
+    }
 });
 
 test('returns a real 404 for unknown paths', async ({ request }) => {
