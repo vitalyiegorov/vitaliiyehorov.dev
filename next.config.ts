@@ -13,7 +13,36 @@ const nextConfig: NextConfig = {
     cacheComponents: true,
     partialPrefetching: true,
     poweredByHeader: false,
-    headers: async () => [{ source: '/:path*', headers: securityHeaders }]
+    headers: async () => [
+        { source: '/:path*', headers: securityHeaders },
+        {
+            source: '/',
+            headers: [
+                { key: 'Vary', value: 'Accept' },
+                {
+                    key: 'Link',
+                    value: '</llms.txt>; rel="alternate"; type="text/plain", </index.md>; rel="alternate"; type="text/markdown"'
+                }
+            ]
+        }
+    ],
+    rewrites: async () => ({
+        beforeFiles: [
+            {
+                source: '/',
+                has: [
+                    {
+                        type: 'header',
+                        key: 'accept',
+                        value: '(?!.*text/markdown(?:\\s*;\\s*(?![qQ]=)[^,;]*)*\\s*;\\s*[qQ]=0(?:\\.0+)?\\s*(?:,|$)).*text/markdown.*'
+                    }
+                ],
+                destination: '/index.md'
+            }
+        ],
+        afterFiles: [],
+        fallback: []
+    })
 };
 
 export default nextConfig;

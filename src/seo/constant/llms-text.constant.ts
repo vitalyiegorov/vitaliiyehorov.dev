@@ -38,4 +38,8 @@ One session plans the work, agents from different model families build it in par
 - LinkedIn: ${site.linkedin}
 - GitHub: ${site.github}
 - Email: ${site.email}
+
+## Optional
+
+- [Full text](${site.url}/llms-full.txt): every section of the site as one Markdown file
 `;

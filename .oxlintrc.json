@@ -47,6 +47,12 @@
     ],
     "overrides": [
         {
+            "files": ["src/shared/component/site-header.component.tsx", "src/lost/component/lost-section.component.tsx"],
+            "rules": {
+                "nextjs/no-html-link-for-pages": "off"
+            }
+        },
+        {
             "files": ["test/**/*.ts"],
             "rules": {
                 "no-await-in-loop": "off"
