@@ -8,6 +8,7 @@ import { SiteHeader } from '@/shared/component/site-header.component';
 export const metadata: Metadata = {
     title: 'Signal lost · 404 · Vitalii Yehorov',
     description: 'Nothing orbits at this address. Head back to the home page of Vitalii Yehorov, Engineering Manager in Vienna.',
+    alternates: { canonical: null },
     robots: { index: false, follow: true }
 };
 

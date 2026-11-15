@@ -8,7 +8,10 @@ test('renders the lost-signal page with a way home', async ({ page }) => {
     const response = await page.goto('/no-such-page');
     expect(response?.status()).toBe(404);
     await expect(page).toHaveTitle(/404/u);
-    await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', /noindex/u);
+    const robots = await page.locator('meta[name="robots"]').evaluateAll(tags => tags.map(tag => tag.getAttribute('content')));
+    expect(robots.length).toBeGreaterThan(0);
+    expect(robots.every(content => content?.startsWith('noindex'))).toBe(true);
+    await expect(page.locator('link[rel="canonical"]')).toHaveCount(0);
     await expect(page.locator('h1')).toHaveCount(1);
     await expect(page.getByRole('heading', { level: 1 })).toHaveText(/Signal\s*lost\./u);
     await expect(page.locator('main')).toHaveCount(1);

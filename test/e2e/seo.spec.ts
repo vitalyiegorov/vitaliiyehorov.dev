@@ -40,6 +40,8 @@ test('sets title, description, canonical and social metadata', async ({ page }) 
     await expect(page.locator('meta[name="twitter:card"]')).toHaveAttribute('content', 'summary_large_image');
     await expect(page.locator('link[rel="alternate"][href$="/llms.txt"]')).toHaveCount(1);
     await expect(page.locator('link[rel="alternate"][href$="/llms-full.txt"]')).toHaveCount(1);
+    await expect(page.locator('link[rel="alternate"][type="text/markdown"][href$="/index.md"]')).toHaveCount(1);
+    await expect(page.locator('footer time')).toHaveAttribute('datetime', /^\d{4}-\d{2}-\d{2}$/u);
 });
 
 test('ships JSON-LD with a Person inside a ProfilePage', async ({ page }) => {
@@ -101,6 +103,21 @@ test('serves robots.txt, sitemap.xml and llms.txt', async ({ request }) => {
     for (const heading of ['## About', '## Method', '## Career', '## Selected work', '## Contact']) {
         expect(fullText).toContain(heading);
     }
+});
+
+test('serves Markdown to agents that ask for it', async ({ request }) => {
+    const mirror = await request.get('/index.md');
+    expect(mirror.status()).toBe(200);
+    expect(mirror.headers()['content-type']).toContain('text/markdown');
+    expect((await mirror.text()).startsWith('# Vitalii Yehorov\n')).toBe(true);
+
+    const negotiated = await request.get('/', { headers: { Accept: 'text/markdown' } });
+    expect(negotiated.status()).toBe(200);
+    expect(negotiated.headers()['content-type']).toContain('text/markdown');
+
+    const html = await request.get('/');
+    expect(html.headers()['content-type']).toContain('text/html');
+    expect(html.headers().link).toContain('</llms.txt>; rel="alternate"');
 });
 
 test('returns a real 404 for unknown paths', async ({ request }) => {
