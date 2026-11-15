@@ -18,7 +18,7 @@ test('renders the lost-signal page with a way home', async ({ page }) => {
     await expect(page.locator('body > header')).toHaveCount(1);
     await expect(page.locator('body > footer')).toHaveCount(1);
     await expect(page.getByRole('link', { name: 'Back to orbit' })).toHaveAttribute('href', '/');
-    await expect(page.getByRole('link', { name: 'Report it' })).toHaveAttribute('href', '/#contact');
+    await expect(page.getByRole('link', { name: 'Contact me' })).toHaveAttribute('href', '/#contact');
     await expect(page.locator('.lost-system')).toHaveAttribute('aria-hidden', 'true');
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
     expect(overflow).toBe(0);
