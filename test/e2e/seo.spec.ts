@@ -115,7 +115,7 @@ test('serves Markdown to agents that ask for it', async ({ request }) => {
     expect(negotiated.status()).toBe(200);
     expect(negotiated.headers()['content-type']).toContain('text/markdown');
 
-    for (const accept of ['text/html,text/markdown;q=0', 'text/html, text/markdown; charset=utf-8; q=0']) {
+    for (const accept of ['text/html,text/markdown;q=0', 'text/html, text/markdown; charset=utf-8; q=0', 'text/html, text/markdown;Q=0']) {
         const refused = await request.get('/', { headers: { Accept: accept } });
         expect(refused.headers()['content-type'], accept).toContain('text/html');
     }
