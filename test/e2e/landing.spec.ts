@@ -29,6 +29,7 @@ const workLinks = [
     'https://github.com/vitalyiegorov/suuudokuuu',
     'https://jointlens.ai',
     'https://github.com/rnw-community/rnw-community',
+    'https://unyoke.dev',
     'https://github.com/vitalyiegorov/tart-runner-fleet',
     'https://github.com/pingdotgg/t3code/pulls?q=is%3Apr+author%3Avitalyiegorov',
     'https://github.com/callstackincubator/simlock',

@@ -63,16 +63,15 @@ export function WorkSection() {
                         <WorkItem
                             index="W.05"
                             kind="Open source · Go"
-                            title="Tart Runner Fleet"
+                            title="Unyoke"
                             links={
-                                <WorkLink
-                                    href="https://github.com/vitalyiegorov/tart-runner-fleet"
-                                    label="GitHub"
-                                    project="Tart Runner Fleet"
-                                />
+                                <>
+                                    <WorkLink href="https://unyoke.dev" label="unyoke.dev" />
+                                    <WorkLink href="https://github.com/vitalyiegorov/tart-runner-fleet" label="GitHub" project="Unyoke" />
+                                </>
                             }
                         >
-                            GitHub Actions runners on Apple‑silicon Macs. Every job gets a throwaway VM.
+                            GitHub Actions on your own Macs and Linux boxes. Every job gets a throwaway VM or container.
                         </WorkItem>
                         <WorkItem
                             index="W.06"
