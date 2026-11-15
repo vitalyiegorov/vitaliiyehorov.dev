@@ -30,7 +30,13 @@ const nextConfig: NextConfig = {
         beforeFiles: [
             {
                 source: '/',
-                has: [{ type: 'header', key: 'accept', value: '(?!.*text/markdown\\s*;\\s*q=0(?:\\.0+)?\\s*(?:,|$)).*text/markdown.*' }],
+                has: [
+                    {
+                        type: 'header',
+                        key: 'accept',
+                        value: '(?!.*text/markdown(?:\\s*;\\s*(?!q=)[^,;]*)*\\s*;\\s*q=0(?:\\.0+)?\\s*(?:,|$)).*text/markdown.*'
+                    }
+                ],
                 destination: '/index.md'
             }
         ],
