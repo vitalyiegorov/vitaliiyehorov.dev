@@ -115,6 +115,9 @@ test('serves Markdown to agents that ask for it', async ({ request }) => {
     expect(negotiated.status()).toBe(200);
     expect(negotiated.headers()['content-type']).toContain('text/markdown');
 
+    const refused = await request.get('/', { headers: { Accept: 'text/html,text/markdown;q=0' } });
+    expect(refused.headers()['content-type']).toContain('text/html');
+
     const html = await request.get('/');
     expect(html.headers()['content-type']).toContain('text/html');
     expect(html.headers().link).toContain('</llms.txt>; rel="alternate"');

@@ -1,5 +1,3 @@
-import Link from 'next/link';
-
 import { MotionToggle } from './motion-toggle.component';
 
 export function SiteHeader() {
@@ -20,13 +18,13 @@ export function SiteHeader() {
                 <div className="flex items-center gap-4 sm:gap-6">
                     <MotionToggle />
                     <nav aria-label="Primary" className="flex">
-                        <Link
+                        <a
                             className="telemetry pointer-events-auto flex min-h-11 items-center gap-2 text-fg hover:text-accent"
                             href="/#contact"
                         >
                             <span className="signal-dot" aria-hidden="true" />
                             Contact
-                        </Link>
+                        </a>
                     </nav>
                 </div>
             </div>

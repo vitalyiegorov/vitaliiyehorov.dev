@@ -440,3 +440,12 @@ test('falls back to the rail, the ruled list and static steps without WebGL', as
     await expect(page.locator('[data-cast-active]')).toHaveCount(0);
     await expect.poll(() => workColors(page)).toBe(1);
 });
+
+test('moves keyboard focus to the contact section from the header', async ({ page }) => {
+    await page.goto('/');
+    await page.getByRole('navigation', { name: 'Primary' }).getByRole('link', { name: 'Contact' }).focus();
+    await page.keyboard.press('Enter');
+    await expect(page).toHaveURL(/#contact$/u);
+    await page.keyboard.press('Tab');
+    await expect(page.locator('#contact a').first()).toBeFocused();
+});

@@ -75,6 +75,12 @@ export default function RootLayout({ children }: Props) {
                 <script dangerouslySetInnerHTML={{ __html: sceneProbeScript }} />
             </head>
             <body>
+                <a
+                    className="fixed top-3 left-3 z-[70] -translate-y-24 rounded-full bg-accent px-5 py-3 font-mono text-sm text-bg-deep focus-visible:translate-y-0"
+                    href="#main"
+                >
+                    Skip to content
+                </a>
                 {children}
                 <Analytics />
             </body>

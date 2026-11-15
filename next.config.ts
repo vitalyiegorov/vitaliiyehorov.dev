@@ -27,7 +27,13 @@ const nextConfig: NextConfig = {
         }
     ],
     rewrites: async () => ({
-        beforeFiles: [{ source: '/', has: [{ type: 'header', key: 'accept', value: '.*text/markdown.*' }], destination: '/index.md' }],
+        beforeFiles: [
+            {
+                source: '/',
+                has: [{ type: 'header', key: 'accept', value: '(?!.*text/markdown\\s*;\\s*q=0(?:\\.0+)?\\s*(?:,|$)).*text/markdown.*' }],
+                destination: '/index.md'
+            }
+        ],
         afterFiles: [],
         fallback: []
     })

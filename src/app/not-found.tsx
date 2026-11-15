@@ -15,12 +15,6 @@ export const metadata: Metadata = {
 export default function NotFound() {
     return (
         <>
-            <a
-                className="fixed top-3 left-3 z-[70] -translate-y-24 rounded-full bg-accent px-5 py-3 font-mono text-sm text-bg-deep focus-visible:translate-y-0"
-                href="#main"
-            >
-                Skip to content
-            </a>
             <LostSky />
             <div className="grain" aria-hidden="true" />
             <SiteHeader />
