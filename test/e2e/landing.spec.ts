@@ -419,6 +419,11 @@ test('hands the career timeline to the live scene', async ({ page }) => {
     await expect(page.locator('#work [data-cast-active]')).toHaveCount(1);
     await expect(page.locator('#work ol > li').nth(2)).toHaveAttribute('data-cast-active', '');
     await expect.poll(() => workColors(page)).toBe(2);
+    await page
+        .locator('#work ol > li')
+        .nth(6)
+        .evaluate(row => row.scrollIntoView({ block: 'center', behavior: 'instant' }));
+    await expect(page.locator('#work ol > li').nth(6)).toHaveAttribute('data-cast-active', '');
     await expectContent(page);
 });
 

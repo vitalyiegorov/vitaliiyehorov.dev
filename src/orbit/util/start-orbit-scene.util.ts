@@ -196,9 +196,9 @@ export const startOrbitScene = (canvas: HTMLCanvasElement, castCanvas: HTMLCanva
         workActive: -1,
         workCount: 0,
         hover: -1,
-        workGlow: new Float32Array(6),
-        workTitles: new Float32Array(6),
-        workNormals: new Float32Array(12),
+        workGlow: new Float32Array(7),
+        workTitles: new Float32Array(7),
+        workNormals: new Float32Array(14),
         text: new Float32Array(64 * 4),
         textCount: 0
     };
