@@ -25,8 +25,11 @@ const scrollThrough = async (page: Page): Promise<void> => {
 const workLinks = [
     'https://www.budgie.at',
     'https://github.com/budgie-at/budgie',
+    'https://apps.apple.com/app/id6449440933',
+    'https://play.google.com/store/apps/details?id=com.vitaliiyehorov.suuudokuuu',
     'https://suuudokuuu.com',
     'https://github.com/vitalyiegorov/suuudokuuu',
+    'https://apps.apple.com/app/id6814132709',
     'https://jointlens.ai',
     'https://github.com/rnw-community/rnw-community',
     'https://unyoke.dev',
@@ -42,7 +45,7 @@ const expectContent = async (page: Page): Promise<void> => {
     await expectVisible(page, '#method ol > li');
     await expectVisible(page, '#career ol > li');
     await expectVisible(page, '#work ol > li');
-    await expect(page.locator('#work ol > li')).toHaveCount(6);
+    await expect(page.locator('#work ol > li')).toHaveCount(7);
     const hrefs = await page.locator('#work ol > li a').evaluateAll(links => links.map(link => link.getAttribute('href')));
     expect(hrefs).toEqual(workLinks);
 };
@@ -391,9 +394,9 @@ test('keeps a deep link in place without WebGL', async ({ page }) => {
 
 test('lists the work as an open ruled list, not cards', async ({ page }) => {
     await page.goto('/');
-    await expect(page.locator('#work ol[data-cast-list] > li[data-cast-row]')).toHaveCount(6);
+    await expect(page.locator('#work ol[data-cast-list] > li[data-cast-row]')).toHaveCount(7);
     await expect(page.locator('#work article, #work .panel')).toHaveCount(0);
-    await expect(page.locator('#work [data-cast-index]')).toHaveText(['W.01', 'W.02', 'W.03', 'W.04', 'W.05', 'W.06']);
+    await expect(page.locator('#work [data-cast-index]')).toHaveText(['W.01', 'W.02', 'W.03', 'W.04', 'W.05', 'W.06', 'W.07']);
     await expect(page.locator('#work [data-cast-label]')).toHaveAttribute('aria-hidden', 'true');
     await expectContent(page);
 });
@@ -416,6 +419,11 @@ test('hands the career timeline to the live scene', async ({ page }) => {
     await expect(page.locator('#work [data-cast-active]')).toHaveCount(1);
     await expect(page.locator('#work ol > li').nth(2)).toHaveAttribute('data-cast-active', '');
     await expect.poll(() => workColors(page)).toBe(2);
+    await page
+        .locator('#work ol > li')
+        .nth(6)
+        .evaluate(row => row.scrollIntoView({ block: 'center', behavior: 'instant' }));
+    await expect(page.locator('#work ol > li').nth(6)).toHaveAttribute('data-cast-active', '');
     await expectContent(page);
 });
 

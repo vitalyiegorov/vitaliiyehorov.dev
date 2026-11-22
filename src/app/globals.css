@@ -555,6 +555,14 @@ html[data-scene='off'] .cast-label {
         html[data-scene='live']:not([data-motion='paused']) .work-row:not([data-cast-active], :hover, :focus-within) .work-link {
             color: var(--link-dim);
         }
+
+        html[data-scene='live']:not([data-motion='paused']) .app-icon {
+            transition: opacity 0.4s var(--ease-out);
+        }
+
+        html[data-scene='live']:not([data-motion='paused']) .work-row:not([data-cast-active], :hover, :focus-within) .app-icon {
+            opacity: 0.65;
+        }
     }
 }
 
