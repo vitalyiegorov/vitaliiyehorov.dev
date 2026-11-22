@@ -67,8 +67,16 @@ Open source, React Native. Privacy-first, offline-first money app with an AI cha
 
 Open source, Expo. Sudoku for web, iOS and Android from one codebase.
 
+- App Store: https://apps.apple.com/app/id6449440933
+- Google Play: https://play.google.com/store/apps/details?id=com.vitaliiyehorov.suuudokuuu
 - Site: https://suuudokuuu.com
 - Source: https://github.com/vitalyiegorov/suuudokuuu
+
+### Pony Garden
+
+Game, Swift, iPad and Mac. Solve hedge mazes and care for a pony. Offline play for ages 4 to 7, with no ads, accounts or in-app purchases.
+
+- App Store: https://apps.apple.com/app/id6814132709
 
 ### JointLens
 

@@ -1,3 +1,5 @@
+import { AppStoreLink } from './app-store-link.component';
+import { GooglePlayLink } from './google-play-link.component';
 import { WorkItem } from './work-item.component';
 import { WorkLink } from './work-link.component';
 
@@ -22,7 +24,7 @@ export function WorkSection() {
                             links={
                                 <>
                                     <WorkLink href="https://www.budgie.at" label="budgie.at" />
-                                    <WorkLink href="https://github.com/budgie-at/budgie" label="GitHub" project="Budgie" />
+                                    <WorkLink href="https://github.com/budgie-at/budgie" label="GitHub" context="Budgie on" />
                                 </>
                             }
                         >
@@ -32,10 +34,17 @@ export function WorkSection() {
                             index="W.02"
                             kind="Open source · Expo"
                             title="Suuudokuuu"
+                            icon="/work/suuudokuuu.webp"
+                            install={
+                                <>
+                                    <AppStoreLink id="6449440933" project="Suuudokuuu" />
+                                    <GooglePlayLink id="com.vitaliiyehorov.suuudokuuu" project="Suuudokuuu" />
+                                </>
+                            }
                             links={
                                 <>
                                     <WorkLink href="https://suuudokuuu.com" label="suuudokuuu.com" />
-                                    <WorkLink href="https://github.com/vitalyiegorov/suuudokuuu" label="GitHub" project="Suuudokuuu" />
+                                    <WorkLink href="https://github.com/vitalyiegorov/suuudokuuu" label="GitHub" context="Suuudokuuu on" />
                                 </>
                             }
                         >
@@ -43,6 +52,15 @@ export function WorkSection() {
                         </WorkItem>
                         <WorkItem
                             index="W.03"
+                            kind="Game · Swift · iPad & Mac"
+                            title="Pony Garden"
+                            icon="/work/pony-garden.webp"
+                            install={<AppStoreLink id="6814132709" project="Pony Garden" />}
+                        >
+                            Solve hedge mazes and care for a pony. Offline play for ages 4 to 7, with no ads, accounts or in‑app purchases.
+                        </WorkItem>
+                        <WorkItem
+                            index="W.04"
                             kind="Product · Next.js · LLMs"
                             title="JointLens"
                             links={<WorkLink href="https://jointlens.ai" label="jointlens.ai" />}
@@ -51,30 +69,34 @@ export function WorkSection() {
                             report.
                         </WorkItem>
                         <WorkItem
-                            index="W.04"
+                            index="W.05"
                             kind="Open source · TypeScript"
                             title="rnw-community"
                             links={
-                                <WorkLink href="https://github.com/rnw-community/rnw-community" label="GitHub" project="rnw-community" />
+                                <WorkLink href="https://github.com/rnw-community/rnw-community" label="GitHub" context="rnw-community on" />
                             }
                         >
                             26 npm packages for NestJS and React Native. The largest gets 325k downloads a month.
                         </WorkItem>
                         <WorkItem
-                            index="W.05"
+                            index="W.06"
                             kind="Open source · Go"
                             title="Unyoke"
                             links={
                                 <>
                                     <WorkLink href="https://unyoke.dev" label="unyoke.dev" />
-                                    <WorkLink href="https://github.com/vitalyiegorov/tart-runner-fleet" label="GitHub" project="Unyoke" />
+                                    <WorkLink
+                                        href="https://github.com/vitalyiegorov/tart-runner-fleet"
+                                        label="GitHub"
+                                        context="Unyoke on"
+                                    />
                                 </>
                             }
                         >
                             GitHub Actions on your own Macs and Linux boxes. Every job gets a throwaway VM or container.
                         </WorkItem>
                         <WorkItem
-                            index="W.06"
+                            index="W.07"
                             kind="Upstream contributions"
                             title="Agent tooling"
                             links={

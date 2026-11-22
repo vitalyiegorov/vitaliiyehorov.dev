@@ -14,8 +14,8 @@ const tau = Math.PI * 2;
 const orbitRadius = [0.4, 0.69, 0.97] as const;
 const orbitTilt = [-0.2, 0.13, -0.06] as const;
 const orbitSquash = 0.42;
-const projectOrbit = [2, 1, 0, 2, 1, 2] as const;
-const projectPhase = [4.3, 3.78, 3.25, 2.92, 2.4, 1.95] as const;
+const projectOrbit = [2, 1, 0, 2, 1, 2, 0] as const;
+const projectPhase = [4.3, 3.78, 3.25, 2.92, 2.4, 1.95, 1.2] as const;
 const stripInset = 25;
 const stripReach = 28;
 

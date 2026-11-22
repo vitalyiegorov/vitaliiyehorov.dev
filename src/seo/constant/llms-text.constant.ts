@@ -27,7 +27,8 @@ One session plans the work, agents from different model families build it in par
 ## Selected work
 
 - [Budgie](https://www.budgie.at): privacy-first, offline-first money app with an AI chat over your own data ([source](https://github.com/budgie-at/budgie))
-- [Suuudokuuu](https://suuudokuuu.com): sudoku for web, iOS and Android from one codebase ([source](https://github.com/vitalyiegorov/suuudokuuu))
+- [Suuudokuuu](https://suuudokuuu.com): sudoku for web, iOS and Android from one codebase ([App Store](https://apps.apple.com/app/id6449440933), [Google Play](https://play.google.com/store/apps/details?id=com.vitaliiyehorov.suuudokuuu), [source](https://github.com/vitalyiegorov/suuudokuuu))
+- [Pony Garden](https://apps.apple.com/app/id6814132709): solve hedge mazes and care for a pony. Offline play on iPad and Mac for ages 4 to 7, with no ads, accounts or in-app purchases
 - [JointLens](https://jointlens.ai): an AI second opinion on MRI, CT and X-ray scans of eleven joints
 - [rnw-community](https://github.com/rnw-community/rnw-community): 26 npm packages for NestJS and React Native. The largest gets 325k downloads a month
 - [Unyoke](https://unyoke.dev): GitHub Actions on your own Macs and Linux machines, every job in a throwaway VM or container ([source](https://github.com/vitalyiegorov/tart-runner-fleet))
